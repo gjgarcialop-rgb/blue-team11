@@ -1,10 +1,10 @@
 # Software Requirements Specification
-## For <project name>
+## For <ChillCrib>
 
 Version 0.1  
-Prepared by <author>  
+Prepared by <Giovanni Garica Lopez>  
 <organization>  
-<date created> 
+<9/15/25> 
 
 Table of Contents
 =================
@@ -36,7 +36,7 @@ Table of Contents
 
 ## Revision History
 | Name | Date    | Reason For Changes  | Version   |
-| ---- | ------- | ------------------- | --------- |
+| Gio  | 9/16/25 | Answering questions | 0.1       |
 |      |         |                     |           |
 |      |         |                     |           |
 |      |         |                     |           |
@@ -44,19 +44,26 @@ Table of Contents
 ## 1. Introduction
 
 ### 1.1 Document Purpose
-Describe the purpose of the SRS and its intended audience.
+The purpose of this document is to define the basic functions from our app ChillCrib. This is a web-based application for viewing and renting an AirBNB for how long you'll stay. The document is intended for anyone who uses the app or wants to view it. ChillCrib will guide early development and provide updates along the way.
 
 ### 1.2 Product Scope
-Identify the product whose software requirements are specified in this document, including the revision or release number. Explain what the product that is covered by this SRS will do, particularly if this SRS describes only part of the system or a single subsystem. 
-Provide a short description of the software being specified and its purpose, including relevant benefits, objectives, and goals. Relate the software to corporate goals or business strategies. If a separate vision and scope document is available, refer to it rather than duplicating its contents here.
+ChillCrib v0.1 will serve as a platform where users can rent or view the listing provided on the app. This will have basic details about what you're looking at but this current version will not have features until we further update. These features can be booking payment plans, booking features with tiers. At the moment it will focus on providing a clean interface for browinf and listing and diplaying property information. The main goals are:
+1. Allow the user to view the list of properties
+2. Give details on who owns the property, location, and price.
+3. Creates a foundation for what is coming for the user and rental owners.
 
-### 1.3 Definitions, Acronyms and Abbreviations                                                                                                                                                                          |
+### 1.3 Definitions, Acronyms and Abbreviations                                     
+SRS // Software Requirement Specification
+UI // User interface
+v0.1 // Initial release version and mainly just viewing
 
 ### 1.4 References
-List any other documents or Web addresses to which this SRS refers. These may include user interface style guides, contracts, standards, system requirements specifications, use case documents, or a vision and scope document. Provide enough information so that the reader could access a copy of each reference, including title, author, version number, date, and source or location.
+https://www.airbnb.com
+IEEE Std 830-1998, IEEE Recommended Practice for Software Requirements Specifications.
+https://airbnb.io/projects/javascript/
 
 ### 1.5 Document Overview
-Describe what the rest of the document contains and how it is organized.
+The rest of the document will outline early designs for ChillCrib or future designs that will come. Section two will show and overview of the product which will includes goals, functions, etc. Section three will talk about functionality and non-functional requirements for version 0.1 which focuses on browsing the app and what kind of limits it has.
 
 ## 2. Product Overview
 This section should describe the general factors that affect the product and its requirements. This section does not state specific requirements. Instead, it provides a background for those requirements, which are defined in detail in Section 3, and makes them easier to understand.
@@ -81,26 +88,29 @@ List any assumed factors (as opposed to known facts) that could affect the requi
 ## 3. Requirements
 
 ### 3.1 Functional Requirements 
-This section specifies the software product's requirements. Specify all of the software requirements to a level of detail sufficient to enable designers to design a software system to satisfy those requirements, and to enable testers to test that the software system satisfies those requirements.
-
-The specific requirements should:
-* Be uniquely identifiable.
-* State the subject of the requirement (e.g., system, software, etc.) and what shall be done.
-* Optionally state the conditions and constraints, if any.
-* Describe every input (stimulus) into the software system, every output (response) from the software system, and all functions performed by the software system in response to an input or in support of an output.
-* Be verifiable (e.g., the requirement realization can be proven to the customer's satisfaction)
-* Conform to agreed upon syntax, keywords, and terms.
+- FR-0: Core Browsing Capability
+System shall allow users to browse and view rental properties through a web-based interface
+- FR-1: Homepage Navigation
+System shall display homepage with navigation links such as home, listing, etc.
+- FR-2: Property Listing
+System shall allow users to view a list of available rental properties which lists the name, location, price, and small info about them.
+- FR-3: Property Details
+System shall allow users to click on a property they want and provide a description for them and a detail page which shows images and amenities.
 
 #### 3.1.1 User interfaces
-Define the software components for which a user interface is needed. Describe the logical characteristics of each interface between the software product and the users. This may include sample screen images, any GUI standards or product family style guides that are to be followed, screen layout constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts, error message display standards, and so on. Details of the user interface design should be documented in a separate user interface specification.
-
-Could be further divided into Usability and Convenience requirements.
+The system shall show a homepage with navigation keys such as (Home, Listings, About Us, Contact,)
+It shall show users the ability to view which houses are available with basic info.
+(List, Prices, owner description, avalibility, group size.)
+The system shall give search bar to look up places.
 
 #### 3.1.2 Hardware interfaces
-Describe the logical and physical characteristics of each interface between the software product and the hardware components of the system. This may include the supported device types, the nature of the data and control interactions between the software and the hardware, and communication protocols to be used.
+No specialized hardware is needed.
+The system shall support basic inputs such as mouse and keyboard for now.
 
 #### 3.1.3 Software interfaces
-Describe the connections between this product and other specific software components (name and version), including databases, operating systems, tools, libraries, and integrated commercial components. Identify the data items or messages coming into the system and going out and describe the purpose of each. Describe the services needed and the nature of communications. Refer to documents that describe detailed application programming interface protocols. Identify data that will be shared across software components. If the data sharing mechanism must be implemented in a specific way (for example, use of a global data area in a multitasking operating system), specify this as an implementation constraint.
+System shall run on computer only and web browser like Google.
+It shall connect to a basic backend or database for storing property info.
+System shall be compatible with standard HTML,CSS, and JavaScript
 
 ### 3.2 Non Functional Requirements 
 
