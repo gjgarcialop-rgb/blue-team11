@@ -37,7 +37,7 @@ Table of Contents
 ## Revision History
 | Name | Date    | Reason For Changes  | Version   |
 | Gio  | 9/16/25 | Answering questions | 0.1       |
-|      |         |                     |           |
+| Allen|9/17/2025| Answering Questions | 0.1.1     |
 |      |         |                     |           |
 |      |         |                     |           |
 
@@ -61,6 +61,10 @@ v0.1 // Initial release version and mainly just viewing
 https://www.airbnb.com
 IEEE Std 830-1998, IEEE Recommended Practice for Software Requirements Specifications.
 https://airbnb.io/projects/javascript/
+AirBNB Privacy Policy
+https://www.airbnb.com/help/article/2855
+AirBNB Security
+https://www.airbnb.com/e/security
 
 ### 1.5 Document Overview
 The rest of the document will outline early designs for ChillCrib or future designs that will come. Section two will show and overview of the product which will includes goals, functions, etc. Section three will talk about functionality and non-functional requirements for version 0.1 which focuses on browsing the app and what kind of limits it has.
@@ -69,21 +73,26 @@ The rest of the document will outline early designs for ChillCrib or future desi
 This section should describe the general factors that affect the product and its requirements. This section does not state specific requirements. Instead, it provides a background for those requirements, which are defined in detail in Section 3, and makes them easier to understand.
 
 ### 2.1 Product Functions
-Summarize the major functions the product must perform or must let the user perform. Details will be provided in Section 3, so only a high level summary (such as a bullet list) is needed here. Organize the functions to make them understandable to any reader of the SRS. A picture of the major groups of related requirements and how they relate, such as a top level data flow diagram or object class diagram, is often effective.
+* We will have a homepage wih navigation buttons for viewing the main page, listings
+* There wil be a serch box for searching by location, name, or even by person (the,renter).
+* We will allow users to browse through a list of available rentals
+* There will be a details page for each property.
+
 
 ### 2.2 Product Constraints
-This subsection should provide a general description of any other items that will limit the developer’s options. These may include:  
-
-* Interfaces to users, other applications or hardware.  
-* Quality of service constraints.  
-* Standards compliance.  
-* Constraints around design or implementation.
+* It must be able to run in any modern web brower on mobile and PC.
+* It will require an internet connection.
+* It is a web based application, using HTML, CSS, Javascript and possibly others.
   
 ### 2.3 User Characteristics
-Identify the various user classes that you anticipate will use this product. User classes may be differentiated based on frequency of use, subset of product functions used, technical expertise, security or privilege levels, educational level, or experience. Describe the pertinent characteristics of each user class. Certain requirements may pertain only to certain user classes. Distinguish the most important user classes for this product from those who are less important to satisfy.
+* Customer: They can browse listings, view details on the provider, and have a clean UI.
+* Provider: This will be a future user, not included in version 0.1
+* SysAdmin: In the future, they will be able to moderate users, reviews, and listings.
 
 ### 2.4 Assumptions and Dependencies
-List any assumed factors (as opposed to known facts) that could affect the requirements stated in the SRS. These could include third-party or commercial components that you plan to use, issues around the development or operating environment, or constraints. The project could be affected if these assumptions are incorrect, are not shared, or change. Also identify any dependencies the project has on external factors, such as software components that you intend to reuse from another project, unless they are already documented elsewhere (for example, in the vision and scope document or the project plan).
+* Assume that the user has a stable internet connection to access the page.
+* We may add 3rd Party APIs in the future for anything like payments, map details, login (with google, facebook, etc... buttons)
+* Will rely on a databse for storing property information in the future.
 
 ## 3. Requirements
 
@@ -115,22 +124,18 @@ System shall be compatible with standard HTML,CSS, and JavaScript
 ### 3.2 Non Functional Requirements 
 
 #### 3.2.1 Performance
-If there are performance requirements for the product under various circumstances, state them here and explain their rationale, to help the developers understand the intent and make suitable design choices. Specify the timing relationships for real time systems. Make such requirements as specific as possible. You may need to state performance requirements for individual functional requirements or features.
-
+* The webpage should run smoothly with no lagspikes. 
+* Pages should be able to load fully within 3-5 seconds.
+* Images should fully load, provided they are in the accepted formats (jpg, png, jpeg, etc...) 
 #### 3.2.2 Security
-Specify any requirements regarding security or privacy issues surrounding use of the product or protection of the data used or created by the product. Define any user identity authentication requirements. Refer to any external policies or regulations containing security issues that affect the product. Define any security or privacy certifications that must be satisfied.
-
+ChillCrib version 0.1 is a basic web app With no current sensitive data, but in the future, we may refer to GDPR and CCPA for basic security. We also may in the future encrypt our web app with HTTPS for better data protection.
 #### 3.2.3 Reliability
-Specify the factors required to establish the required reliability of the software system at time of delivery.
-
+or version 1.0, we may display a message or error in the case of any serious errors in our prototype. We are aiming to alawys test the webite to ensure reliability before publishing for users to access. 
 #### 3.2.4 Availability
-Specify the factors required to guarantee a defined availability level for the entire system such as checkpoint, recovery, and restart.
-
+Chillcrib is aiming to be available up to 95% of the time to our users. For our version 1.0 prototype, we may display a simple message such as "Site unavailable" whenever we are working on it, with a short downtime so users dont have to wait long to re-access the site. 
 #### 3.2.5 Compliance
-Specify the requirements derived from existing standards or regulations
-
+The ChillCrib site will follow basic modern standards for HTML, CSS, javascript, and any other languages we may use. Version 0.1 does not handle user data, but will need to comply with laws in the future. 
 #### 3.2.6 Cost
-Specify monetary cost of the software product.
-
+ChillCrib is aiming towards using all open source products and APIs to minimize any costs for us. Our hosting costs should be minimal, as we are aiming to deploy on basic web hosting services, with a small monthly cost for a backened database, roughly 5-10$. For version 1, we wont be having any licensing costs associated. Overall, we are aiming for a low cost option. 
 #### 3.2.7 Deadline
-Specify schedule for delivery of the software product.
+We are aiming for ChillCrib's final product to be complete on December 2025, with currently unknown times for different versions of our websites beta to be complete.
