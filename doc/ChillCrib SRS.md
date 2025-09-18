@@ -138,4 +138,4 @@ The ChillCrib site will follow basic modern standards for HTML, CSS, javascript,
 #### 3.2.6 Cost
 ChillCrib is aiming towards using all open source products and APIs to minimize any costs for us. Our hosting costs should be minimal, as we are aiming to deploy on basic web hosting services, with a small monthly cost for a backened database, roughly 5-10$. For version 1, we wont be having any licensing costs associated. Overall, we are aiming for a low cost option. 
 #### 3.2.7 Deadline
-We are aiming for ChillCrib's final product to be complete on December 2025, with currently unknown times for different versions of our websites beta to be complete.
+We are aiming for ChillCrib's final product to be complete on December 2025, with currently unknown times for different versions of our websites beta to be complete. 
