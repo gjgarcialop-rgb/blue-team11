@@ -1,13 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-        <link rel="stylesheet" href="styles/Cust-login.css">
+    <title>Login - ChillCrib</title>
+    <link rel="stylesheet" href="../../Styles/Cust-login.css">
 
 </head>
+
 <body>
-    
+    <div class="login-container">
+        <h2>Welcome back to ChillCrib!</h2>
+        <p class="sub">Log back in too chill!</p>
+
+        <form action="#" method="post" aria-label="Login form">
+            <label for="identifier">Email or Username</label>
+            <input id="identifier" name="identifier" type="text" autocomplete="username" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+            <button type="submit" class="button login">Log In</button>
+        </form>
+
+        <p class="signup-link">Don't have an account? <a href="Customer_SignUp.html">Sign Up</a></p>
+    </div>
+
 </body>
-</html>
