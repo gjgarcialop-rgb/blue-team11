@@ -1,4 +1,13 @@
-/* Customer dashboard styles (cleaned) */
+
+/* Basic layout and reset */
+body, html{
+    background-image: url("/high-fidelity-prototype/Images/Earf.gif");
+    background-repeat: no-repeat;
+    background-position:center;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
 :root {
     --bg: #0b1220;
     --surface: #ffffff;

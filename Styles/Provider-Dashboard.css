@@ -1,4 +1,17 @@
-/*Controls aspects of the entire style page*/
+body, html{
+    background-image: url("/high-fidelity-prototype/Images/Earf.gif");
+    background-repeat: no-repeat;
+    background-position:center;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+:root {
+    --bg: #0b1220;
+    --surface: #ffffff;
+    --muted: #6b7280;
+}
+
 *{
   box-sizing: border-box;
   margin: 0;
@@ -26,37 +39,37 @@ header h1 {
   margin-bottom: 10px;
 }
 
-nav{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top:20px;
-}
-nav a {
-  color: white;
-  text-decoration: none;
-  margin: 0 75px;
-  transition: color 0.3s ease;
-  
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(6px);
 }
 
-.ChillCrib-logo{
-  width: 155px;
-  border-radius:5px;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px
 }
 
-.topBar-text{
-  background-color: white;
-  color:black;
-  padding:10px;
-  border-radius:5px;
-  
+.brand .logo-image {
+    height: 44px
 }
 
-nav a:hover {
-  color: #90e0ef;
+.topnav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 16px;
+    padding: 8px 12px;
+    border-radius: 8px
 }
 
+.topnav a.active,
+.topnav a:hover {
+    background: rgba(255, 255, 255, 0.06)
+}
 /* Main content */
 main {
   padding: 40px;
@@ -71,11 +84,9 @@ main h2 {
   color: #023e8a;
 }
 
-
-/*Welcome Section*/
-
 .welcome-section {
   margin-bottom: 40px;
+  color:white;
   
 }
 /* Listing cards */

@@ -4,33 +4,33 @@
 <head>
   <meta charset="UTF-8" />
   <title>ChillCrib: The Provider Dashboard</title>
-  <link rel="stylesheet" href="/Styles/Provider-GUI.css" />
+  <link rel="stylesheet" href="/Styles/Provider-Dashboard.css" />
 </head>
 
 <body>
-  <header>
-    <nav>
-      <a href="provider-dashboard.html">
-        <img src="/High-Fidelity-Prototype/Images/ChillCrib-topBar.png" alt="ChillCrib Logo"
-          class="ChillCrib-logo" />
-      </a>
-
-      <a href="create-listing.html" class="topBar-text">Create Listing</a>
-      <a href="manage-listings.html" class="topBar-text">Manage Listings</a>
-      <a href="provider-profile.html" class="topBar-text">Your Profile</a>
-    </nav>
-
+  <header class="topbar">
+    <div class="brand">
+      <img src="../../High-Fidelity-Prototype/Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+    </div>
+    <nav class="topnav">
+      <a href="DashBoard.html" class="active">Dashboard</a>
+      <a href="Listing_Details.html">View Cribs</a>
+      <a href="profile.html">Profile</a>
+      <a href="Messages.html">Messages</a>
+       <a href="Customer_Login.html">Log Out</a>
+  </nav>
   </header>
 
   <main>
 
     <section class="welcome-section">
-      <h1>Welcome, Bob!</h1>
+      <h1>Welcome, Bo!</h1>
       <p>Here's a summary of your listings and bookings.</p>
     </section>
     <section>
-      <h2>Your Listings</h2>
+
       <div class="listing-card">
+        <h2>Your Listings:</h2>
         <h3>The OBX Beach House</h3>
         <div style="width:500px;max-width:100%;">
           <div style="height:0;padding-bottom:100%;position:relative;"><iframe width="500" height="500"
