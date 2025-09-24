@@ -70,6 +70,9 @@ body {
     align-items: start;
 }
 
+/* limit grid width and center it so layout appears centered in the viewport */
+.messages { max-width: 1244px; margin: 0 auto; }
+
 .thread {
     background: var(--panel);
     border-radius: 14px;
