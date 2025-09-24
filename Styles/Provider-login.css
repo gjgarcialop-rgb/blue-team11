@@ -1,0 +1,143 @@
+/* Basic layout and reset */
+body, html{
+    background-image: url("/high-fidelity-prototype-allen/provider-prototype/images/Earf.gif");
+    background-repeat: no-repeat;
+    background-position:center;
+    background-attachment: fixed;
+    background-size: cover;
+    
+}
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  font-family: poppins, sans-serif;
+}
+
+nav{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top:20px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 75px;
+  transition: color 0.3s ease;
+
+  
+}
+
+.ChillCrib-logo{ 
+  width: 155px;
+  box-shadow: white 0px 4px 15px -5px;
+  border-radius:5px;
+}
+
+.topBar-text{
+  border: solid white 1px;
+  border-radius: 5px;
+  box-shadow: white 0px 4px 15px -5px;
+  color:white;
+  padding:10px;
+  border-radius:5px;
+  
+}
+
+nav a:hover {
+  color: #90e0ef;
+}
+
+main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.login-container {
+    position:flex;
+    left:50%;
+    top:50%;
+    transform: translate(0%, 25%);
+    margin: 0; /* ensure no external margins interfere */
+    z-index: 10; /* keep it above background but below site-level overlays */
+
+
+    width: 92%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 34px 28px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    color: #222;
+    text-align: left;
+}
+
+.login-container h2 {
+    text-align: center;
+    margin: 0 0 8px;
+    font-size: 1.6em
+}
+
+.login-container .sub {
+    text-align: center;
+    color: #666;
+    margin: 0 0 18px
+}
+
+label {
+    display: block;
+    margin: 8px 0 6px;
+    color: #333
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    box-sizing: border-box
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.12);
+    border-color: #6aa7ff
+}
+
+.button.login {
+    width: 100%;
+    padding: 12px 0;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px
+}
+
+.button.login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 123, 255, 0.18)
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 0.95em
+}
+
+.signup-link a {
+    color: #0066cc
+}
+
+@media (max-width:420px) {
+    .login-container {
+        padding: 24px 18px;
+    }
+}
