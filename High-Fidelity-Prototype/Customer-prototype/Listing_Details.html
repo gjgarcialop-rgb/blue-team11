@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Listings - ChillCrib</title>
   <link rel="stylesheet" href="../../Styles/view_cribs.css">
+  <link rel="stylesheet" href="../../Styles/customer-dashboard.css">
 </head>
+
 <body>
   <header class="topbar">
     <div class="brand">
@@ -14,9 +17,11 @@
     <nav class="topnav">
       <a href="DashBoard.html">Dashboard</a>
       <a href="Listing_Details.html" class="active">View Cribs</a>
-      <a href="profile.html">Profile</a>
-      <a href="Messages.html">Messages</a>
-        <a href="Customer_Login.html">Log Out</a>
+       <a href="Booking.html">Booking</a>   
+     <a href="Subscription.html">Subscription</a>
+     <a href="profile.html">Profile</a>
+           <a href="Messages.html">Messages</a>
+      <a href="Customer_Login.html">Log Out</a>
     </nav>
   </header>
 
@@ -27,21 +32,25 @@
     </section>
 
     <section class="cards">
-      <div class="card">
+      <div class="card" style="grid-column:1/2;">
         <h3>Available Cribs</h3>
 
         <div class="listings-grid">
           <article class="listing-card">
-            <img class="thumb" src="../../high-fidelity-prototype-allen/provider-prototype/images/OBX Beach House 1.png" alt="OBX Beach House">
+            <img class="thumb" src="../../high-fidelity-prototype-allen/provider-prototype/images/OBX Beach House 1.png"
+              alt="OBX Beach House">
             <div class="listing-meta">
               <div>
-                <strong>The OBX Beach Crib</strong>
+                <strong id="listingTitle">The OBX Beach Crib</strong>
                 <div class="muted">Outer Banks • 3 guests • 2 beds</div>
               </div>
-              <div class="price">$150/night</div>
+                <div>
+                  <div class="price" id="listingPrice">$150/night</div>
+                  <div style="margin-top:8px"><a class="booking-button-inline" href="Booking.html?title=The%20OBX%20Beach%20Crib&price=150">Book this crib</a></div>
+                </div>
             </div>
           </article>
-<!-- 
+          <!-- 
           <article class="listing-card">
             <img class="thumb" src="" alt="Beach House Interior">
             <div class="listing-meta">
@@ -77,7 +86,51 @@
 
         </div>
       </div>
+
+      <!-- Reviews column -->
+      <aside class="card reviews-aside">
+        <h3>Reviews for this crib</h3>
+        <div class="reviews-panel">
+          <div id="listingReviews" class="review-list">
+            <p class="muted">No reviews yet for this listing.</p>
+          </div>
+
+          <form id="listingReviewForm" class="review-form">
+            <label for="reviewGuest">Your name</label>
+            <input id="reviewGuest" class="review-guest" placeholder="Guest name" />
+
+            <label for="rating" class="label-rating">Rating</label>
+            <div class="star-rating" id="listingStarRating" aria-label="Star rating">
+              <span class="star" data-value="1" role="button" aria-label="1 star">☆</span>
+              <span class="star" data-value="2" role="button" aria-label="2 stars">☆</span>
+              <span class="star" data-value="3" role="button" aria-label="3 stars">☆</span>
+              <span class="star" data-value="4" role="button" aria-label="4 stars">☆</span>
+              <span class="star" data-value="5" role="button" aria-label="5 stars">☆</span>
+            </div>
+
+            <label for="reviewText">Write a review</label>
+            <textarea id="reviewText" class="review-textarea" rows="4"></textarea>
+
+            <div class="actions review-actions">
+              <button class="btn primary" type="submit">Submit review</button>
+            </div>
+          </form>
+        </div>
+      </aside>
     </section>
-  </main> -->
+  </main>
+
+  <!-- booking bar fixed to bottom -->
+  <div class="booking-bar">
+    <div class="booking-info">
+      <div class="booking-title">The OBX Beach Crib</div>
+      <div class="booking-price">$150/night</div>
+    </div>
+    <a class="booking-button" href="Booking.html?title=The%20OBX%20Beach%20Crib&price=150">Book this crib</a>
+  </div>
+    <div class="reviews-card"></div>
+  <script src="../../Scripts/Listing.js" defer></script>
 </body>
+
 </html>
+  
