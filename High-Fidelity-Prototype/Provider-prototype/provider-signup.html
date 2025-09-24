@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - ChillCrib</title>
+    <link rel="stylesheet" href="/Styles/Provider-SignUp.css">
+
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <a href="provider-signin.html">
+                <img src="/high-fidelity-prototype-allen/provider-prototype/images/ChillCrib-topBar.png"
+                    alt="ChillCrib Logo" class="ChillCrib-logo" />
+            </a>
+            <a href="provider-dashboard.html" class="topBar-text">Home</a>
+            <a href="provider-dashboard.html" class="topBar-text">Home</a>
+            <a href="provider-dashboard.html" class="topBar-text">Home</a>
+    </header>
+
+    <main>
+        <section class="login-container">
+            <h2>Welcome to ChillCrib!</h2>
+            <p class="sub">Signup to add places for people to Chill!</p>
+
+            <form aria-label="Login form">
+                <label for="identifier">First Name: </label>
+                <input id="identifier" name="identifier" type="text" autocomplete="firstname" required>
+
+                <label for="identifier">Last Name: </label>
+                <input id="identifier" name="identifier" type="text" autocomplete="lastname" required>
+
+                <label for="identifier">Email Address: </label>
+                <input id="identifier" name="identifier" type="text" autocomplete="email" required>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+                <label for="re-enter-password">Re-enter Password</label>
+                <input id="re-enter-password" name="re-enter-password" type="password" autocomplete="current-password"
+                    required>
+
+
+                <button type="submit" class="button login">SignUp</button>
+            </form>
+
+            <p class="signup-link">Already have an account? <a href="provider-signin.html">Sign In</a></p>
+        </section>
+    </main>
+</body>
+</html>
