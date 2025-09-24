@@ -32,7 +32,7 @@ nav a {
 }
 
 .ChillCrib-logo{ 
-  width: 155px;
+  width: 180px;
   box-shadow: white 0px 4px 15px -5px;
   border-radius:5px;
 }
@@ -62,8 +62,7 @@ main{
     position:flex;
     left:50%;
     top:50%;
-    transform: translate(0%, 25%);
-    margin: 0; /* ensure no external margins interfere */
+    margin: 90px; /* ensure no external margins interfere */
     z-index: 10; /* keep it above background but below site-level overlays */
 
 
