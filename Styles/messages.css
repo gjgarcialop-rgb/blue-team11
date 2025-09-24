@@ -30,21 +30,43 @@ body {
     height: 44px
 }
 
-.topnav a {
-    color: rgba(17, 24, 39, 0.9);
+/* make logo and nav more visible on messages page */
+.brand img { 
+    border: 2px solid rgba(0,0,0,0.6);
+    border-radius: 6px;
+    padding: 2px;
+    background: #fff;
+}
+
+.topbar {
+    border-bottom: 1px solid rgba(0,0,0,0.35);
+}
+
+/* unified active-nav highlight for customer and provider top bars */
+.topnav a,
+nav a.topBar-text {
+    padding: 6px 10px;
     text-decoration: none;
-    margin-left: 14px;
-    padding: 8px 12px;
-    border-radius: 8px
+    color: #333;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
-.topnav a:hover {
-    background: rgba(43, 108, 176, 0.06)
+.topnav a.active,
+nav a.topBar-text.active {
+    /* use the same highlight as Profile.css for visual consistency */
+    background: #2b6bb095; /* semi-opaque primary blue */
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(11,102,209,0.12);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
 }
 
-.topnav a.active {
-    background: var(--primary);
-    color: #fff
+/* optional hover to match style */
+.topnav a:hover,
+nav a.topBar-text:hover {
+    background: rgba(11,102,209,0.06);
 }
 
 .container {
@@ -159,3 +181,36 @@ body {
         padding: 8px
     }
 }
+
+/* message composer (input area) */
+.message-composer {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    border: 2px solid #2b8cff; /* blue outline to emphasize the messages area */
+    padding: 10px;
+    border-radius: 12px;
+    background: #f0f8ff;
+}
+
+.message-composer textarea {
+    flex: 1;
+    min-height: 44px;
+    resize: none;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #cfdff5;
+    font-size: 0.95rem;
+}
+
+.message-composer button {
+    background: #2b6bb0;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.message-composer button:hover { opacity: 0.95; }

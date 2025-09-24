@@ -4,6 +4,7 @@
     --muted: #6b7280;
     --card-bg: rgba(255, 255, 255, 0.96);
     --overlay: rgba(11, 17, 32, 0.6);
+    --primary: #2b6bb095;
 }
 
 html,
@@ -45,9 +46,14 @@ body {
     border-radius: 8px
 }
 
-.topnav a.active,
 .topnav a:hover {
-    background: rgba(255, 255, 255, 0.06)
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* active nav highlight (match Profile.css) */
+.topnav a.active {
+    background: var(--primary);
+    color: #fff;
 }
 
 .container {
@@ -64,13 +70,18 @@ body {
 .cards {
     background: rgba(255, 255, 255, 0.02);
     padding: 14px;
-    border-radius: 14px
+    border-radius: 16px;
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    /* main listings + wider reviews column */
+    gap: 18px;
+    align-items: start;
 }
 
 .card {
     background: var(--card-bg);
     padding: 18px;
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     border: 1px solid rgba(16, 24, 40, 0.06)
 }
@@ -115,8 +126,77 @@ body {
     font-weight: 700
 }
 
-@media (max-width:640px) {
-    .listing-card .thumb {
-        height: 130px
-    }
+
+
+
+
+
+.cards aside.card h3 {
+    margin-top: 0;
 }
+
+.review-item {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(16, 24, 40, 0.06);
+    margin-bottom: 12px;
+}
+
+.review-stars {
+    color: #f5b301;
+    font-weight: 500;
+}
+
+/* New review layout rules */
+.reviews-aside {
+    display: flex;
+    flex-direction: column;
+}
+.reviews-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.review-list {
+    max-height: 220px;
+    overflow: auto;
+    padding-right: 6px;
+}
+.review-item { display:block; }
+.review-guest { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
+.review-text { margin-top: 6px; white-space: pre-wrap; }
+
+.review-form label { display: block; margin-top: 8px; font-weight: 600; }
+.review-guest, .review-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(16,24,40,0.08);
+    background: #fff;
+    color: #111;
+    box-sizing: border-box;
+}
+.star-rating { margin-top: 6px; font-size: 1.2rem; }
+.star { cursor: pointer; margin-right: 6px; }
+.review-actions { margin-top: 8px; display: flex; gap: 8px; }
+
+/* make sure the reviews aside doesn't visually clash with listing card */
+.cards .card.reviews-aside { border-left: 6px solid rgba(43, 107, 176, 0.06); }
+
+/* Inline booking link styling to make it clearly visible beside the price */
+.booking-button-inline {
+    display: inline-block;
+    padding: 6px 10px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(43, 107, 176, 0.22);
+}
+
+.booking-button-inline:hover {
+    transform: translateY(-1px);
+}
+
+
