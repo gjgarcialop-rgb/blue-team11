@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - ChillCrib</title>
   <link rel="stylesheet" href="../../Styles/customer-dashboard.css">
 </head>
+
 <body>
   <header class="topbar">
     <div class="brand">
@@ -14,9 +16,11 @@
     <nav class="topnav">
       <a href="DashBoard.html" class="active">Dashboard</a>
       <a href="Listing_Details.html">View Cribs</a>
+      <a href="Booking.html">Booking</a>
+      <a href="Subscription.html">Subscription</a>
       <a href="profile.html">Profile</a>
       <a href="Messages.html">Messages</a>
-       <a href="Customer_Login.html">Log Out</a>
+      <a href="Customer_Login.html">Log Out</a>
     </nav>
   </header>
 
@@ -26,15 +30,21 @@
       <p>Here are your upcoming trips!</p>
     </section>
 
-    <section class="cards">
+    <section class="Cards">
       <div class="card upcoming">
         <h3>Upcoming Trips</h3>
-        <ul>
-          <li>No upcoming trips — start searching for your next stay!</li>
+        <ul id="upcomingList">
+          <li id="noTrips">No upcoming trips — start searching for your next stay!</li>
         </ul>
       </div>
-     
+      <aside class="card subscriptions-card">
+        <h3>Your subscriptions</h3>
+        <div id="yourSubs">No active subscriptions</div>
+      </aside>
+
     </section>
   </main>
+  <script src="../../Scripts/Cust-Dashboad.js" defer></script>
 </body>
+
 </html>

@@ -1,0 +1,48 @@
+/* Subscription page styles */
+:root {
+    --sub-bg: #ffffff;
+    --accent: #2b6bb0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #0b1220;
+}
+
+.subs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 12px
+}
+
+.sub-card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(16, 24, 40, 0.06)
+}
+
+.sub-card h4 {
+    margin: 0 0 6px
+}
+
+.sub-card p {
+    margin: 0 0 10px;
+    color: #6b7280
+}
+
+.sub-price {
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px
+}
+
+.sub-card .btn {
+    width: 100%;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.98);
+}
