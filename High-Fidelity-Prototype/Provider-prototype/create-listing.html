@@ -9,24 +9,25 @@
 
 <body>
     <header class="topbar">
-        <a href="provider-dashboard.html">
-            <img src="/High-Fidelity-Prototype/Images/ChillCrib-TopBar-Black&White.png" class="ChillCrib-logo"
-                alt="ChillCrib Logo">
-        </a>
+        <div class="brand">
+            <a href="provider-dashboard.html">
+            <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+            </a>
+            
+        </div>
         <nav class="topnav">
-            <a href="provider-dashboard.html" class="active">Dashboard</a>
-            <a href="create-listing.html">Create a Crib</a>
+            <a href="provider-dashboard.html">Dashboard</a>
+            <a href="provider-listings.html">My Cribs</a>
+            <a href="create-listing.html" class="active">Create a Crib</a>
             <a href="provider-profile.html">Profile</a>
-            <a href="Messages.html">Messages</a>
             <a href="/Homepage.html">Log Out</a>
         </nav>
-
     </header>
 
     <main>
 
         <section class="welcome-section">
-            <h1>Welcome, Bob!</h1>
+            <h1>Upload a Crib</h1>
             <p>Here, you can create a Listing.</p>
         </section>
 
@@ -50,12 +51,12 @@
                 <input id="identifier" name="identifier" type="text" autocomplete="ex: Beach House" required>
 
                 <label for="identifier">Upload your Photos Here:</label>
-                <button>Upload a photo</button>
+                <button>Upload Photo</button>
 
                 <p></p>
                 <p></p>
                 <p></p>
-                <button type="submit" class="button login">Log In</button>
+                <button type="submit" class="button-submit">Submit</button>
             </form>
 
         </section>

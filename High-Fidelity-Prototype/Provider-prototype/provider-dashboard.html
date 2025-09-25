@@ -9,30 +9,33 @@
 
 <body>
   <header class="topbar">
-    <a href="provider-dashboard.html">
-      <img src="/High-Fidelity-Prototype/Images/ChillCrib-TopBar-Black&White.png" class="ChillCrib-logo"
-        alt="ChillCrib Logo">
-    </a>
-    <nav class="topnav">
-      <a href="DashBoard.html" class="active">Dashboard</a>
-      <a href="create-listing.html">Create a Crib</a>
-      <a href="profile.html">Profile</a>
-      <a href="Messages.html">Messages</a>
-      <a href="Customer_Login.html">Log Out</a>
-    </nav>
-  </header>
+        <div class="brand">
+            <a href="provider-dashboard.html">
+            <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+            </a>
+            
+        </div>
+        <nav class="topnav">
+            <a href="provider-dashboard.html" class="active">Dashboard</a>
+            <a href="provider-listings.html">My Cribs</a>
+            <a href="create-listing.html">Create a Crib</a>
+            <a href="provider-profile.html">Profile</a>
+            <a href="/Homepage.html">Log Out</a>
+
+        </nav>
+    </header>
 
   <main>
 
     <section class="welcome-section">
       <h1>Welcome, Bob!</h1>
-      <p>Here's a summary of your listings and bookings.</p>
+      <p>Here's a summary of your Cribs.</p>
+      
     </section>
 
-    <section>
       <div class="listing-card">
 
-        <h2>Your Listings:</h2>
+        <h2>Your Recent Listings:</h2>
 
         <div class="listing-card-inside">
           <h3>The OBX Beach House</h3>
@@ -43,7 +46,7 @@
           <p>$200/night · 3 bookings this month</p>
           <p></p>
 
-          <a href="prototype-listing1.html" class="listing-card-button">View Details</a>
+          <a href="provider-listings.html" class="listing-card-button">View Details</a>
         </div>
         <div class="listing-card-inside">
           <h3>Beach House in Surf City, NC</h3>
@@ -55,9 +58,13 @@
           <p>$400/night · 5 bookings this month</p>
           <p></p>
 
-          <a href="prototype-listing2.html" class="listing-card-button">View Details</a>
+          <a href="provider-listings.html" class="listing-card-button">View Details</a>
 
         </div>
+
+        <a href="provider-listings.html" class="listing-card-button">View All my Cribs</a>
+
+
       </div>
     </section>
 

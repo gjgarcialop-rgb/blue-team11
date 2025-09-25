@@ -78,6 +78,21 @@ main h2 {
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
+
+#carousel-image{
+    max-width: 75%;
+    border-radius:10px;
+      box-shadow: 0 4px 6px black;
+
+}
+
+#carousel-image1{
+    max-width: 75%;
+    border-radius:10px;
+      box-shadow: 0 4px 6px black;
+
+}
+
 .listing-card h3 {
   margin-bottom: 10px;
   color: #0077b6;
@@ -94,13 +109,15 @@ main h2 {
   margin-bottom: 50px;
   border-radius: 8px;
   box-shadow: 0 4px 6px black;
-  transition: transform 0.3s ease;
   
 }
+ .carousel{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ }
 
-.listing-card-inside:hover {
-  transform: scale(1.02);
-}
+
 
 .listing-card-inside h3 {
   margin-bottom: 10px;
@@ -109,6 +126,7 @@ main h2 {
 
 .listing-card-inside p {
   margin-bottom: 5px;
+  color:black;
 }
 
 .listing-card-button{
@@ -127,6 +145,18 @@ main h2 {
   box-shadow: 6px 4px 6px black;
   transition: box-shadow 0.3s ease;
   
+}
+
+.button-LR{
+    width: 7.5%;
+    padding: 12px 2px;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 2px;
 }
 
 /* Earnings summary */
