@@ -3,52 +3,62 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>ChillCrib: The Provider Dashboard</title>
-    <link rel="stylesheet" href="/Styles/provider-dashboard.css" />
+    <title>ChillCrib: Create a Listing</title>
+    <link rel="stylesheet" href="/Styles/prototype-createListing.css" />
 </head>
 
 <body>
-    <header>
-        <nav>
+    <header class="topbar">
+        <div class="brand">
             <a href="provider-dashboard.html">
-                <img src="/high-fidelity-prototype/provider-prototype/images/ChillCrib-topBar.png" alt="ChillCrib Logo"
-                    class="ChillCrib-logo" />
+            <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
             </a>
-
-            <a href="create-listing.html" class="topBar-text">Create Listing</a>
-            <a href="manage-listings.html" class="topBar-text">Manage Listings</a>
-            <a href="provider-profile.html" class="topBar-text">Your Profile</a>
+            
+        </div>
+        <nav class="topnav">
+            <a href="provider-dashboard.html">Dashboard</a>
+            <a href="provider-listings.html">My Cribs</a>
+            <a href="create-listing.html" class="active">Create a Crib</a>
+            <a href="provider-profile.html">Profile</a>
+            <a href="/Homepage.html">Log Out</a>
         </nav>
-
     </header>
 
     <main>
 
         <section class="welcome-section">
-            <h1>Welcome, Bob!</h1>
+            <h1>Upload a Crib</h1>
             <p>Here, you can create a Listing.</p>
         </section>
-        <section>
-            <h2>Create a new Listing:</h2>
-            <article class="create-listing-card">
-                
 
-                
-                <p>Name of Listing</p>
-                <input type="text" placeholder="Title of Listing" class="input-field" />
+        <section class="listing-card">
 
-                <p>Address of Listing</p>
-                <input type="text" placeholder="1234 Main St, City, State, ZIP" class="input-field" />
-                
-                <p>Listing Description</p>
-                <input type="text" placeholder="Describe your listing..." class="input-field" />
-                
-                <p class="sumbit-button-container">
-                    <button class="listing-card-button">Submit Listing</button>
+            <form id="signinForm" aria-label="Login form">
+                <label for="identifier">Enter the Name for your Crib: </label>
+                <input id="identifier" name="identifier" type="text" autocomplete="ex: Beach House" required>
+
+                <label for="identifier">Enter the Address for your Crib: </label>
+                <input id="identifier" name="identifier" type="text" autocomplete="ex: 123 Main st, NYC, N.Y" required>
 
 
-            </article>
-            
+                <div class="description-box">
+                    <label for="identifier">Enter a Description for your Crib: </label>
+                    <input id="identifier" name="identifier" type="text" autocomplete="ex: Beach House" required>
+                </div>
+
+
+                <label for="identifier">Enter the Price per Night: </label>
+                <input id="identifier" name="identifier" type="text" autocomplete="ex: Beach House" required>
+
+                <label for="identifier">Upload your Photos Here:</label>
+                <button>Upload Photo</button>
+
+                <p></p>
+                <p></p>
+                <p></p>
+                <button type="submit" class="button-submit">Submit</button>
+            </form>
+
         </section>
 
     </main>
