@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listings - ChillCrib</title>
+  <link rel="stylesheet" href="../../Styles/view_cribs.css">
+  <link rel="stylesheet" href="../../Styles/customer-dashboard.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+    </div>
+    <nav class="topnav">
+      <a href="DashBoard.html">Dashboard</a>
+      <a href="customer-listings.html">View Cribs</a>
+      <a href="Listing_Details.html" class="active">Booking</a>
+      <a href="Subscription.html">Subscription</a>
+      <a href="profile.html">Profile</a>
+      <a href="Messages.html">Messages</a>
+      <a href="Customer_Login.html">Log Out</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="welcome-section">
+      <h2>Explore Cribs</h2>
+      <p>Browse curated cribs available to chill at — tap a card for details.</p>
+    </section>
+
+    <section class="cards">
+      <div class="card" style="grid-column:1/2;">
+        <h3>Available Cribs</h3>
+
+        <div class="listings-grid">
+          <article class="listing-card">
+            <img class="thumb" src="/High-Fidelity-Prototype/Images/OBX Beach House 1.png" alt="OBX Beach House">
+            <div class="listing-meta">
+              <div>
+                <strong id="listingTitle">The OBX Beach Crib</strong>
+                <div class="muted">Outer Banks • 3 guests • 2 beds</div>
+              </div>
+              <div>
+                <div class="price" id="listingPrice">$350/night</div>
+                <div style="margin-top:8px;">
+                  <a class="booking-button-inline"
+                    href="/High-Fidelity-Prototype/Customer-prototype/customer-listings.html">View Details</a>
+                </div>
+                <div style="margin-top:8px">
+                  <a class="booking-button-inline" href="Booking.html?title=The%20OBX%20Beach%20Crib&price=350">Book
+                    this crib</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="listing-card">
+            <img class="thumb" src="/High-Fidelity-Prototype/Images/Surf City Beach House1.jpeg" alt="OBX Beach House">
+            <div class="listing-meta">
+              <div>
+                <strong id="listingTitle">The Surf City Beach Crib</strong>
+                <div class="muted">Surf City • 3 guests • 2 beds</div>
+              </div>
+              <div>
+                <div class="price" id="listingPrice">$450/night</div>
+                <div style="margin-top:8px;">
+                  <a class="booking-button-inline"
+                    href="/High-Fidelity-Prototype/Customer-prototype/customer-listings.html">View Details</a>
+                </div>
+                <div style="margin-top:8px">
+                  <a class="booking-button-inline"
+                    href="Booking.html?title=The%20Surf%20City%20Beach%20Crib&price=450">Book this crib</a>
+                </div>
+              </div>
+            </div>
+          </article>
+          <!-- 
+          <article class="listing-card">
+            <img class="thumb" src="" alt="Beach House Interior">
+            <div class="listing-meta">
+              <div>
+                <strong>Cozy Ocean View Crib</strong>
+                <div class="muted">Outer Banks • 2 guests • 1 bed</div>
+              </div>
+              <div class="price">$99/night</div>
+            </div>
+          </article>
+
+          <article class="listing-card">
+            <img class="thumb" src="" alt="Living Area">
+            <div class="listing-meta">
+              <div>
+                <strong>Surfside Chill Crib</strong>
+                <div class="muted">Outer Banks • 4 guests • 3 beds</div>
+              </div>
+              <div class="price">$189/night</div>
+            </div>
+          </article>
+
+          <article class="listing-card">
+            <img class="thumb" src="" alt="Bedroom">
+            <div class="listing-meta">
+              <div>
+                <strong>Seaside Getaway Crib</strong>
+                <div class="muted">Outer Banks • 6 guests • 4 beds</div>
+              </div>
+              <div class="price">$245/night</div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Reviews column -->
+          <aside class="card reviews-aside">
+            <h3>Reviews for this crib</h3>
+            <div class="reviews-panel">
+              <div id="listingReviews" class="review-list">
+                <p class="muted">No reviews yet for this listing.</p>
+              </div>
+
+              <form id="listingReviewForm" class="review-form">
+                <label for="reviewGuest">Your name</label>
+                <input id="reviewGuest" class="review-guest" placeholder="Guest name" />
+
+                <label for="rating" class="label-rating">Rating</label>
+                <div class="star-rating" id="listingStarRating" aria-label="Star rating">
+                  <span class="star" data-value="1" role="button" aria-label="1 star">☆</span>
+                  <span class="star" data-value="2" role="button" aria-label="2 stars">☆</span>
+                  <span class="star" data-value="3" role="button" aria-label="3 stars">☆</span>
+                  <span class="star" data-value="4" role="button" aria-label="4 stars">☆</span>
+                  <span class="star" data-value="5" role="button" aria-label="5 stars">☆</span>
+                </div>
+
+                <label for="reviewText">Write a review</label>
+                <textarea id="reviewText" class="review-textarea" rows="4"></textarea>
+
+                <div class="actions review-actions">
+                  <button class="btn primary" type="submit">Submit review</button>
+                </div>
+              </form>
+            </div>
+          </aside>
+    </section>
+  </main>
+  <script src="../../Scripts/Listing.js" defer></script>
+</body>
+
+</html>

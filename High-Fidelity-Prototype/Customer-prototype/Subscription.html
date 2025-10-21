@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Subscriptions — ChillCrib</title>
+    <link rel="stylesheet" href="../../Styles/sub.css">
+    <link rel="stylesheet" href="../../Styles/customer-dashboard.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+        </div>
+        <nav class="topnav">
+            <a href="DashBoard.html">Dashboard</a>
+            <a href="customer-listings.html">View Cribs</a>
+            <a href="Listing_Details.html">Booking</a>
+            <a href="Subscription.html" class="active">Subscription</a>
+            <a href="profile.html">Profile</a>
+            <a href="Messages.html">Messages</a>
+            <a href="Customer_Login.html">Log Out</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="welcome-section">
+            <h2>Subscriptions</h2>
+            <p>Choose subscriptions to enhance your ChillCrib experience.</p>
+        </section>
+
+        <section class="cards">
+            <div class="card">
+                <h3>Available subscriptions</h3>
+                <div class="subs-grid" id="subsGrid">
+                    <article class="sub-card" data-id="insurance">
+                        <h4>Insurance & Protection</h4>
+                        <p>Protect your trip with insurance coverage.</p>
+                        <div class="sub-price">$9.99/month</div>
+                        <button class="btn primary" data-action="toggle">Subscribe</button>
+                    </article>
+
+                    <article class="sub-card" data-id="cleaning">
+                        <h4>Cleaning Service</h4>
+                        <p>Regular professional cleaning between stays.</p>
+                        <div class="sub-price">$4.99/booking</div>
+                        <button class="btn primary" data-action="toggle">Add</button>
+                    </article>
+
+                    <article class="sub-card" data-id="equipment">
+                        <h4>Rental Equipment</h4>
+                        <p>Rent beach chairs, coolers, and other gear.</p>
+                        <div class="sub-price">$7.99/booking</div>
+                        <button class="btn primary" data-action="toggle">Add</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../../Scripts/subscription.js" defer></script>
+</body>
+
+</html>

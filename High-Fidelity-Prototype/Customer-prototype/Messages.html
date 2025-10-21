@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - ChillCrib</title>
+    <link rel="stylesheet" href="../../Styles/messages.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+        </div>
+        <nav class="topnav">
+            <a href="DashBoard.html">Dashboard</a>
+            <a href="customer-listings.html">View Cribs</a>
+            <a href="Listing_Details.html" >Booking</a>
+            <a href="Subscription.html">Subscription</a>
+            <a href="profile.html">Profile</a>
+            <a href="Messages.html" class="active">Messages</a>
+            <a href="Customer_Login.html">Log Out</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Messages</h1>
+        <section class="messages">
+
+            <section class="thread" aria-label="Message thread">
+                <div class="messages-list" id="messagesList">
+                    <div class="msg customer">
+                        <div class="meta">You • now</div>
+                        <div class="body">Hello</div>
+                    </div>
+
+                    <div class="msg provider">
+                        <div class="meta">Provider • now</div>
+                        <div class="body">Hello</div>
+                    </div>
+
+                    <div class="msg customer">
+                        <div class="meta">You • now</div>
+                        <div class="body">I'd like to chill at this crib!</div>
+                    </div>
+
+                    <div class="msg provider">
+                        <div class="meta">Provider • now</div>
+                        <div class="body">Okay!</div>
+                    </div>
+                </div>
+                <!-- message composer -->
+                <form class="message-composer" aria-label="Send a message">
+                    <label for="msgText" class="sr-only">Message</label>
+                    <textarea id="msgText" name="message" placeholder="Write a message..."></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </section>
+        </section>
+    </main>
+
+</body>
+
+</html>
