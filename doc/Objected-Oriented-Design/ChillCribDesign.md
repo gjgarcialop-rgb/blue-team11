@@ -65,4 +65,4 @@ A customer may write a review for a property they have stayed at. They will be a
 ## 3. UML Class Diagram
 ![UML Class Diagram](https://github.com/gjgarcialop-rgb/blue-team11/blob/main/doc/Objected-Oriented-Design/Blueteam-UML.png)
 ## 4. Database Schema
-![UML Class Diagram](https://github.com/gjgarcialop-rgb/blue-team11/blob/main/doc/Objected-Oriented-Design/Blueteam11-Schema.png)
+![Database Schema](https://github.com/gjgarcialop-rgb/blue-team11/blob/main/doc/Objected-Oriented-Design/Blueteam11-Schema.png)
