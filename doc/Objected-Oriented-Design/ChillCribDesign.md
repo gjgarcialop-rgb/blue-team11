@@ -30,7 +30,7 @@ Providers create and publish property listings, customers browse available prope
 
 ## 2. Use Cases
 ### 2.1 Use Case Model
-![Use Case Model]()
+![Use Case Model](https://github.com/gjgarcialop-rgb/blue-team11/blob/Allen-Orozco-Lopez-milestone3/doc/Objected-Oriented-Design/Blueteam-BoxModel.png)
 
 ### 2.2 Use Case Descriptions
 
