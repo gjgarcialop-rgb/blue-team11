@@ -1,0 +1,25 @@
+package BlueTeam11.ChillCrib.property;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "properties")
+public class Property {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+    @Column(columnDefinition = "text")
+    private String description;
+    private String location;
+    private java.math.BigDecimal pricePerNight;
+    private Integer maxGuests;
+    @Column(columnDefinition = "text")
+    private String amenities; // JSON array stored as text
+    private Boolean isActive;
+    private Integer bookingsThisMonth;
+    private Integer currentImageIndex;
+    private Long providerId;
+
+    public Property() {}
+}
