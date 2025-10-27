@@ -1,20 +1,38 @@
 package BlueTeam11.ChillCrib.provider;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/providers")
+@RequiredArgsConstructor
 public class ProviderController {
-    private final ProviderService service;
-    public ProviderController(ProviderService service) { this.service = service; }
-    @GetMapping
-    public List<Provider> all() { return service.findAll(); }
-    @GetMapping("/{id}")
-    public ResponseEntity<Provider> get(@PathVariable Long id) { Provider p = service.findById(id); return p==null? ResponseEntity.notFound().build():ResponseEntity.ok(p); }
+
+    private final ProviderService providerService;
+
     @PostMapping
-    public Provider create(@RequestBody Provider p){ return service.save(p); }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){ service.delete(id); return ResponseEntity.noContent().build(); }
+    public ResponseEntity<Provider> addProvider(@Valid @RequestBody Provider provider) {
+        return ResponseEntity.ok(providerService.createProvider(provider));
+    }
+
+    @PutMapping("api/{id}")
+    public ResponseEntity<Provider> updateProvider(@PathVariable Long id, @Valid @RequestBody Provider providerDetails) {
+        return ResponseEntity.ok(providerService.updateProvider(id, providerDetails));
+    }
+
+    @GetMapping("/api/{id}")
+    public ResponseEntity<Provider> getProvider(@PathVariable Long id) {
+        return ResponseEntity.ok(providerService.getProvidersById(id));
+    }
+
+    
 }
