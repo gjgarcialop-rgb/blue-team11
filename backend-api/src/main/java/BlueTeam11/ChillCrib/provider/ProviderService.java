@@ -1,11 +1,11 @@
 package BlueTeam11.ChillCrib.provider;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -32,6 +32,7 @@ public class ProviderService {
             throw new IllegalStateException("Email is already in use.");
         }
 
+        provider.setIdentifier(providerDetails.getIdentifier());
         provider.setName(providerDetails.getName());
         provider.setEmail(providerDetails.getEmail());
         provider.setPhoneNumber(providerDetails.getPhoneNumber());
