@@ -1,6 +1,5 @@
 package BlueTeam11.ChillCrib.property;
 
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,75 +8,157 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import BlueTeam11.ChillCrib.provider.Provider;
 import BlueTeam11.ChillCrib.review.Review;
-import BlueTeam11.ChillCrib.subscription.Subscription;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import BlueTeam11.ChillCrib.booking.Booking;
+import jakarta.persistence.*;
 
-@Data
-@NoArgsConstructor
 @Entity
 @Table(name = "properties")
 public class Property {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long propertyId;
+    private Long id;
 
-
-    @OneToOne@JoinColumn(name = "provider_id", nullable = false)
-    @JsonIgnoreProperties("property")
+    @ManyToOne
+    @JoinColumn(name = "provider_id")
+    @JsonIgnoreProperties({"properties", "hibernateLazyInitializer", "handler"})
     private Provider provider;
 
-    @NotBlank
-    @Column(nullable = false) 
-    private String chillCrib;
+    @Column(nullable = false)
+    private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @NotBlank
+    @Column(nullable = false)
     private String location;
-    
-    @NotNull
-    @Positive
-    private BigDecimal pricePerNight;
 
-    @NotNull
-    @Positive
+    private BigDecimal pricePerNight;
     private Integer maxGuests;
 
-    @NotNull
-    private boolean available = true;
+    @Column(columnDefinition = "TEXT")
+    private String amenities;
 
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("property")
-    private List<Subscription> subscriptions = new ArrayList<>();
+    private Boolean isActive = true;
+    private Integer bookingsThisMonth = 0;
+    private Integer currentImageIndex = 0;
 
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("property")
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties({"property", "hibernateLazyInitializer", "handler"})
+    private List<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties({"property", "hibernateLazyInitializer", "handler"})
     private List<Review> reviews = new ArrayList<>();
 
+    public Property() {
+    }
 
+    public Property(Long id) {
+        this.id = id;
+    }
 
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public Provider getProvider() {
+        return provider;
+    }
 
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
+    public String getLocation() {
+        return location;
+    }
 
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public BigDecimal getPricePerNight() {
+        return pricePerNight;
+    }
+
+    public void setPricePerNight(BigDecimal pricePerNight) {
+        this.pricePerNight = pricePerNight;
+    }
+
+    public Integer getMaxGuests() {
+        return maxGuests;
+    }
+
+    public void setMaxGuests(Integer maxGuests) {
+        this.maxGuests = maxGuests;
+    }
+
+    public String getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(String amenities) {
+        this.amenities = amenities;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Integer getBookingsThisMonth() {
+        return bookingsThisMonth;
+    }
+
+    public void setBookingsThisMonth(Integer bookingsThisMonth) {
+        this.bookingsThisMonth = bookingsThisMonth;
+    }
+
+    public Integer getCurrentImageIndex() {
+        return currentImageIndex;
+    }
+
+    public void setCurrentImageIndex(Integer currentImageIndex) {
+        this.currentImageIndex = currentImageIndex;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
 }

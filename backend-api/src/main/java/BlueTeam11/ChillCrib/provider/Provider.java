@@ -1,91 +1,66 @@
 package BlueTeam11.ChillCrib.provider;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import BlueTeam11.ChillCrib.property.Property;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
-@NoArgsConstructor
 @Entity
 @Table(name = "providers")
 public class Provider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long providerId;
+    private Long id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
+    private String identifier; // username or email
 
-    @Email
-    @NotBlank
     @Column(unique = true, nullable = false)
     private String email;
 
-
-    @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 
-
-    @NotBlank
     @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private java.math.BigDecimal totalEarnings;
-
-    @Column(nullable = false)
-    private Double rating;
-
-    @OneToOne(mappedBy = "provider", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("provider")
-    private Property property;
+    private String name;
 
     private String phoneNumber;
+    private String address;
 
+    private BigDecimal totalEarnings = BigDecimal.ZERO;
+    private Double rating = 0.0;
 
+    @OneToMany(mappedBy = "provider", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties({"provider", "hibernateLazyInitializer", "handler"})
+    private List<Property> properties = new ArrayList<>();
 
-    public Provider(Long providerId, String identifier, String email, String password, String name, String phoneNumber, String address, java.math.BigDecimal totalEarnings, Double rating) {
-        this.providerId = providerId;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.totalEarnings = totalEarnings;
-        this.rating = rating;
+    public Provider() {
     }
 
-    public Provider(String identifier, String email, String password, String name, String phoneNumber, String address, java.math.BigDecimal totalEarnings, Double rating) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.totalEarnings = totalEarnings;
-        this.rating = rating;
+    public Provider(Long id) {
+        this.id = id;
     }
 
-    public Long getProviderId() {
-        return providerId;
+    // Getters and Setters
+    public Long getId() {
+        return id;
     }
 
-    public void setProviderId(Long providerId) {
-        this.providerId = providerId    ;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getEmail() {
@@ -128,11 +103,11 @@ public class Provider {
         this.address = address;
     }
 
-    public java.math.BigDecimal getTotalEarnings() {
+    public BigDecimal getTotalEarnings() {
         return totalEarnings;
     }
 
-    public void setTotalEarnings(java.math.BigDecimal totalEarnings) {
+    public void setTotalEarnings(BigDecimal totalEarnings) {
         this.totalEarnings = totalEarnings;
     }
 
@@ -142,5 +117,13 @@ public class Provider {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public List<Property> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<Property> properties) {
+        this.properties = properties;
     }
 }
