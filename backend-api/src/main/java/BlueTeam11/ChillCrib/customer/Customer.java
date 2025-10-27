@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BlueTeam11.ChillCrib.booking.Booking;
-// import BlueTeam11.ChillCrib.review.Review; // TODO: Uncomment when Review entity is created
 import BlueTeam11.ChillCrib.subscription.Subscription;
 
 @Entity
@@ -38,10 +37,7 @@ public class Customer {
     @JsonIgnoreProperties({ "customer", "hibernateLazyInitializer", "handler" })
     private List<Booking> bookings = new ArrayList<>();
 
-    // TODO: Uncomment when Review entity is properly created
-    // @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    // @JsonIgnoreProperties({ "customer", "hibernateLazyInitializer", "handler" })
-    // private List<Review> reviews = new ArrayList<>();
+    
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties({ "customer", "hibernateLazyInitializer", "handler" })
@@ -119,15 +115,7 @@ public class Customer {
         this.bookings = bookings;
     }
 
-    // TODO: Uncomment when Review entity is properly created
-    // public List<Review> getReviews() {
-    //     return reviews;
-    // }
-
-    // public void setReviews(List<Review> reviews) {
-    //     this.reviews = reviews;
-    // }
-
+    
     public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
