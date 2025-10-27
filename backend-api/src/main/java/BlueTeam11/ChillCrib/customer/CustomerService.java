@@ -1,29 +1,65 @@
 package BlueTeam11.ChillCrib.customer;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
+@Transactional
 public class CustomerService {
-    private final CustomerRepository repo;
+    private final CustomerRepository customerRepository;
 
-    public CustomerService(CustomerRepository repo) {
-        this.repo = repo;
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
-    public List<Customer> findAll() {
-        return repo.findAll();
+    public Customer createCustomer(Customer customer) {
+        if (customerRepository.existsByEmail(customer.getEmail())) {
+            throw new IllegalStateException("Email already registered");
+        }
+        return customerRepository.save(customer);
     }
 
-    public Customer findById(Long id) {
-        return repo.findById(id).orElse(null);
+    public Customer updateCustomer(Long id, Customer customerDetails) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
+        customer.setName(customerDetails.getName());
+        customer.setEmail(customerDetails.getEmail());
+        customer.setAddress(customerDetails.getAddress());
+        customer.setPhoneNumber(customerDetails.getPhoneNumber());
+        customer.setIdentifier(customerDetails.getIdentifier());
+
+        return customerRepository.save(customer);
     }
 
-    public Customer save(Customer c) {
-        return repo.save(c);
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
     }
 
-    public void delete(Long id) {
-        repo.deleteById(id);
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    public List<Customer> searchByAddress(String address) {
+        return customerRepository.findByAddressContaining(address);
+    }
+
+    public List<Customer> searchByPhoneNumber(String phoneNumber) {
+        return customerRepository.findByPhoneNumberContaining(phoneNumber);
+    }
+
+    public Customer findByEmail(String email) {
+        return customerRepository.findByEmail(email).orElse(null);
+    }
+
+    public void deleteCustomer(Long id) {
+        if (!customerRepository.existsById(id)) {
+            throw new EntityNotFoundException("Customer not found");
+        }
+        customerRepository.deleteById(id);
     }
 }
