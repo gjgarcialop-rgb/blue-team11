@@ -6,54 +6,56 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class PropertyService {
-    private final PropertyRepository chillCribRepository;
-    
+    private final PropertyRepository propertyRepository;
+
+    public PropertyService(PropertyRepository propertyRepository) {
+        this.propertyRepository = propertyRepository;
+    }
+
     public Property createProperty(Property property) {
-        if (chillCribRepository.existsByPropertyName(property.getChillCrib())) {
-            throw new IllegalStateException("Property with the same name already exists.");
-        }
-        return chillCribRepository.save(property);
+        return propertyRepository.save(property);
     }
 
     public Property getPropertyById(Long id) {
-        return chillCribRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("The Crib you requested was not found"));
+        return propertyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Property not found"));
     }
 
-    public Property updateProperty(Long id, Property cribDetails) {
-        Property existingProperty = chillCribRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("The Crib you requested was not found"));
+    public Property updateProperty(Long id, Property propertyDetails) {
+        Property existingProperty = propertyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Property not found"));
 
-        if (!existingProperty.getChillCrib().equals(cribDetails.getChillCrib()) &&
-            chillCribRepository.existsByPropertyName(cribDetails.getChillCrib())) {
-            throw new IllegalStateException("A Crib with the same name already exists.");
-        }
+        existingProperty.setTitle(propertyDetails.getTitle());
+        existingProperty.setDescription(propertyDetails.getDescription());
+        existingProperty.setLocation(propertyDetails.getLocation());
+        existingProperty.setPricePerNight(propertyDetails.getPricePerNight());
+        existingProperty.setMaxGuests(propertyDetails.getMaxGuests());
+        existingProperty.setAmenities(propertyDetails.getAmenities());
+        existingProperty.setIsActive(propertyDetails.getIsActive());
 
-        existingProperty.setChillCrib(cribDetails.getChillCrib());
-        existingProperty.setDescription(cribDetails.getDescription());
-        existingProperty.setLocation(cribDetails.getLocation());
-        existingProperty.setPricePerNight(cribDetails.getPricePerNight());
-        existingProperty.setMaxGuests(cribDetails.getMaxGuests());
-
-        return chillCribRepository.save(existingProperty);
+        return propertyRepository.save(existingProperty);
     }
 
     public void deleteProperty(Long id) {
-        if (!chillCribRepository.existsById(id)) {
-            throw new EntityNotFoundException("The Crib you requested was not found");
+        if (!propertyRepository.existsById(id)) {
+            throw new EntityNotFoundException("Property not found");
         }
-        chillCribRepository.deleteById(id);
+        propertyRepository.deleteById(id);
     }
 
     public List<Property> getAllProperties() {
-        return chillCribRepository.findAll();
+        return propertyRepository.findAll();
     }
 
-    
+    public List<Property> getPropertiesByProviderId(Long providerId) {
+        return propertyRepository.findByProviderId(providerId);
+    }
+
+    public List<Property> getPropertiesByLocation(String location) {
+        return propertyRepository.findByLocationContainingIgnoreCase(location);
+    }
 }

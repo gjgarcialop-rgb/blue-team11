@@ -20,6 +20,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	Long countBookingsThisMonthForProperty(@Param("propertyId") Long propertyId,
 			@Param("monthStart") LocalDateTime monthStart);
 
-	@Query("SELECT COALESCE(SUM(b.totalPrice),0) FROM Booking b JOIN b.property p WHERE p.providerId = :providerId")
+	@Query("SELECT COALESCE(SUM(b.totalPrice),0) FROM Booking b JOIN b.property p WHERE p.provider.id = :providerId")
 	BigDecimal sumTotalPriceForProvider(@Param("providerId") Long providerId);
 }
