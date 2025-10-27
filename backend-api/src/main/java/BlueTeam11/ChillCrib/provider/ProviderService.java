@@ -1,14 +1,53 @@
 package BlueTeam11.ChillCrib.provider;
 
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class ProviderService {
-    private final ProviderRepository repo;
-    public ProviderService(ProviderRepository repo) { this.repo = repo; }
-    public List<Provider> findAll() { return repo.findAll(); }
-    public Provider findById(Long id) { return repo.findById(id).orElse(null); }
-    public Provider save(Provider p) { return repo.save(p); }
-    public void delete(Long id) { repo.deleteById(id); }
+
+private final ProviderRepository providerRepository;
+
+    public Provider createProvider(Provider provider) {
+        if(providerRepository.existsByEmail(provider.getEmail())) {
+          throw new IllegalStateException("Provider with the same email already exists.");
+        }
+        return providerRepository.save(provider);
+    }
+
+    public Provider updateProvider(Long id, Provider providerDetails) {
+
+        Provider provider = providerRepository.findById(id)
+          .orElseThrow(() -> new EntityNotFoundException("Provider not found"));
+
+        provider.setName(providerDetails.getName());
+          if(!provider.getEmail().equals(providerDetails.getEmail()) &&
+          providerRepository.existsByEmail(providerDetails.getEmail())) {
+            throw new IllegalStateException("Email is already in use.");
+          }
+        provider.setEmail(providerDetails.getEmail());
+        provider.setName(providerDetails.getName());
+        provider.setPhoneNumber(providerDetails.getPhoneNumber());
+        provider.setAddress(providerDetails.getAddress());
+        provider.setTotalEarnings(providerDetails.getTotalEarnings());
+        provider.setRating(providerDetails.getRating());
+
+        return providerRepository.save(provider);
+    }
+
+    public Provider getProvidersById(Long id) {
+        return providerRepository.findById(id)
+          .orElseThrow(() -> new EntityNotFoundException("Provider not found"));
+    }
+
+    public Provider getProvidersByEmail(String email) {
+        return providerRepository.findByEmail(email)
+          .orElseThrow(() -> new EntityNotFoundException("Provider not found"));
+    }
+
 }
