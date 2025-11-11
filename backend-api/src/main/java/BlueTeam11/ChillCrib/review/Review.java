@@ -1,10 +1,17 @@
 package BlueTeam11.ChillCrib.review;
 
-import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import BlueTeam11.ChillCrib.customer.Customer;
 import BlueTeam11.ChillCrib.property.Property;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "reviews")
@@ -15,12 +22,12 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "property_id")
-    @JsonIgnoreProperties({ "reviews", "hibernateLazyInitializer", "handler" })
+    @JsonIgnoreProperties({ "description", "amenities", "bookingsThisMonth", "currentImageIndex","reviews", "bookings", "hibernateLazyInitializer", "handler" })
     private Property property;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnoreProperties({ "reviews", "hibernateLazyInitializer", "handler" })
+    @JsonIgnoreProperties({ "identifier", "phoneNumber", "address", "reviews", "bookings", "hibernateLazyInitializer", "handler" })
     private Customer customer;
 
     @Column(nullable = false)

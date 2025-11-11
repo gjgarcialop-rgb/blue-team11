@@ -1,5 +1,5 @@
 spring.application.name=ChillCrib
-spring.datasource.url=jdbc:postgresql://ep-polished-hat-adajr1kr-pooler.c-2.us-east-1.aws.neon.tech/neondb?user=neondb_owner&password=npg_i0vGobnsr2Pd&sslmode=require&channelBinding=require
+spring.datasource.url=jdbc:postgresql://YOUR_DATABASE_HOST:5432/YOUR_DATABASE_NAME?user=YOUR_USERNAME&password=YOUR_PASSWORD&sslmode=require
 spring.jpa.hibernate.ddl-auto=update
 
 #Log out sql queries
