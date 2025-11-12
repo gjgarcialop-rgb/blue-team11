@@ -10,14 +10,14 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     
     // Validate all fields are filled
     if (!loginData.email || !loginData.password) {
-        alert('Please enter both email and password');
+        console.log('Email and password required');
         return;
     }
     
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(loginData.email)) {
-        alert('Please enter a valid email address');
+        console.log('Invalid email format');
         return;
     }
     
@@ -42,26 +42,22 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             localStorage.setItem('customerPhone', customer.phoneNumber || '');
             localStorage.setItem('customerAddress', customer.address || '');
             
-            alert(`Welcome back, ${customer.name}!`);
-            
             // Redirect to dashboard
             window.location.href = 'customer-dashboard.html';
             
         } else if (response.status === 401) {
-            alert('Invalid email or password. Please try again.');
+            console.log('Invalid email or password');
         } else if (response.status === 404) {
-            alert('No account found with this email. Please sign up first.');
-            if (confirm('Would you like to create a new account?')) {
-                window.location.href = 'customer-signup.html';
-            }
+            console.log('No account found with this email');
+            // Optional redirect to signup
+            window.location.href = 'customer-signup.html';
         } else {
             const errorData = await response.json().catch(() => ({ message: 'Login failed' }));
             console.error('Login error:', errorData);
-            alert('Login failed: ' + (errorData.message || 'Please try again'));
         }
         
     } catch (error) {
         console.error('Network error:', error);
-        alert('Network error. Please check your connection and try again.');
+        // Log error instead of popup
     }
 });

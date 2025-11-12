@@ -20,43 +20,43 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Basic validation
         if (!name) {
-            alert('Please enter your full name');
+            console.log('Name required');
             document.getElementById('name').focus();
             return;
         }
         
         if (!email) {
-            alert('Please enter your email address');
+            console.log('Email required');
             document.getElementById('email').focus();
             return;
         }
         
         if (!password) {
-            alert('Please enter a password');
+            console.log('Password required');
             document.getElementById('password').focus();
             return;
         }
         
         if (password.length < 6) {
-            alert('Password must be at least 6 characters long');
+            console.log('Password must be at least 6 characters long');
             document.getElementById('password').focus();
             return;
         }
         
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            console.log('Passwords do not match');
             document.getElementById('confirmPassword').focus();
             return;
         }
         
         if (!phoneNumber) {
-            alert('Please enter your phone number');
+            console.log('Phone number required');
             document.getElementById('phoneNumber').focus();
             return;
         }
         
         if (!address) {
-            alert('Please enter your address');
+            console.log('Address required');
             document.getElementById('address').focus();
             return;
         }
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Email format validation
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(email)) {
-            alert('Please enter a valid email address');
+            console.log('Invalid email format');
             document.getElementById('email').focus();
             return;
         }
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('customerEmail', customer.email);
                 localStorage.setItem('chillcrib_customer_auth', 'true');
                 
-                alert('Account created successfully! Welcome to ChillCrib!');
+                // Redirect to dashboard
                 window.location.href = 'customer-dashboard.html';
                 
             } else {
@@ -128,12 +128,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 console.error('Signup failed:', errorMessage);
-                alert('Error: ' + errorMessage);
+                // Focus on relevant field instead of popup
             }
             
         } catch (error) {
             console.error('Network error:', error);
-            alert('Network error. Please make sure you have an internet connection and the server is running.');
+            // Log error instead of popup
         }
     });
 });

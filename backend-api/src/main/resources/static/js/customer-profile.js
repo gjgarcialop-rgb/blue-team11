@@ -1,21 +1,51 @@
-// Customer Profile JavaScript - Pure Backend Data
+// Customer Profile JavaScript - Simplified for debugging
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Profile page loaded');
+    
     const customerId = localStorage.getItem('customerId');
+    console.log('Customer ID from localStorage:', customerId);
+    
     if (!customerId) {
-        alert('Please log in to access your profile');
+        console.log('No customer ID found, redirecting to login');
         window.location.href = 'customer-login.html';
         return;
     }
     
-    // Check if this is a new signup (no previous visit to profile)
-    const isNewSignup = !localStorage.getItem('profileVisited');
-    if (isNewSignup) {
-        localStorage.setItem('profileVisited', 'true');
-        showWelcomeMessage();
+    // Load profile data
+    try {
+        await loadCustomerProfile(customerId);
+        console.log('Profile loaded successfully');
+        
+        // Load customer statistics after profile is loaded
+        await loadCustomerStatistics(customerId);
+        console.log('Statistics loaded successfully');
+    } catch (error) {
+        console.error('Failed to load profile:', error);
     }
     
-    await loadCustomerProfile(customerId);
-    await loadCustomerStatistics(customerId);
+    // Test inputs immediately
+    setTimeout(() => {
+        console.log('Testing inputs...');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        
+        if (nameInput && emailInput) {
+            console.log('Inputs found. Name value:', nameInput.value);
+            console.log('Inputs found. Email value:', emailInput.value);
+            console.log('Name input disabled?', nameInput.disabled);
+            console.log('Email input disabled?', emailInput.disabled);
+            
+            // Make sure they're editable
+            nameInput.disabled = false;
+            emailInput.disabled = false;
+            nameInput.readOnly = false;
+            emailInput.readOnly = false;
+            
+            console.log('Inputs should now be editable');
+        } else {
+            console.error('Could not find name or email inputs');
+        }
+    }, 500);
 });
 
 function showWelcomeMessage() {
@@ -61,7 +91,7 @@ async function loadCustomerProfile(customerId) {
         }
     } catch (error) {
         console.error('Error loading customer profile:', error);
-        alert('Error loading profile data. Please try refreshing the page.');
+        showErrorMessage('Error loading profile data. Please try refreshing the page.');
     }
 }
 
@@ -71,6 +101,19 @@ function populateForm(customer) {
     document.getElementById('email').value = customer.email || '';
     document.getElementById('phoneNumber').value = customer.phoneNumber || '';
     document.getElementById('address').value = customer.address || '';
+    
+    // Ensure inputs are editable (remove any readonly/disabled attributes)
+    document.getElementById('name').removeAttribute('readonly');
+    document.getElementById('name').removeAttribute('disabled');
+    document.getElementById('email').removeAttribute('readonly');
+    document.getElementById('email').removeAttribute('disabled');
+    document.getElementById('phoneNumber').removeAttribute('readonly');
+    document.getElementById('phoneNumber').removeAttribute('disabled');
+    document.getElementById('address').removeAttribute('readonly');
+    document.getElementById('address').removeAttribute('disabled');
+    
+    console.log('Form populated with customer data:', customer);
+    console.log('All inputs should now be editable');
     
     // Update page title with customer name from backend
     if (customer.name) {
@@ -111,21 +154,9 @@ async function loadCustomerStatistics(customerId) {
 
 function displayStatistics(bookings, reviews, subscriptions) {
     const totalBookings = bookings.length;
-    const totalSpent = bookings.reduce((sum, booking) => sum + (booking.totalPrice || 0), 0);
     const upcomingBookings = bookings.filter(booking => new Date(booking.checkIn) > new Date()).length;
-    const completedBookings = bookings.filter(booking => new Date(booking.checkOut) < new Date()).length;
     const totalReviews = reviews.length;
     const activeSubscriptions = subscriptions.filter(sub => new Date(sub.startDate) <= new Date()).length;
-    
-    // Find favorite location (most booked location)
-    const locationCounts = {};
-    bookings.forEach(booking => {
-        if (booking.property && booking.property.location) {
-            locationCounts[booking.property.location] = (locationCounts[booking.property.location] || 0) + 1;
-        }
-    });
-    const favoriteLocation = Object.keys(locationCounts).length > 0 ? 
-        Object.keys(locationCounts).reduce((a, b) => locationCounts[a] > locationCounts[b] ? a : b) : 'None';
     
     document.getElementById('customerStats').innerHTML = `
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
@@ -134,16 +165,8 @@ function displayStatistics(bookings, reviews, subscriptions) {
                 <p style="font-size: 24px; color: #007bff; margin: 0;">${totalBookings}</p>
             </div>
             <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
-                <h4>Total Spent</h4>
-                <p style="font-size: 24px; color: #28a745; margin: 0;">$${totalSpent.toFixed(2)}</p>
-            </div>
-            <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
                 <h4>Upcoming Trips</h4>
                 <p style="font-size: 24px; color: #ffc107; margin: 0;">${upcomingBookings}</p>
-            </div>
-            <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
-                <h4>Completed Trips</h4>
-                <p style="font-size: 24px; color: #6c757d; margin: 0;">${completedBookings}</p>
             </div>
             <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
                 <h4>Reviews Written</h4>
@@ -154,37 +177,38 @@ function displayStatistics(bookings, reviews, subscriptions) {
                 <p style="font-size: 24px; color: #e83e8c; margin: 0;">${activeSubscriptions}</p>
             </div>
         </div>
-        <div style="margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 5px;">
-            <h4>Favorite Location</h4>
-            <p style="font-size: 18px; margin: 0;">${favoriteLocation}</p>
-        </div>
     `;
 }
 
 // Handle profile form submission - Pure Backend Update
 document.getElementById('profileForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    console.log('Form submitted - starting profile update');
     
     const customerId = localStorage.getItem('customerId');
+    console.log('Customer ID:', customerId);
     
     // Get form data with validation - matches Customer entity structure
     const formData = {
         name: document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim().toLowerCase(),
         phoneNumber: document.getElementById('phoneNumber').value.trim(),
-        address: document.getElementById('address').value.trim()
+        address: document.getElementById('address').value.trim(),
+        identifier: document.getElementById('email').value.trim().toLowerCase() // Add identifier field
     };
+    
+    console.log('Form data collected:', formData);
     
     // Validate all required fields
     if (!formData.name || !formData.email || !formData.phoneNumber || !formData.address) {
-        alert('Please fill in all fields');
+        console.log('Please fill in all fields');
         return;
     }
     
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-        alert('Please enter a valid email address');
+        console.log('Invalid email format');
         return;
     }
     
@@ -196,18 +220,19 @@ document.getElementById('profileForm').addEventListener('submit', async function
             if (checkResponse.ok) {
                 const existingCustomer = await checkResponse.json();
                 if (existingCustomer && existingCustomer.id != customerId) {
-                    alert('This email is already in use by another account.');
+                    console.log('This email is already in use by another account');
                     return;
                 }
             }
         } catch (error) {
             console.error('Error checking email:', error);
-            alert('Error validating email. Please try again.');
+            // Log error instead of popup
             return;
         }
     }
     
     try {
+        console.log('Sending PUT request to update profile...');
         // PUT request to update customer - backend handles all logic
         const response = await fetch(`/api/customers/${customerId}`, {
             method: 'PUT',
@@ -217,14 +242,18 @@ document.getElementById('profileForm').addEventListener('submit', async function
             body: JSON.stringify({ ...formData, id: parseInt(customerId) })
         });
         
+        console.log('Response status:', response.status);
+        
         if (response.ok) {
             const updatedCustomer = await response.json();
+            console.log('Profile updated successfully:', updatedCustomer);
             
             // Update localStorage with fresh backend data
             localStorage.setItem('customerName', updatedCustomer.name);
             localStorage.setItem('customerEmail', updatedCustomer.email);
             
-            alert(`Profile updated successfully, ${updatedCustomer.name}!`);
+            // Show success message
+            showSuccessMessage('Profile updated successfully!');
             
             // Reload statistics with updated data
             await loadCustomerStatistics(customerId);
@@ -232,13 +261,51 @@ document.getElementById('profileForm').addEventListener('submit', async function
         } else {
             const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
             console.error('Error updating profile:', errorData);
-            alert('Error updating profile: ' + (errorData.message || 'Please try again'));
+            showErrorMessage('Error updating profile. Please try again.');
         }
     } catch (error) {
         console.error('Error updating profile:', error);
-        alert('Network error. Please check your connection and try again.');
+        showErrorMessage('Network error. Please check your connection.');
     }
 });
+
+function showSuccessMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.style.cssText = `
+        background: #d4edda; border: 1px solid #c3e6cb; color: #155724; 
+        padding: 15px; margin: 20px 0; border-radius: 8px; text-align: center;
+        position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    messageDiv.innerHTML = `✅ ${message}`;
+    document.body.appendChild(messageDiv);
+    
+    // Remove message after 3 seconds
+    setTimeout(() => {
+        if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+        }
+    }, 3000);
+}
+
+function showErrorMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.style.cssText = `
+        background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; 
+        padding: 15px; margin: 20px 0; border-radius: 8px; text-align: center;
+        position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    messageDiv.innerHTML = `❌ ${message}`;
+    document.body.appendChild(messageDiv);
+    
+    // Remove message after 5 seconds
+    setTimeout(() => {
+        if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+        }
+    }, 5000);
+}
 
 async function deleteAccount() {
     if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
