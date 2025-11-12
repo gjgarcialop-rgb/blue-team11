@@ -56,6 +56,14 @@ public class CustomerService {
         return customerRepository.findByEmail(email).orElse(null);
     }
 
+    public Customer authenticateCustomer(String email, String password) {
+        Customer customer = customerRepository.findByEmail(email).orElse(null);
+        if (customer != null && customer.getPassword().equals(password)) {
+            return customer;
+        }
+        return null;
+    }
+
     public void deleteCustomer(Long id) {
         if (!customerRepository.existsById(id)) {
             throw new EntityNotFoundException("Customer not found");

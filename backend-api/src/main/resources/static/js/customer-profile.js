@@ -2,35 +2,80 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const customerId = localStorage.getItem('customerId');
     if (!customerId) {
+        alert('Please log in to access your profile');
         window.location.href = 'customer-login.html';
         return;
+    }
+    
+    // Check if this is a new signup (no previous visit to profile)
+    const isNewSignup = !localStorage.getItem('profileVisited');
+    if (isNewSignup) {
+        localStorage.setItem('profileVisited', 'true');
+        showWelcomeMessage();
     }
     
     await loadCustomerProfile(customerId);
     await loadCustomerStatistics(customerId);
 });
 
+function showWelcomeMessage() {
+    const customerName = localStorage.getItem('customerName');
+    if (customerName) {
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.style.cssText = `
+            background: #d4edda; border: 1px solid #c3e6cb; color: #155724; 
+            padding: 15px; margin: 20px 0; border-radius: 5px; text-align: center;
+        `;
+        welcomeDiv.innerHTML = `
+            <h3>🎉 Welcome to ChillCrib, ${customerName}!</h3>
+            <p>Your account has been created successfully. Please review and update your profile information below.</p>
+        `;
+        document.querySelector('.container').insertBefore(welcomeDiv, document.querySelector('.profile-section'));
+    }
+}
+
 async function loadCustomerProfile(customerId) {
     try {
+        // Pure backend data fetch - no localStorage fallbacks
         const response = await fetch(`/api/customers/${customerId}`);
         if (response.ok) {
             const customer = await response.json();
+            
+            // Validate backend data completeness
+            if (!customer.id || !customer.email) {
+                throw new Error('Incomplete customer data from backend');
+            }
+            
             populateForm(customer);
+            
+            // Update localStorage with fresh backend data - matches Customer entity
+            localStorage.setItem('customerName', customer.name);
+            localStorage.setItem('customerEmail', customer.email);
+            
+        } else if (response.status === 404) {
+            alert('Customer account not found. Please contact support.');
+            localStorage.clear();
+            window.location.href = 'customer-signup.html';
         } else {
-            alert('Error loading profile data');
+            throw new Error(`Server error: ${response.status}`);
         }
     } catch (error) {
         console.error('Error loading customer profile:', error);
-        alert('Network error loading profile');
+        alert('Error loading profile data. Please try refreshing the page.');
     }
 }
 
 function populateForm(customer) {
-    document.getElementById('firstName').value = customer.firstName || '';
-    document.getElementById('lastName').value = customer.lastName || '';
+    // Populate form with backend data only - matches Customer entity structure
+    document.getElementById('name').value = customer.name || '';
     document.getElementById('email').value = customer.email || '';
-    document.getElementById('phone').value = customer.phone || '';
+    document.getElementById('phoneNumber').value = customer.phoneNumber || '';
     document.getElementById('address').value = customer.address || '';
+    
+    // Update page title with customer name from backend
+    if (customer.name) {
+        document.title = `${customer.name}'s Profile - ChillCrib`;
+    }
 }
 
 async function loadCustomerStatistics(customerId) {
@@ -116,20 +161,54 @@ function displayStatistics(bookings, reviews, subscriptions) {
     `;
 }
 
-// Handle profile form submission
+// Handle profile form submission - Pure Backend Update
 document.getElementById('profileForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const customerId = localStorage.getItem('customerId');
+    
+    // Get form data with validation - matches Customer entity structure
     const formData = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        address: document.getElementById('address').value
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim().toLowerCase(),
+        phoneNumber: document.getElementById('phoneNumber').value.trim(),
+        address: document.getElementById('address').value.trim()
     };
     
+    // Validate all required fields
+    if (!formData.name || !formData.email || !formData.phoneNumber || !formData.address) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+    
+    // Check if email is being changed and if it's already in use
+    const currentEmail = localStorage.getItem('customerEmail');
+    if (formData.email !== currentEmail) {
+        try {
+            const checkResponse = await fetch(`/api/customers/email/${encodeURIComponent(formData.email)}`);
+            if (checkResponse.ok) {
+                const existingCustomer = await checkResponse.json();
+                if (existingCustomer && existingCustomer.id != customerId) {
+                    alert('This email is already in use by another account.');
+                    return;
+                }
+            }
+        } catch (error) {
+            console.error('Error checking email:', error);
+            alert('Error validating email. Please try again.');
+            return;
+        }
+    }
+    
     try {
+        // PUT request to update customer - backend handles all logic
         const response = await fetch(`/api/customers/${customerId}`, {
             method: 'PUT',
             headers: {
@@ -140,15 +219,24 @@ document.getElementById('profileForm').addEventListener('submit', async function
         
         if (response.ok) {
             const updatedCustomer = await response.json();
-            localStorage.setItem('customerName', updatedCustomer.firstName + ' ' + updatedCustomer.lastName);
-            alert('Profile updated successfully!');
+            
+            // Update localStorage with fresh backend data
+            localStorage.setItem('customerName', updatedCustomer.name);
+            localStorage.setItem('customerEmail', updatedCustomer.email);
+            
+            alert(`Profile updated successfully, ${updatedCustomer.name}!`);
+            
+            // Reload statistics with updated data
+            await loadCustomerStatistics(customerId);
+            
         } else {
-            const errorText = await response.text();
-            alert('Error updating profile: ' + errorText);
+            const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+            console.error('Error updating profile:', errorData);
+            alert('Error updating profile: ' + (errorData.message || 'Please try again'));
         }
     } catch (error) {
         console.error('Error updating profile:', error);
-        alert('Network error. Please try again.');
+        alert('Network error. Please check your connection and try again.');
     }
 });
 

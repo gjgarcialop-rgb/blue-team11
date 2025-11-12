@@ -8,7 +8,7 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../High-Fidelity-Prototype/Images/Earf.gif') center/cover fixed no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/Earf.gif') center/cover fixed no-repeat;
 }
 
 .login-container {
@@ -45,7 +45,9 @@ input {
     padding: 12px 14px;
     border: 1px solid #e6e6e6;
     border-radius: 8px;
-    box-sizing: border-box
+    box-sizing: border-box;
+    margin-bottom: 12px;
+    font-size: 14px;
 }
 
 input:focus {
@@ -63,7 +65,9 @@ input:focus {
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 12px
+    margin-top: 12px;
+    font-size: 16px;
+    transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 .button.login:hover {
@@ -78,7 +82,12 @@ input:focus {
 }
 
 .signup-link a {
-    color: #0066cc
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width:420px) {

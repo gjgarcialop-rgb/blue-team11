@@ -6,7 +6,7 @@ body,html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('../High-Fidelity-Prototype/Images/Earf.gif');
+    background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('../images/Earf.gif');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -74,5 +74,22 @@ form input:focus{
     text-align:center;
     margin-top:14px;
     font-size:0.95em;
+}
+
+.login-link a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 420px) {
+    .signup-container {
+        padding: 24px 18px;
+        width: 95%;
+    }
 }
 

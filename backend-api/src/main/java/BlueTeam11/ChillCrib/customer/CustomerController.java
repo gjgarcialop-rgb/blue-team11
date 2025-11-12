@@ -50,6 +50,12 @@ public class CustomerController {
         return customer != null ? ResponseEntity.ok(customer) : ResponseEntity.notFound().build();
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<Customer> loginCustomer(@RequestBody LoginRequest loginRequest) {
+        Customer customer = customerService.authenticateCustomer(loginRequest.getEmail(), loginRequest.getPassword());
+        return customer != null ? ResponseEntity.ok(customer) : ResponseEntity.status(401).build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
