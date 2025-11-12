@@ -17,12 +17,28 @@ async function loadCustomerInfo(customerId) {
         const response = await fetch(`/api/customers/${customerId}`);
         if (response.ok) {
             const customer = await response.json();
-            const customerName = customer.firstName + ' ' + customer.lastName;
+            // Use the name field from Customer entity
+            const customerName = customer.name;
             document.getElementById('welcomeMessage').textContent = `Welcome back, ${customerName}!`;
+            
+            // Update localStorage with fresh backend data
             localStorage.setItem('customerName', customerName);
+            localStorage.setItem('customerEmail', customer.email);
+        } else {
+            console.error('Failed to load customer info:', response.status);
+            // Fallback to localStorage name if backend call fails
+            const storedName = localStorage.getItem('customerName');
+            if (storedName) {
+                document.getElementById('welcomeMessage').textContent = `Welcome back, ${storedName}!`;
+            }
         }
     } catch (error) {
         console.error('Error loading customer info:', error);
+        // Fallback to localStorage name if network error
+        const storedName = localStorage.getItem('customerName');
+        if (storedName) {
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${storedName}!`;
+        }
     }
 }
 

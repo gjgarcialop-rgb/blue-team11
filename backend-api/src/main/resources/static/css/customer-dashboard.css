@@ -1,13 +1,5 @@
 
 /* Basic layout and reset */
-body, html{
-    background-image: url("/high-fidelity-prototype/Images/Earf.gif");
-    background-repeat: no-repeat;
-    background-position:center;
-    background-attachment: fixed;
-    background-size: cover;
-}
-
 :root {
     --bg: #0b1220;
     --surface: #ffffff;
@@ -26,7 +18,7 @@ body {
 
 /* page background: subtle gradient over the earth GIF */
 body {
-    background: linear-gradient(180deg, rgba(11, 17, 32, 0.55), rgba(11, 17, 32, 0.85)), url('../High-Fidelity-Prototype/Images/Earf.gif') center/cover fixed no-repeat;
+    background: linear-gradient(180deg, rgba(11, 17, 32, 0.55), rgba(11, 17, 32, 0.85)), url('../images/Earf.gif') center/cover fixed no-repeat;
 }
 
 .topbar {

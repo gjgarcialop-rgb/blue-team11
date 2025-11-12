@@ -1,20 +1,20 @@
-body,
-html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Segoe UI, sans-serif';
+body,html {
+    margin:0;
+    padding:0;
+    height:100%;
+    font-family: 'Segoe UI', sans-serif;
+    background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('../images/Earf.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .background {
-    /* background image lives in High-Fidelity-Prototype/Images */
-    background-image: url('../High-Fidelity-Prototype/Images/Earf.gif');
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh; /* ensure it fills viewport */
-    position: relative; /* allow absolute overlay to position over this */
+    /* Container div - background now on body */
+    min-height: 100vh;
+    position: relative;
     display: flex;
-
 }
 
 .tagline {

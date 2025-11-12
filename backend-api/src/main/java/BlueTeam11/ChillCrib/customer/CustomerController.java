@@ -15,8 +15,15 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-        return ResponseEntity.ok(customerService.createCustomer(customer));
+    public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
+        try {
+            Customer savedCustomer = customerService.createCustomer(customer);
+            return ResponseEntity.ok(savedCustomer);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).body("{\"error\": \"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("{\"error\": \"Invalid data: " + e.getMessage() + "\"}");
+        }
     }
 
     @PutMapping("/{id}")

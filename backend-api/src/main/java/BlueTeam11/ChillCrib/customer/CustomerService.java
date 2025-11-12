@@ -16,9 +16,27 @@ public class CustomerService {
     }
 
     public Customer createCustomer(Customer customer) {
+        // Validate required fields (matching entity constraints)
+        if (customer.getEmail() == null || customer.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (customer.getName() == null || customer.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        if (customer.getPassword() == null || customer.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        
+        // Set identifier to email if not provided (entity requires it)
+        if (customer.getIdentifier() == null || customer.getIdentifier().trim().isEmpty()) {
+            customer.setIdentifier(customer.getEmail());
+        }
+        
+        // Check for duplicate email
         if (customerRepository.existsByEmail(customer.getEmail())) {
             throw new IllegalStateException("Email already registered");
         }
+        
         return customerRepository.save(customer);
     }
 
