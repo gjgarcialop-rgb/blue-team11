@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Properties - ChillCrib</title>
+    <link rel="stylesheet" href="css/customer-dashboard.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <img src="images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+        </div>
+        <nav class="topnav">
+            <a href="customer-dashboard.html">Dashboard</a>
+            <a href="customer-properties.html" class="active">View Cribs</a>
+            <a href="customer-bookings.html">My Bookings</a>
+            <a href="customer-profile.html">Profile</a>
+            <a href="index.html">Log Out</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="welcome-section">
+            <h2>Available Properties</h2>
+            <p>Find your perfect place to chill!</p>
+        </section>
+
+        <section class="search-filters">
+            <div class="filter-container">
+                <input type="text" id="locationFilter" placeholder="Search by location" onkeyup="filterProperties()">
+                <input type="number" id="maxPriceFilter" placeholder="Max price per night" onchange="filterProperties()">
+                <input type="number" id="guestsFilter" placeholder="Number of guests" onchange="filterProperties()">
+                <button onclick="clearFilters()">Clear Filters</button>
+            </div>
+        </section>
+
+        <section id="propertiesContainer" class="properties-grid">
+            <div class="loading">Loading properties...</div>
+        </section>
+    </main>
+    
+    <script src="js/customer-properties.js"></script>
+</body>
+</html>
