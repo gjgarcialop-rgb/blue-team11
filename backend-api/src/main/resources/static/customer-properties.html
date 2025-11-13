@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="css/customer-dashboard.css">
     <link rel="stylesheet" href="css/customer-properties.css">
 </head>
+
 <body>
     <header class="topbar">
         <div class="brand">
@@ -30,7 +32,8 @@
         <section class="search-filters">
             <div class="filter-container">
                 <input type="text" id="locationFilter" placeholder="Search by location" onkeyup="filterProperties()">
-                <input type="number" id="maxPriceFilter" placeholder="Max price per night" onchange="filterProperties()">
+                <input type="number" id="maxPriceFilter" placeholder="Max price per night"
+                    onchange="filterProperties()">
                 <input type="number" id="guestsFilter" placeholder="Number of guests" onchange="filterProperties()">
                 <button onclick="clearFilters()">Clear Filters</button>
             </div>
@@ -40,7 +43,8 @@
             <div class="loading">Loading properties...</div>
         </section>
     </main>
-    
+
     <script src="js/customer-properties.js"></script>
 </body>
+
 </html>
