@@ -1,46 +1,50 @@
-// Customer Profile JavaScript - Simplified for debugging
-document.addEventListener('DOMContentLoaded', async function() {
+// Customer Profile JavaScript - Profile Management and Statistics Display
+
+// Initialize profile page when DOM is loaded
+document.addEventListener('DOMContentLoaded', async function () {
     console.log('Profile page loaded');
-    
+
+    // Check if user is logged in by getting their ID
     const customerId = localStorage.getItem('customerId');
     console.log('Customer ID from localStorage:', customerId);
-    
+
     if (!customerId) {
+        // Redirect to login if no customer ID found
         console.log('No customer ID found, redirecting to login');
         window.location.href = 'customer-login.html';
         return;
     }
-    
-    // Load profile data
+
+    // Load customer profile data and statistics
     try {
         await loadCustomerProfile(customerId);
         console.log('Profile loaded successfully');
-        
+
         // Load customer statistics after profile is loaded
         await loadCustomerStatistics(customerId);
         console.log('Statistics loaded successfully');
     } catch (error) {
         console.error('Failed to load profile:', error);
     }
-    
-    // Test inputs immediately
+
+    // Test inputs to ensure they're editable
     setTimeout(() => {
         console.log('Testing inputs...');
         const nameInput = document.getElementById('name');
         const emailInput = document.getElementById('email');
-        
+
         if (nameInput && emailInput) {
             console.log('Inputs found. Name value:', nameInput.value);
             console.log('Inputs found. Email value:', emailInput.value);
             console.log('Name input disabled?', nameInput.disabled);
             console.log('Email input disabled?', emailInput.disabled);
-            
-            // Make sure they're editable
+
+            // Make sure form inputs are editable
             nameInput.disabled = false;
             emailInput.disabled = false;
             nameInput.readOnly = false;
             emailInput.readOnly = false;
-            
+
             console.log('Inputs should now be editable');
         } else {
             console.error('Could not find name or email inputs');
@@ -48,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }, 500);
 });
 
+// Display welcome message for new users
 function showWelcomeMessage() {
     const customerName = localStorage.getItem('customerName');
     if (customerName) {
@@ -64,25 +69,28 @@ function showWelcomeMessage() {
     }
 }
 
+// Load customer profile data from backend
 async function loadCustomerProfile(customerId) {
     try {
-        // Pure backend data fetch - no localStorage fallbacks
+        // Fetch customer data from backend API
         const response = await fetch(`/api/customers/${customerId}`);
         if (response.ok) {
             const customer = await response.json();
-            
-            // Validate backend data completeness
+
+            // Validate that we got complete data
             if (!customer.id || !customer.email) {
                 throw new Error('Incomplete customer data from backend');
             }
-            
+
+            // Fill the form with customer data
             populateForm(customer);
-            
-            // Update localStorage with fresh backend data - matches Customer entity
+
+            // Update browser storage with fresh data
             localStorage.setItem('customerName', customer.name);
             localStorage.setItem('customerEmail', customer.email);
-            
+
         } else if (response.status === 404) {
+            // Customer not found - redirect to signup
             alert('Customer account not found. Please contact support.');
             localStorage.clear();
             window.location.href = 'customer-signup.html';
@@ -95,14 +103,15 @@ async function loadCustomerProfile(customerId) {
     }
 }
 
+// Fill form fields with customer data
 function populateForm(customer) {
-    // Populate form with backend data only - matches Customer entity structure
+    // Set form values from backend customer data
     document.getElementById('name').value = customer.name || '';
     document.getElementById('email').value = customer.email || '';
     document.getElementById('phoneNumber').value = customer.phoneNumber || '';
     document.getElementById('address').value = customer.address || '';
-    
-    // Ensure inputs are editable (remove any readonly/disabled attributes)
+
+    // Ensure all inputs are editable
     document.getElementById('name').removeAttribute('readonly');
     document.getElementById('name').removeAttribute('disabled');
     document.getElementById('email').removeAttribute('readonly');
@@ -111,53 +120,58 @@ function populateForm(customer) {
     document.getElementById('phoneNumber').removeAttribute('disabled');
     document.getElementById('address').removeAttribute('readonly');
     document.getElementById('address').removeAttribute('disabled');
-    
+
     console.log('Form populated with customer data:', customer);
     console.log('All inputs should now be editable');
-    
-    // Update page title with customer name from backend
+
+    // Update page title with customer name
     if (customer.name) {
         document.title = `${customer.name}'s Profile - ChillCrib`;
     }
 }
 
+// Load and display customer statistics
 async function loadCustomerStatistics(customerId) {
     try {
-        // Get all customer bookings
+        // Get customer bookings data
         const bookingsResponse = await fetch(`/api/bookings/customer/${customerId}`);
         let bookings = [];
         if (bookingsResponse.ok) {
             bookings = await bookingsResponse.json();
         }
-        
-        // Get customer reviews
+
+        // Get customer reviews data
         const reviewsResponse = await fetch(`/api/reviews/customer/${customerId}`);
         let reviews = [];
         if (reviewsResponse.ok) {
             reviews = await reviewsResponse.json();
         }
-        
-        // Get customer subscriptions
+
+        // Get customer subscriptions data
         const subscriptionsResponse = await fetch(`/api/subscriptions/customer/${customerId}`);
         let subscriptions = [];
         if (subscriptionsResponse.ok) {
             subscriptions = await subscriptionsResponse.json();
         }
-        
+
+        // Display the statistics
         displayStatistics(bookings, reviews, subscriptions);
-        
+
     } catch (error) {
         console.error('Error loading customer statistics:', error);
         document.getElementById('customerStats').innerHTML = 'Error loading statistics';
     }
 }
 
+// Calculate and display customer statistics
 function displayStatistics(bookings, reviews, subscriptions) {
+    // Calculate statistics from data
     const totalBookings = bookings.length;
     const upcomingBookings = bookings.filter(booking => new Date(booking.checkIn) > new Date()).length;
     const totalReviews = reviews.length;
     const activeSubscriptions = subscriptions.filter(sub => new Date(sub.startDate) <= new Date()).length;
-    
+
+    // Create and display statistics HTML
     document.getElementById('customerStats').innerHTML = `
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
             <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
@@ -180,39 +194,39 @@ function displayStatistics(bookings, reviews, subscriptions) {
     `;
 }
 
-// Handle profile form submission - Pure Backend Update
-document.getElementById('profileForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+// Handle profile form submission and update
+document.getElementById('profileForm').addEventListener('submit', async function (e) {
+    e.preventDefault(); // Prevent default form submission
     console.log('Form submitted - starting profile update');
-    
+
     const customerId = localStorage.getItem('customerId');
     console.log('Customer ID:', customerId);
-    
-    // Get form data with validation - matches Customer entity structure
+
+    // Collect form data for update
     const formData = {
         name: document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim().toLowerCase(),
         phoneNumber: document.getElementById('phoneNumber').value.trim(),
         address: document.getElementById('address').value.trim(),
-        identifier: document.getElementById('email').value.trim().toLowerCase() // Add identifier field
+        identifier: document.getElementById('email').value.trim().toLowerCase() // Required for backend
     };
-    
+
     console.log('Form data collected:', formData);
-    
-    // Validate all required fields
+
+    // Validate all required fields are filled
     if (!formData.name || !formData.email || !formData.phoneNumber || !formData.address) {
         console.log('Please fill in all fields');
         return;
     }
-    
-    // Validate email format
+
+    // Check email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
         console.log('Invalid email format');
         return;
     }
-    
-    // Check if email is being changed and if it's already in use
+
+    // Check if email is being changed and if it's already in use by another customer
     const currentEmail = localStorage.getItem('customerEmail');
     if (formData.email !== currentEmail) {
         try {
@@ -226,14 +240,13 @@ document.getElementById('profileForm').addEventListener('submit', async function
             }
         } catch (error) {
             console.error('Error checking email:', error);
-            // Log error instead of popup
             return;
         }
     }
-    
+
     try {
         console.log('Sending PUT request to update profile...');
-        // PUT request to update customer - backend handles all logic
+        // Send update request to backend
         const response = await fetch(`/api/customers/${customerId}`, {
             method: 'PUT',
             headers: {
@@ -241,24 +254,26 @@ document.getElementById('profileForm').addEventListener('submit', async function
             },
             body: JSON.stringify({ ...formData, id: parseInt(customerId) })
         });
-        
+
         console.log('Response status:', response.status);
-        
+
         if (response.ok) {
+            // Update successful
             const updatedCustomer = await response.json();
             console.log('Profile updated successfully:', updatedCustomer);
-            
-            // Update localStorage with fresh backend data
+
+            // Update browser storage with new data
             localStorage.setItem('customerName', updatedCustomer.name);
             localStorage.setItem('customerEmail', updatedCustomer.email);
-            
-            // Show success message
+
+            // Show success notification
             showSuccessMessage('Profile updated successfully!');
-            
+
             // Reload statistics with updated data
             await loadCustomerStatistics(customerId);
-            
+
         } else {
+            // Handle update errors
             const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
             console.error('Error updating profile:', errorData);
             showErrorMessage('Error updating profile. Please try again.');
@@ -269,6 +284,7 @@ document.getElementById('profileForm').addEventListener('submit', async function
     }
 });
 
+// Show success notification message
 function showSuccessMessage(message) {
     const messageDiv = document.createElement('div');
     messageDiv.style.cssText = `
@@ -279,8 +295,8 @@ function showSuccessMessage(message) {
     `;
     messageDiv.innerHTML = `✅ ${message}`;
     document.body.appendChild(messageDiv);
-    
-    // Remove message after 3 seconds
+
+    // Remove notification after 3 seconds
     setTimeout(() => {
         if (messageDiv.parentNode) {
             messageDiv.parentNode.removeChild(messageDiv);
@@ -288,6 +304,7 @@ function showSuccessMessage(message) {
     }, 3000);
 }
 
+// Show error notification message
 function showErrorMessage(message) {
     const messageDiv = document.createElement('div');
     messageDiv.style.cssText = `
@@ -298,8 +315,8 @@ function showErrorMessage(message) {
     `;
     messageDiv.innerHTML = `❌ ${message}`;
     document.body.appendChild(messageDiv);
-    
-    // Remove message after 5 seconds
+
+    // Remove notification after 5 seconds
     setTimeout(() => {
         if (messageDiv.parentNode) {
             messageDiv.parentNode.removeChild(messageDiv);
@@ -307,23 +324,27 @@ function showErrorMessage(message) {
     }, 5000);
 }
 
+// Handle account deletion
 async function deleteAccount() {
+    // Double confirmation for account deletion
     if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
         return;
     }
-    
+
     if (!confirm('This will permanently delete all your data including bookings, reviews, and subscriptions. Continue?')) {
         return;
     }
-    
+
     const customerId = localStorage.getItem('customerId');
-    
+
     try {
+        // Send delete request to backend
         const response = await fetch(`/api/customers/${customerId}`, {
             method: 'DELETE'
         });
-        
+
         if (response.ok) {
+            // Account deleted successfully
             localStorage.clear();
             alert('Account deleted successfully. Sorry to see you go!');
             window.location.href = 'index.html';
