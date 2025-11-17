@@ -1,4 +1,4 @@
-// Customer Dashboard JavaScript with Fetch API
+// Customer Dashboard
 document.addEventListener('DOMContentLoaded', async function() {
     const customerId = localStorage.getItem('customerId');
     
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     await loadCustomerInfo(customerId);
     await loadCustomerData(customerId);
-    await loadAvailableProperties();
+    await loadProperties();
 });
 
 async function loadCustomerInfo(customerId) {
@@ -17,24 +17,17 @@ async function loadCustomerInfo(customerId) {
         const response = await fetch(`/api/customers/${customerId}`);
         if (response.ok) {
             const customer = await response.json();
-            // Use the name field from Customer entity
-            const customerName = customer.name;
-            document.getElementById('welcomeMessage').textContent = `Welcome back, ${customerName}!`;
-            
-            // Update localStorage with fresh backend data
-            localStorage.setItem('customerName', customerName);
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${customer.name}!`;
+            localStorage.setItem('customerName', customer.name);
             localStorage.setItem('customerEmail', customer.email);
         } else {
-            console.error('Failed to load customer info:', response.status);
-            // Fallback to localStorage name if backend call fails
             const storedName = localStorage.getItem('customerName');
             if (storedName) {
                 document.getElementById('welcomeMessage').textContent = `Welcome back, ${storedName}!`;
             }
         }
     } catch (error) {
-        console.error('Error loading customer info:', error);
-        // Fallback to localStorage name if network error
+        console.error('Load customer error:', error);
         const storedName = localStorage.getItem('customerName');
         if (storedName) {
             document.getElementById('welcomeMessage').textContent = `Welcome back, ${storedName}!`;
@@ -44,49 +37,40 @@ async function loadCustomerInfo(customerId) {
 
 async function loadCustomerData(customerId) {
     try {
-        // Fetch customer bookings
         const bookingsResponse = await fetch(`/api/bookings/customer/${customerId}`);
         if (bookingsResponse.ok) {
             const bookings = await bookingsResponse.json();
-            displayBookings(bookings);
+            showBookings(bookings);
         }
         
-        // Fetch customer subscriptions
         const subscriptionsResponse = await fetch(`/api/subscriptions/customer/${customerId}`);
         if (subscriptionsResponse.ok) {
             const subscriptions = await subscriptionsResponse.json();
-            displaySubscriptions(subscriptions);
+            showSubscriptions(subscriptions);
         }
         
     } catch (error) {
-        console.error('Error loading customer data:', error);
+        console.error('Load data error:', error);
     }
 }
 
-async function loadAvailableProperties() {
+async function loadProperties() {
     try {
         const response = await fetch('/api/properties');
         if (response.ok) {
             const properties = await response.json();
-            displayProperties(properties);
+            showProperties(properties);
         }
     } catch (error) {
-        console.error('Error loading properties:', error);
+        console.error('Load properties error:', error);
         document.getElementById('availableProperties').innerHTML = '<p>Error loading properties</p>';
     }
 }
 
-function displayBookings(bookings) {
+function showBookings(bookings) {
     const bookingsList = document.getElementById('upcomingBookings');
     
-    if (bookings.length === 0) {
-        bookingsList.innerHTML = '<li>No upcoming trips — start searching for your next stay!</li>';
-        return;
-    }
-    
-    const upcomingBookings = bookings.filter(booking => 
-        new Date(booking.checkIn) > new Date()
-    );
+    const upcomingBookings = bookings.filter(booking => new Date(booking.checkIn) > new Date());
     
     if (upcomingBookings.length === 0) {
         bookingsList.innerHTML = '<li>No upcoming trips — start searching for your next stay!</li>';
@@ -103,10 +87,9 @@ function displayBookings(bookings) {
     `).join('');
 }
 
-function displaySubscriptions(subscriptions) {
+function showSubscriptions(subscriptions) {
     const subscriptionsDiv = document.getElementById('customerSubscriptions');
     
-    // Try to get local subscriptions if backend doesn't have any
     let localSubs = {};
     try {
         localSubs = JSON.parse(localStorage.getItem('chillcrib_subscriptions') || '{}');
@@ -114,10 +97,10 @@ function displaySubscriptions(subscriptions) {
         console.error('Error loading local subscriptions:', e);
     }
     
-    const hasLocalSubs = Object.keys(localSubs).length > 0;
-    const hasBackendSubs = subscriptions.length > 0;
+    const hasLocal = Object.keys(localSubs).length > 0;
+    const hasBackend = subscriptions.length > 0;
     
-    if (!hasLocalSubs && !hasBackendSubs) {
+    if (!hasLocal && !hasBackend) {
         subscriptionsDiv.innerHTML = `
             <div class="no-subs">
                 <p>No active subscriptions</p>
@@ -127,21 +110,16 @@ function displaySubscriptions(subscriptions) {
         return;
     }
     
-    let subsHTML = '';
+    let html = '';
     
-    if (hasLocalSubs) {
-        // Display local subscriptions
+    if (hasLocal) {
         Object.keys(localSubs).forEach(serviceId => {
             const sub = localSubs[serviceId];
-            const serviceName = getServiceName(serviceId);
-            const planName = getPlanName(sub.plan);
-            const billing = getPlanBilling(sub.plan);
-            
-            subsHTML += `
+            html += `
                 <div class="sub-item">
                     <div class="sub-info">
-                        <h4>${serviceName}</h4>
-                        <span class="sub-plan">${planName} - $${sub.price}/${billing}</span>
+                        <h4>${getServiceName(serviceId)}</h4>
+                        <span class="sub-plan">${getPlanName(sub.plan)} - $${sub.price}/${getBilling(sub.plan)}</span>
                     </div>
                     <div class="sub-actions">
                         <button class="btn-small edit" onclick="editSubscription('${serviceId}')">Edit</button>
@@ -150,8 +128,7 @@ function displaySubscriptions(subscriptions) {
             `;
         });
     } else {
-        // Display backend subscriptions
-        subsHTML = subscriptions.map(subscription => `
+        html = subscriptions.map(subscription => `
             <div class="sub-item">
                 <div class="sub-info">
                     <h4>${subscription.planType}</h4>
@@ -166,23 +143,19 @@ function displaySubscriptions(subscriptions) {
     
     subscriptionsDiv.innerHTML = `
         <div class="subs-header">
-            <span class="sub-count">${hasLocalSubs ? Object.keys(localSubs).length : subscriptions.length} Active</span>
+            <span class="sub-count">${hasLocal ? Object.keys(localSubs).length : subscriptions.length} Active</span>
             <a href="customer-subscription.html" class="btn-link">Manage All</a>
         </div>
-        <div class="subs-list">
-            ${subsHTML}
-        </div>
+        <div class="subs-list">${html}</div>
     `;
 }
 
-// Simple edit function for subscriptions
 function editSubscription(serviceId) {
     if (confirm('Go to subscriptions page to edit this service?')) {
         window.location.href = 'customer-subscription.html';
     }
 }
 
-// Utility functions for subscription display
 function getServiceName(serviceId) {
     const names = {
         'insurance': 'Insurance & Protection',
@@ -203,7 +176,7 @@ function getPlanName(plan) {
     return names[plan] || plan;
 }
 
-function getPlanBilling(plan) {
+function getBilling(plan) {
     const billing = {
         'monthly': 'month',
         'yearly': 'year',
@@ -214,7 +187,7 @@ function getPlanBilling(plan) {
     return billing[plan] || 'month';
 }
 
-function displayProperties(properties) {
+function showProperties(properties) {
     const propertiesDiv = document.getElementById('availableProperties');
     
     if (properties.length === 0) {
@@ -241,7 +214,6 @@ async function bookProperty(propertyId) {
         return;
     }
     
-    // Get property details first to calculate price
     let property = null;
     try {
         const propertyResponse = await fetch(`/api/properties/${propertyId}`);
@@ -249,12 +221,11 @@ async function bookProperty(propertyId) {
             property = await propertyResponse.json();
         }
     } catch (error) {
-        console.error('Error fetching property:', error);
+        console.error('Property fetch error:', error);
         alert('Error loading property details');
         return;
     }
     
-    // Create a proper booking form
     const checkIn = prompt('Enter check-in date (YYYY-MM-DD):');
     const checkOut = prompt('Enter check-out date (YYYY-MM-DD):');
     const guests = parseInt(prompt('Number of guests:'));
@@ -264,7 +235,6 @@ async function bookProperty(propertyId) {
         return;
     }
     
-    // Calculate total price based on dates and property price
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
     const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
@@ -282,22 +252,19 @@ async function bookProperty(propertyId) {
     try {
         const response = await fetch('/api/bookings', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bookingData)
         });
         
         if (response.ok) {
-            const booking = await response.json();
             alert(`Booking created successfully! Total: $${totalPrice} for ${nights} nights`);
-            location.reload(); // Refresh to show new booking
+            location.reload();
         } else {
             const errorText = await response.text();
             alert('Error creating booking: ' + errorText);
         }
     } catch (error) {
-        console.error('Error creating booking:', error);
+        console.error('Booking error:', error);
         alert('Network error. Please try again.');
     }
 }
