@@ -1,0 +1,244 @@
+/* Subscription page styles */
+:root {
+    --sub-bg: #ffffff;
+    --accent: #2b6bb0;
+    --success: #10b981;
+    --warning: #f59e0b;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #0b1220;
+}
+
+.subs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 12px
+}
+
+.sub-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(16, 24, 40, 0.06)
+}
+
+.sub-card h4 {
+    margin: 0 0 6px
+}
+
+.sub-card h5 {
+    color: var(--warning);
+    font-size: 0.9em;
+    margin: 0 0 8px;
+}
+
+.sub-card p {
+    margin: 0 0 15px;
+    color: #6b7280
+}
+
+.sub-price {
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.98);
+}
+
+/* Subscription Options with Checkboxes */
+.subscription-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.sub-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.sub-option:hover {
+    border-color: var(--accent);
+    background: #f8fafc;
+}
+
+.sub-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.radiomark {
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    margin-right: 12px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.sub-option input:checked ~ .radiomark {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.radiomark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.sub-option input:checked ~ .radiomark:after {
+    display: block;
+}
+
+.sub-option .radiomark:after {
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+.option-info {
+    flex: 1;
+}
+
+.plan-name {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #374151;
+}
+
+.sub-option .sub-price {
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0;
+}
+
+.price-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.savings {
+    font-size: 0.85em;
+    color: var(--success);
+    font-weight: 600;
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-header h3 {
+    margin: 0;
+}
+
+/* Button Styles */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.btn.primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn.secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn.secondary:hover {
+    background: #4b5563;
+}
+
+/* Active Subscriptions */
+.active-sub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid var(--success);
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.sub-info h4 {
+    margin: 0 0 4px;
+    color: #111827;
+}
+
+.sub-details {
+    color: #6b7280;
+    font-size: 0.9em;
+}
+
+.sub-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn.edit {
+    background: var(--warning);
+    color: white;
+    font-size: 0.85em;
+    padding: 6px 12px;
+}
+
+.btn.cancel {
+    background: #ef4444;
+    color: white;
+    font-size: 0.85em;
+    padding: 6px 12px;
+}
+
+/* Edit Mode */
+.edit-mode .sub-option {
+    border-color: #fbbf24;
+    background: #fffbeb;
+}
+
+.edit-mode .radiomark {
+    border-color: var(--warning);
+}
+
+/* Success Message */
+.success-message {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid #a7f3d0;
+}

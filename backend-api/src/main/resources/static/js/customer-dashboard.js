@@ -106,18 +106,112 @@ function displayBookings(bookings) {
 function displaySubscriptions(subscriptions) {
     const subscriptionsDiv = document.getElementById('customerSubscriptions');
     
-    if (subscriptions.length === 0) {
-        subscriptionsDiv.innerHTML = 'No active subscriptions';
+    // Try to get local subscriptions if backend doesn't have any
+    let localSubs = {};
+    try {
+        localSubs = JSON.parse(localStorage.getItem('chillcrib_subscriptions') || '{}');
+    } catch (e) {
+        console.error('Error loading local subscriptions:', e);
+    }
+    
+    const hasLocalSubs = Object.keys(localSubs).length > 0;
+    const hasBackendSubs = subscriptions.length > 0;
+    
+    if (!hasLocalSubs && !hasBackendSubs) {
+        subscriptionsDiv.innerHTML = `
+            <div class="no-subs">
+                <p>No active subscriptions</p>
+                <a href="customer-subscription.html" class="btn-link">Browse Services</a>
+            </div>
+        `;
         return;
     }
     
-    subscriptionsDiv.innerHTML = subscriptions.map(subscription => `
-        <div class="subscription-item">
-            <strong>Plan:</strong> ${subscription.planType}<br>
-            <strong>Price:</strong> $${subscription.price}/month<br>
-            <strong>Start Date:</strong> ${new Date(subscription.startDate).toLocaleDateString()}
+    let subsHTML = '';
+    
+    if (hasLocalSubs) {
+        // Display local subscriptions
+        Object.keys(localSubs).forEach(serviceId => {
+            const sub = localSubs[serviceId];
+            const serviceName = getServiceName(serviceId);
+            const planName = getPlanName(sub.plan);
+            const billing = getPlanBilling(sub.plan);
+            
+            subsHTML += `
+                <div class="sub-item">
+                    <div class="sub-info">
+                        <h4>${serviceName}</h4>
+                        <span class="sub-plan">${planName} - $${sub.price}/${billing}</span>
+                    </div>
+                    <div class="sub-actions">
+                        <button class="btn-small edit" onclick="editSubscription('${serviceId}')">Edit</button>
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        // Display backend subscriptions
+        subsHTML = subscriptions.map(subscription => `
+            <div class="sub-item">
+                <div class="sub-info">
+                    <h4>${subscription.planType}</h4>
+                    <span class="sub-plan">$${subscription.price}/month</span>
+                </div>
+                <div class="sub-actions">
+                    <button class="btn-small edit">Edit</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    subscriptionsDiv.innerHTML = `
+        <div class="subs-header">
+            <span class="sub-count">${hasLocalSubs ? Object.keys(localSubs).length : subscriptions.length} Active</span>
+            <a href="customer-subscription.html" class="btn-link">Manage All</a>
         </div>
-    `).join('');
+        <div class="subs-list">
+            ${subsHTML}
+        </div>
+    `;
+}
+
+// Simple edit function for subscriptions
+function editSubscription(serviceId) {
+    if (confirm('Go to subscriptions page to edit this service?')) {
+        window.location.href = 'customer-subscription.html';
+    }
+}
+
+// Utility functions for subscription display
+function getServiceName(serviceId) {
+    const names = {
+        'insurance': 'Insurance & Protection',
+        'cleaning': 'Cleaning Service',
+        'equipment': 'Rental Equipment'
+    };
+    return names[serviceId] || serviceId;
+}
+
+function getPlanName(plan) {
+    const names = {
+        'monthly': 'Monthly',
+        'yearly': 'Yearly',
+        'per-booking': 'Per Booking',
+        'basic': 'Basic',
+        'premium': 'Premium'
+    };
+    return names[plan] || plan;
+}
+
+function getPlanBilling(plan) {
+    const billing = {
+        'monthly': 'month',
+        'yearly': 'year',
+        'per-booking': 'booking',
+        'basic': 'booking',
+        'premium': 'month'
+    };
+    return billing[plan] || 'month';
 }
 
 function displayProperties(properties) {
