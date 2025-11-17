@@ -1,31 +1,18 @@
-// Enhanced Customer Subscription Management System
+
 (function () {
     try {
+        // Storage and state management
         const SUB_KEY = 'chillcrib_subscriptions';
-        const CUSTOMER_KEY = 'chillcrib_customer';
+        let pendingSubscriptions = {};
+        const subs = JSON.parse(localStorage.getItem(SUB_KEY) || '{}');
 
-        // Subscription management functions
-        function loadSubs() { 
-            return JSON.parse(localStorage.getItem(SUB_KEY) || '{}'); 
-        }
-        
-        function saveSubs(obj) { 
-            localStorage.setItem(SUB_KEY, JSON.stringify(obj)); 
+        function saveSubs(obj) {
+            localStorage.setItem(SUB_KEY, JSON.stringify(obj));
         }
 
-        function loadCustomer() {
-            return JSON.parse(localStorage.getItem(CUSTOMER_KEY) || '{}');
-        }
-
-        // Initialize subscription manager
-        let isEditMode = false;
-        let pendingSubscriptions = {}; // Track pending subscriptions before save
-        const subs = loadSubs();
-
-        // Initialize
+        // Initialize system
         function init() {
             bindRadioEvents();
-            bindEditButton();
             bindSaveButton();
             updateDisplay();
             loadActiveSubscriptions();
@@ -33,7 +20,7 @@
             loadExistingSubscriptionsFromDB();
         }
 
-        // Load existing subscriptions from database
+        // Load user's existing subscriptions from database
         async function loadExistingSubscriptionsFromDB() {
             const customerId = localStorage.getItem('customerId');
             if (!customerId) return;
@@ -42,24 +29,22 @@
                 const response = await fetch(`/api/subscriptions/customer/${customerId}`);
                 if (response.ok) {
                     const dbSubscriptions = await response.json();
-                    
-                    // Convert DB subscriptions to local format and update UI
+
+                    // Convert database subscriptions to local format
                     dbSubscriptions.forEach(dbSub => {
                         if (dbSub.active) {
-                            // Parse the plan type to extract service and plan
+                            // Extract service and plan from database plan type
                             const serviceInfo = parseServiceFromPlanType(dbSub.planType);
                             if (serviceInfo) {
                                 subs[serviceInfo.service] = {
-                                    service: serviceInfo.service,
                                     plan: serviceInfo.plan,
                                     price: dbSub.price,
                                     billing: dbSub.billingCycle,
-                                    startDate: dbSub.startDate,
                                     status: 'active',
                                     dbId: dbSub.id
                                 };
-                                
-                                // Update radio button to reflect saved state
+
+                                // Update UI to show active subscription
                                 const serviceCard = document.querySelector(`[data-id="${serviceInfo.service}"]`);
                                 if (serviceCard) {
                                     const radio = serviceCard.querySelector(`input[data-plan="${serviceInfo.plan}"]`);
@@ -71,7 +56,7 @@
                             }
                         }
                     });
-                    
+
                     saveSubs(subs);
                     loadActiveSubscriptions();
                 }
@@ -80,7 +65,7 @@
             }
         }
 
-        // Parse service info from database plan type
+        // Parse database plan type back to service/plan format
         function parseServiceFromPlanType(planType) {
             if (planType.includes('Insurance')) return { service: 'insurance', plan: planType.includes('Yearly') ? 'yearly' : 'monthly' };
             if (planType.includes('Cleaning')) return { service: 'cleaning', plan: planType.includes('Unlimited') ? 'monthly' : 'per-booking' };
@@ -88,7 +73,7 @@
             return null;
         }
 
-        // Bind radio button events
+        // Set up radio button click handlers
         function bindRadioEvents() {
             document.querySelectorAll('.sub-option input[type="radio"]').forEach(radio => {
                 const serviceCard = radio.closest('.sub-card');
@@ -102,47 +87,44 @@
             });
         }
 
-        // Handle radio button changes
+        // Handle when user selects/deselects a subscription plan
         function handleRadioChange(serviceId, plan, price, radio) {
             const serviceCard = radio.closest('.sub-card');
-            
+
             if (radio.checked) {
-                // Add to pending subscriptions
+                // Add to pending subscriptions (not saved yet)
                 pendingSubscriptions[serviceId] = {
-                    service: serviceId,
                     plan: plan,
                     price: parseFloat(price),
                     billing: getPlanBilling(plan),
-                    startDate: new Date().toISOString(),
                     status: 'pending'
                 };
-                
+
                 serviceCard.classList.add('active');
                 showSuccessMessage(`Selected ${getServiceName(serviceId)} - ${getPlanName(plan)}`);
-                
+
             } else {
                 // Remove from pending subscriptions
                 delete pendingSubscriptions[serviceId];
                 serviceCard.classList.remove('active');
             }
-            
+
             updateSaveSection();
         }
 
-        // Bind save button
+        // Set up save and cancel button handlers
         function bindSaveButton() {
             const saveBtn = document.getElementById('saveSubscriptions');
             const cancelBtn = document.getElementById('cancelSave');
-            
+
             if (saveBtn) {
                 saveBtn.addEventListener('click', saveSubscriptionsToDatabase);
             }
-            
+
             if (cancelBtn) {
                 cancelBtn.addEventListener('click', () => {
-                    // Clear pending subscriptions
+                    // Clear pending changes and reset to saved state
                     pendingSubscriptions = {};
-                    // Reset radio buttons to saved state
                     resetToSavedState();
                     updateSaveSection();
                     showSuccessMessage('Selection reset to saved state');
@@ -150,9 +132,9 @@
             }
         }
 
-        // Reset radio buttons to saved state
+        // Reset UI to match currently saved subscriptions
         function resetToSavedState() {
-            // First uncheck all
+            // Uncheck all radio buttons
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.checked = false;
             });
@@ -160,7 +142,7 @@
                 card.classList.remove('active');
             });
 
-            // Then check saved subscriptions
+            // Re-check saved subscriptions
             Object.keys(subs).forEach(serviceId => {
                 const sub = subs[serviceId];
                 const serviceCard = document.querySelector(`[data-id="${serviceId}"]`);
@@ -174,34 +156,34 @@
             });
         }
 
-        // Update save section visibility and content
+        // Show/hide save section and build pricing summary
         function updateSaveSection() {
             const saveSection = document.getElementById('saveSection');
             const summary = document.getElementById('selectedSummary');
             const pendingKeys = Object.keys(pendingSubscriptions);
-            
+
             if (pendingKeys.length === 0) {
                 saveSection.style.display = 'none';
                 return;
             }
-            
+
             saveSection.style.display = 'block';
-            
-            // Build summary
+
+            // Build pricing summary HTML
             let summaryHTML = '';
             let totalMonthly = 0;
-            
+
             pendingKeys.forEach(serviceId => {
                 const sub = pendingSubscriptions[serviceId];
                 const billing = getPlanBilling(sub.plan);
-                
-                // Calculate monthly equivalent for total
+
+                // Calculate monthly equivalent for totals
                 let monthlyPrice = sub.price;
                 if (billing === 'year') monthlyPrice = sub.price / 12;
-                if (billing === 'booking') monthlyPrice = 0; // Can't calculate
-                
+                if (billing === 'booking') monthlyPrice = 0;
+
                 totalMonthly += monthlyPrice;
-                
+
                 summaryHTML += `
                     <div class="summary-item">
                         <div>
@@ -212,8 +194,8 @@
                     </div>
                 `;
             });
-            
-            // Add total if applicable
+
+            // Add estimated total if calculable
             if (totalMonthly > 0) {
                 summaryHTML += `
                     <div class="summary-item" style="border-top: 2px solid rgba(255,255,255,0.3); margin-top: 12px; padding-top: 12px;">
@@ -222,11 +204,11 @@
                     </div>
                 `;
             }
-            
+
             summary.innerHTML = summaryHTML;
         }
 
-        // Save subscriptions to database
+        // Save pending subscriptions to database
         async function saveSubscriptionsToDatabase() {
             const customerId = localStorage.getItem('customerId');
             if (!customerId) {
@@ -234,26 +216,27 @@
                 window.location.href = 'customer-login.html';
                 return;
             }
-            
+
             const pendingKeys = Object.keys(pendingSubscriptions);
             if (pendingKeys.length === 0) {
                 showSuccessMessage('No new subscriptions to save');
                 return;
             }
-            
+
+            // Show loading state
             const saveBtn = document.getElementById('saveSubscriptions');
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<span class="spinner"></span>Saving...';
-            
+
             try {
-                // First, get the customer object
+                // Get customer data for database association
                 const customerResponse = await fetch(`/api/customers/${customerId}`);
                 if (!customerResponse.ok) {
                     throw new Error('Failed to load customer information');
                 }
                 const customer = await customerResponse.json();
-                
-                // Cancel existing subscriptions for services being updated
+
+                // Cancel existing subscriptions being replaced
                 for (const serviceId of pendingKeys) {
                     if (subs[serviceId] && subs[serviceId].dbId) {
                         try {
@@ -265,19 +248,19 @@
                         }
                     }
                 }
-                
+
                 // Prepare subscription data for API
                 const subscriptionsToSave = pendingKeys.map(serviceId => {
                     const sub = pendingSubscriptions[serviceId];
-                    
-                    // Map service to subscription type
+
+                    // Map to backend subscription types
                     let subscriptionType = 'BASIC';
                     if (serviceId === 'equipment' && sub.plan === 'premium') {
                         subscriptionType = 'PREMIUM';
                     } else if (serviceId === 'insurance') {
                         subscriptionType = 'PREMIUM';
                     }
-                    
+
                     return {
                         customer: customer,
                         type: subscriptionType,
@@ -288,8 +271,8 @@
                         active: true
                     };
                 });
-                
-                // Save each subscription
+
+                // Save each subscription to database
                 let savedCount = 0;
                 for (const subscription of subscriptionsToSave) {
                     try {
@@ -300,12 +283,12 @@
                             },
                             body: JSON.stringify(subscription)
                         });
-                        
+
                         if (response.ok) {
                             const savedSub = await response.json();
                             const serviceId = parseServiceFromPlanType(savedSub.planType).service;
-                            
-                            // Update local storage with DB info
+
+                            // Update local data with database info
                             subs[serviceId] = {
                                 ...pendingSubscriptions[serviceId],
                                 status: 'active',
@@ -320,66 +303,49 @@
                         console.error('Error saving subscription:', error);
                     }
                 }
-                
+
                 if (savedCount > 0) {
-                    // Save to local storage
+                    // Update local storage and UI
                     saveSubs(subs);
-                    
-                    // Clear pending subscriptions
+
+                    // Clear pending changes
                     pendingSubscriptions = {};
                     updateSaveSection();
                     loadActiveSubscriptions();
-                    
-                    // Show success message
+
                     showSuccessMessage(`${savedCount} subscription(s) saved successfully! Your subscriptions are now active.`);
-                    
+
                 } else {
                     throw new Error('Failed to save subscriptions');
                 }
-                
+
             } catch (error) {
                 console.error('Error saving subscriptions:', error);
                 showErrorMessage('Error saving subscriptions. Please try again.');
             } finally {
+                // Reset save button state
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = 'Save & Continue';
             }
         }
 
-        // Bind edit button
-        function bindEditButton() {
-            const editBtn = document.getElementById('editMode');
-            if (editBtn) {
-                editBtn.addEventListener('click', () => {
-                    isEditMode = !isEditMode;
-                    editBtn.textContent = isEditMode ? 'Done' : 'Edit';
-                    
-                    if (isEditMode) {
-                        document.body.classList.add('edit-mode');
-                    } else {
-                        document.body.classList.remove('edit-mode');
-                    }
-                });
-            }
-        }
-
-        // Load and display active subscriptions
+        // Display active subscriptions with remove buttons
         function loadActiveSubscriptions() {
             const activeSection = document.getElementById('activeSubscriptions');
             const activeList = document.getElementById('activeSubsList');
-            
+
             if (!activeList) return;
-            
+
             const activeServices = Object.keys(subs).filter(serviceId => subs[serviceId].status === 'active');
-            
+
             if (activeServices.length === 0) {
                 activeSection.style.display = 'none';
                 return;
             }
-            
+
             activeSection.style.display = 'block';
             activeList.innerHTML = '';
-            
+
             activeServices.forEach(serviceId => {
                 const sub = subs[serviceId];
                 const subItem = createActiveSubItem(serviceId, sub);
@@ -387,13 +353,13 @@
             });
         }
 
-        // Create active subscription item
+        // Create HTML for active subscription item
         function createActiveSubItem(serviceId, subscription) {
             const div = document.createElement('div');
             div.className = 'active-sub-item';
-            
+
             const billing = getPlanBilling(subscription.plan);
-            
+
             div.innerHTML = `
                 <div class="sub-info">
                     <h4>${getServiceName(serviceId)}</h4>
@@ -405,50 +371,32 @@
                     <button class="btn-remove" data-service="${serviceId}">✕ Remove</button>
                 </div>
             `;
-            
-            // Bind remove button
-            const removeBtn = div.querySelector('.btn-remove');
-            removeBtn.addEventListener('click', () => cancelSubscription(serviceId));
-            
+
+            // Bind remove button click
+            div.querySelector('.btn-remove').addEventListener('click', () => cancelSubscription(serviceId));
+
             return div;
         }
 
-        // Show change plan options (simple)
-        function showChangePlan(serviceId) {
-            const serviceCard = document.querySelector(`[data-id="${serviceId}"]`);
-            if (serviceCard) {
-                // Scroll to the service card
-                serviceCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // Highlight the card briefly
-                serviceCard.style.border = '3px solid #f59e0b';
-                setTimeout(() => {
-                    serviceCard.style.border = '';
-                }, 2000);
-                
-                showSuccessMessage('Select a different plan below to change your subscription');
-            }
-        }
-
-        // Cancel subscription
+        // Remove subscription from database and UI
         async function cancelSubscription(serviceId) {
             try {
-                // Cancel in database if has DB ID
+                // Cancel subscription in database
                 if (subs[serviceId] && subs[serviceId].dbId) {
                     const response = await fetch(`/api/subscriptions/${subs[serviceId].dbId}/cancel`, {
                         method: 'POST'
                     });
-                    
+
                     if (!response.ok) {
                         throw new Error('Failed to cancel subscription in database');
                     }
                 }
-                
-                // Remove from local storage
+
+                // Remove from local storage and update UI
                 delete subs[serviceId];
                 saveSubs(subs);
-                
-                // Update UI
+
+                // Uncheck radio buttons for this service
                 const serviceCard = document.querySelector(`[data-id="${serviceId}"]`);
                 if (serviceCard) {
                     serviceCard.querySelectorAll('input[type="radio"]').forEach(radio => {
@@ -456,9 +404,9 @@
                     });
                     serviceCard.classList.remove('active');
                 }
-                
+
                 loadActiveSubscriptions();
-                
+
             } catch (error) {
                 console.error('Error cancelling subscription:', error);
             }
@@ -468,7 +416,7 @@
         function getServiceName(serviceId) {
             const names = {
                 'insurance': 'Insurance & Protection',
-                'cleaning': 'Cleaning Service', 
+                'cleaning': 'Cleaning Service',
                 'equipment': 'Rental Equipment'
             };
             return names[serviceId] || serviceId;
@@ -497,7 +445,6 @@
         }
 
         function updateDisplay() {
-            // Update card states based on subscriptions
             document.querySelectorAll('.sub-card').forEach(card => {
                 const serviceId = card.getAttribute('data-id');
                 if (subs[serviceId] && subs[serviceId].status === 'active') {
@@ -508,49 +455,32 @@
             });
         }
 
-        function showSuccessMessage(message) {
-            // Remove existing message
+        function showMessage(message, isError = false) {
             const existing = document.querySelector('.success-message, .error-message');
             if (existing) existing.remove();
 
-            // Create new message
             const messageDiv = document.createElement('div');
-            messageDiv.className = 'success-message';
+            messageDiv.className = isError ? 'error-message' : 'success-message';
             messageDiv.textContent = message;
 
-            // Insert at top of container
             const container = document.querySelector('.container');
             const firstSection = container.querySelector('section');
             container.insertBefore(messageDiv, firstSection);
 
-            // Remove after 4 seconds
             setTimeout(() => {
                 if (messageDiv.parentNode) messageDiv.remove();
             }, 4000);
+        }
+
+        function showSuccessMessage(message) {
+            showMessage(message, false);
         }
 
         function showErrorMessage(message) {
-            // Remove existing message
-            const existing = document.querySelector('.success-message, .error-message');
-            if (existing) existing.remove();
-
-            // Create new message
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'error-message';
-            messageDiv.textContent = message;
-
-            // Insert at top of container
-            const container = document.querySelector('.container');
-            const firstSection = container.querySelector('section');
-            container.insertBefore(messageDiv, firstSection);
-
-            // Remove after 4 seconds
-            setTimeout(() => {
-                if (messageDiv.parentNode) messageDiv.remove();
-            }, 4000);
+            showMessage(message, true);
         }
 
-        // Export for other pages (dashboard, homepage)
+        // Export functions for other pages
         window.ChillCribSubscriptions = {
             getSubscriptions: () => subs,
             getServiceName,

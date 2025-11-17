@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Subscriptions — ChillCrib</title>
-   <link rel="stylesheet" href="css/customer-dashboard.css">
+    <link rel="stylesheet" href="css/customer-dashboard.css">
     <link rel="stylesheet" href="css/customer-subscription.css">
 </head>
 
@@ -18,7 +18,7 @@
         <nav class="topnav">
             <a href="customer-dashboard.html">Dashboard</a>
             <a href="customer-properties.html">View Cribs</a>
-            <a href="customer-subscription.html"class="active">Subscriptions</a>
+            <a href="customer-subscription.html" class="active">Subscriptions</a>
             <a href="customer-bookings.html">My Bookings</a>
             <a href="customer-profile.html">Profile</a>
             <a href="index.html">Log Out</a>
@@ -32,17 +32,24 @@
             <p>Choose subscriptions to enhance your ChillCrib experience.</p>
         </section>
 
+        <!-- Main Subscription Selection Cards -->
+        <!-- Each card represents a service with radio button options for different plans -->
         <section class="cards">
             <div class="card">
                 <h3>Available subscriptions</h3>
                 <div class="subs-grid" id="subsGrid">
+                    <!-- Insurance Subscription Card -->
+                    <!-- Offers monthly and yearly plans with savings indicator -->
                     <article class="sub-card" data-id="insurance">
                         <h4>Insurance & Protection</h4>
                         <h5>Recommended!</h5>
                         <p>Protect your trip with insurance coverage.</p>
-                        
+
+                        <!-- Subscription Plan Options with Radio Buttons -->
+                        <!-- Inline styles ensure proper radio button alignment -->
                         <div class="subscription-options">
-                            <label class="sub-option" style="display: flex !important; align-items: flex-start !important;">
+                            <label class="sub-option"
+                                style="display: flex !important; align-items: flex-start !important;">
                                 <input type="radio" name="insurance-plan" data-plan="monthly" data-price="9.99">
                                 <span class="radiomark" style="margin-top: 4px !important;"></span>
                                 <div class="option-info">
@@ -50,8 +57,9 @@
                                     <span class="sub-price">$9.99/month</span>
                                 </div>
                             </label>
-                            
-                            <label class="sub-option" style="display: flex !important; align-items: flex-start !important;">
+
+                            <label class="sub-option"
+                                style="display: flex !important; align-items: flex-start !important;">
                                 <input type="radio" name="insurance-plan" data-plan="yearly" data-price="39.99">
                                 <span class="radiomark" style="margin-top: 4px !important;"></span>
                                 <div class="option-info">
@@ -65,12 +73,15 @@
                         </div>
                     </article>
 
+                    <!-- Cleaning Service Subscription Card -->
+                    <!-- Offers per-booking and monthly unlimited plans -->
                     <article class="sub-card" data-id="cleaning">
                         <h4>Cleaning Service</h4>
                         <p>Regular professional cleaning between stays.</p>
-                        
+
                         <div class="subscription-options">
-                            <label class="sub-option" style="display: flex !important; align-items: flex-start !important;">
+                            <label class="sub-option"
+                                style="display: flex !important; align-items: flex-start !important;">
                                 <input type="radio" name="cleaning-plan" data-plan="per-booking" data-price="4.99">
                                 <span class="radiomark" style="margin-top: 4px !important;"></span>
                                 <div class="option-info">
@@ -78,8 +89,9 @@
                                     <span class="sub-price">$4.99/booking</span>
                                 </div>
                             </label>
-                            
-                            <label class="sub-option" style="display: flex !important; align-items: flex-start !important;">
+
+                            <label class="sub-option"
+                                style="display: flex !important; align-items: flex-start !important;">
                                 <input type="radio" name="cleaning-plan" data-plan="monthly" data-price="19.99">
                                 <span class="radiomark" style="margin-top: 4px !important;"></span>
                                 <div class="option-info">
@@ -90,12 +102,15 @@
                         </div>
                     </article>
 
+                    <!-- Equipment Rental Subscription Card -->
+                    <!-- Offers basic access and premium plans -->
                     <article class="sub-card" data-id="equipment">
                         <h4>Rental Equipment</h4>
                         <p>Rent chairs, clothing, and other gear.</p>
-                        
+
                         <div class="subscription-options">
-                            <label class="sub-option" style="display: flex !important; align-items: flex-start !important;">
+                            <label class="sub-option"
+                                style="display: flex !important; align-items: flex-start !important;">
                                 <input type="radio" name="equipment-plan" data-plan="basic" data-price="7.99">
                                 <span class="radiomark" style="margin-top: 4px !important;"></span>
                                 <div class="option-info">
@@ -103,8 +118,9 @@
                                     <span class="sub-price">$7.99/booking</span>
                                 </div>
                             </label>
-                            
-                            <label class="sub-option" style="display: flex !important; align-items: flex-start !important;">
+
+                            <label class="sub-option"
+                                style="display: flex !important; align-items: flex-start !important;">
                                 <input type="radio" name="equipment-plan" data-plan="premium" data-price="24.99">
                                 <span class="radiomark" style="margin-top: 4px !important;"></span>
                                 <div class="option-info">
@@ -119,26 +135,32 @@
         </section>
 
         <!-- Save Subscriptions Section -->
+        <!-- Appears when user makes selections, shows summary and save button -->
         <section class="cards" id="saveSection" style="display: none;">
             <div class="card save-card">
                 <div class="save-content">
                     <h3>Save Your Subscriptions</h3>
                     <p>Ready to activate your selected services?</p>
+                    <!-- Dynamic summary populated by JavaScript -->
                     <div class="selected-summary" id="selectedSummary">
                         <!-- Selected subscriptions will be shown here -->
                     </div>
                     <div class="save-actions">
+                        <!-- Save button - saves to database and updates customer account -->
                         <button class="btn primary save-btn" id="saveSubscriptions">Save & Continue</button>
+                        <!-- Cancel button - resets selections to saved state -->
                         <button class="btn secondary" id="cancelSave">Cancel</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Active Subscriptions Section -->
+        <!-- Active Subscriptions Display Section -->
+        <!-- Shows currently active subscriptions with remove functionality -->
         <section class="cards" id="activeSubscriptions" style="display: none;">
             <div class="card">
                 <h3>Your Active Subscriptions</h3>
+                <!-- Dynamically populated list of active subscriptions -->
                 <div id="activeSubsList">
                     <!-- Active subscriptions will be populated here -->
                 </div>
