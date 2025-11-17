@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - ChillCrib</title>
+    <link rel="stylesheet" href="css/customer-dashboard.css">
+    <link rel="stylesheet" href="css/customer-bookings.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <img src="images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+        </div>
+        <nav class="topnav">
+            <a href="customer-dashboard.html">Dashboard</a>
+            <a href="customer-properties.html">View Cribs</a>
+            <a href="customer-subscription.html">Subscriptions</a>
+            <a href="customer-bookings.html" class="active">My Bookings</a>
+            <a href="customer-profile.html">Profile</a>
+            <a href="index.html">Log Out</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="welcome-section">
+            <h2>My Bookings</h2>
+            <p>Manage your reservations</p>
+        </section>
+
+        <section class="bookings-section">
+            <h3>Upcoming Bookings</h3>
+            <div id="upcomingBookings">Loading...</div>
+
+            <h3>Past Bookings</h3>
+            <div id="pastBookings">Loading...</div>
+        </section>
+    </main>
+
+    <script src="js/customer-bookings.js"></script>
+</body>
+
+</html>

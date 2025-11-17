@@ -31,6 +31,10 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private SubscriptionType type;
 
+    private String planType; // e.g., "Insurance & Protection - Monthly"
+    private Double price;
+    private String billingCycle; // "month", "year", "booking"
+
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private boolean isActive = true;
@@ -85,6 +89,30 @@ public class Subscription {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getPlanType() {
+        return planType;
+    }
+
+    public void setPlanType(String planType) {
+        this.planType = planType;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getBillingCycle() {
+        return billingCycle;
+    }
+
+    public void setBillingCycle(String billingCycle) {
+        this.billingCycle = billingCycle;
     }
 }
 

@@ -1,4 +1,4 @@
-// subscription toggles
+// Basic subscription toggles for general use
 (function () {
     try {
         const SUB_KEY = 'chillcrib_subscriptions';
@@ -8,14 +8,22 @@
         const subs = loadSubs();
         const cards = document.querySelectorAll('.sub-card');
         if (!cards.length) return;
+        
         cards.forEach(card => {
             const id = card.getAttribute('data-id');
             const btn = card.querySelector('button[data-action]');
             if (!btn) return;
+            
             function update() {
-                if (subs[id]) { card.classList.add('active'); btn.textContent = 'Subscribed'; }
-                else { card.classList.remove('active'); btn.textContent = (id === 'insurance' ? 'Subscribe' : 'Add'); }
+                if (subs[id]) { 
+                    card.classList.add('active'); 
+                    btn.textContent = 'Subscribed'; 
+                } else { 
+                    card.classList.remove('active'); 
+                    btn.textContent = (id === 'insurance' ? 'Subscribe' : 'Add'); 
+                }
             }
+            
             update();
             btn.addEventListener('click', () => {
                 subs[id] = !subs[id];
@@ -23,5 +31,7 @@
                 update();
             });
         });
-    } catch (e) { console.error('subscription script failed', e); }
+    } catch (e) { 
+        console.error('subscription script failed', e); 
+    }
 })();

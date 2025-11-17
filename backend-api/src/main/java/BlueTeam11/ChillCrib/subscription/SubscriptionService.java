@@ -24,6 +24,9 @@ public class SubscriptionService {
                 .orElseThrow(() -> new EntityNotFoundException("Subscription not found"));
 
         subscription.setType(subscriptionDetails.getType());
+        subscription.setPlanType(subscriptionDetails.getPlanType());
+        subscription.setPrice(subscriptionDetails.getPrice());
+        subscription.setBillingCycle(subscriptionDetails.getBillingCycle());
         subscription.setActive(subscriptionDetails.isActive());
         subscription.setStartDate(subscriptionDetails.getStartDate());
         subscription.setEndDate(subscriptionDetails.getEndDate());
