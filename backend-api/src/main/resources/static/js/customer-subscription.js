@@ -402,17 +402,13 @@
                     </div>
                 </div>
                 <div class="sub-actions">
-                    <button class="btn edit" data-service="${serviceId}">Change</button>
-                    <button class="btn cancel" data-service="${serviceId}">Cancel</button>
+                    <button class="btn-remove" data-service="${serviceId}">✕ Remove</button>
                 </div>
             `;
             
-            // Bind action buttons
-            const changeBtn = div.querySelector('.btn.edit');
-            const cancelBtn = div.querySelector('.btn.cancel');
-            
-            changeBtn.addEventListener('click', () => showChangePlan(serviceId));
-            cancelBtn.addEventListener('click', () => cancelSubscription(serviceId));
+            // Bind remove button
+            const removeBtn = div.querySelector('.btn-remove');
+            removeBtn.addEventListener('click', () => cancelSubscription(serviceId));
             
             return div;
         }
@@ -436,10 +432,6 @@
 
         // Cancel subscription
         async function cancelSubscription(serviceId) {
-            if (!confirm(`Are you sure you want to cancel your ${getServiceName(serviceId)} subscription?`)) {
-                return;
-            }
-
             try {
                 // Cancel in database if has DB ID
                 if (subs[serviceId] && subs[serviceId].dbId) {
@@ -466,11 +458,9 @@
                 }
                 
                 loadActiveSubscriptions();
-                showSuccessMessage(`Cancelled ${getServiceName(serviceId)} subscription`);
                 
             } catch (error) {
                 console.error('Error cancelling subscription:', error);
-                showErrorMessage('Error cancelling subscription. Please try again.');
             }
         }
 
