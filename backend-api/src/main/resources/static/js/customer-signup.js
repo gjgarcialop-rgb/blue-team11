@@ -22,45 +22,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Validate required fields
         if (!name) {
-            console.log('Name required');
             document.getElementById('name').focus();
             return;
         }
 
         if (!email) {
-            console.log('Email required');
             document.getElementById('email').focus();
             return;
         }
 
         if (!password) {
-            console.log('Password required');
             document.getElementById('password').focus();
             return;
         }
 
         // Check password length
         if (password.length < 6) {
-            console.log('Password must be at least 6 characters long');
             document.getElementById('password').focus();
             return;
         }
 
         // Check if passwords match
         if (password !== confirmPassword) {
-            console.log('Passwords do not match');
             document.getElementById('confirmPassword').focus();
             return;
         }
 
         if (!phoneNumber) {
-            console.log('Phone number required');
             document.getElementById('phoneNumber').focus();
             return;
         }
 
         if (!address) {
-            console.log('Address required');
             document.getElementById('address').focus();
             return;
         }
@@ -68,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Validate email format
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(email)) {
-            console.log('Invalid email format');
             document.getElementById('email').focus();
             return;
         }
@@ -83,8 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
             identifier: email.toLowerCase()
         };
 
-        console.log('Submitting customer data:', customerData);
-
         try {
             // Send signup request to backend
             const response = await fetch('/api/customers', {
@@ -95,13 +85,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify(customerData)
             });
 
-            console.log('Response status:', response.status);
-
             if (response.ok) {
                 // Signup successful
                 const customer = await response.json();
-                console.log('Account created:', customer);
-
+                
                 // Store customer info in browser for session management
                 localStorage.setItem('customerId', customer.id);
                 localStorage.setItem('customerName', customer.name);
@@ -110,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Redirect to dashboard after successful signup
                 window.location.href = 'customer-dashboard.html';
-
             } else {
                 // Handle signup errors
                 let errorMessage = 'Failed to create account. Please try again.';
@@ -118,16 +104,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     // Try to get specific error message from response
                     const errorData = await response.json();
-                    if (errorData.error) {
-                        errorMessage = errorData.error;
-                    } else if (errorData.message) {
-                        errorMessage = errorData.message;
-                    }
+                    errorMessage = errorData.error || errorData.message || errorMessage;
                 } catch (parseError) {
                     // If JSON parsing fails, check response text
                     const errorText = await response.text();
-                    console.error('Error response:', errorText);
-
+                    
                     // Handle common error cases
                     if (response.status === 409 || errorText.includes('already registered') || errorText.includes('duplicate')) {
                         errorMessage = 'An account with this email already exists. Please use a different email or try logging in.';
@@ -137,13 +118,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 console.error('Signup failed:', errorMessage);
-                // Error is logged to console instead of showing popup
             }
-
         } catch (error) {
             // Handle network or other errors
             console.error('Network error:', error);
-            // Error is logged to console instead of showing popup
         }
     });
 });
