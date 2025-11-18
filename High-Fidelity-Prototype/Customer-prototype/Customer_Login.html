@@ -14,7 +14,7 @@
         <h2>Welcome back to ChillCrib!</h2>
         <p class="sub">Log back in too chill!</p>
 
-        <form action="DashBoard.html" method="post" aria-label="Login form">
+        <form id="loginForm" aria-label="Login form">
             <label for="identifier">Email or Username</label>
             <input id="identifier" name="identifier" type="text" autocomplete="username" required>
 
@@ -26,7 +26,26 @@
 
         <p class="signup-link">Don't have an account? <a href="Customer_SignUp.html">Sign Up</a></p>
     </div>
-</div>
-    <script src="../../Scripts/Custo.Signup.js" defer></script>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            // Get form values
+            const identifier = document.getElementById('identifier').value;
+            const password = document.getElementById('password').value;
+            
+            // Basic validation
+            if (!identifier || !password) {
+                alert('Please fill in all fields!');
+                return;
+            }
+            
+            // Here you could add authentication logic or send to backend
+            // For now, we'll just redirect to dashboard
+            alert('Login successful! Welcome back to ChillCrib!');
+            window.location.href = 'DashBoard.html';
+        });
+    </script>
 </body>
 </html>

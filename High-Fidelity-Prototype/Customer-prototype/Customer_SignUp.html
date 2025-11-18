@@ -11,7 +11,7 @@
     
     <div class="signup-container">
         <h2>Create an Account for Chill Crib!</h2>
-        <form action="DashBoard.html" method="post">
+        <form id="signupForm">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
@@ -31,6 +31,29 @@
                 <a href="Customer_Login.html">Log In</a>
             </p>
     </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            // Get form values
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // Basic validation
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Here you could add more validation or send data to backend
+            // For now, we'll just redirect to dashboard
+            alert('Account created successfully! Welcome to ChillCrib!');
+            window.location.href = 'DashBoard.html';
+        });
+    </script>
         
 </body>
 </html>

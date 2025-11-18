@@ -1,0 +1,370 @@
+/* Subscription page styles */
+:root {
+    --sub-bg: #ffffff;
+    --accent: #2b6bb0;
+    --success: #10b981;
+    --warning: #f59e0b;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #0b1220;
+}
+
+.subs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 12px
+}
+
+.sub-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(16, 24, 40, 0.06)
+}
+
+.sub-card h4 {
+    margin: 0 0 6px
+}
+
+.sub-card h5 {
+    color: var(--warning);
+    font-size: 0.9em;
+    margin: 0 0 8px;
+}
+
+.sub-card p {
+    margin: 0 0 15px;
+    color: #6b7280
+}
+
+.sub-price {
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.98);
+}
+
+/* Subscription Options with Checkboxes */
+.subscription-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.sub-option {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.sub-option:hover {
+    border-color: var(--accent);
+    background: #f8fafc;
+}
+
+.sub-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.radiomark {
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    margin-right: 12px;
+    margin-top: 2px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.sub-option input:checked ~ .radiomark {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.radiomark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.sub-option input:checked ~ .radiomark:after {
+    display: block;
+}
+
+.sub-option .radiomark:after {
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+.option-info {
+    flex: 1;
+}
+
+.plan-name {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #374151;
+}
+
+.sub-option .sub-price {
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0;
+}
+
+.price-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.savings {
+    font-size: 0.85em;
+    color: var(--success);
+    font-weight: 600;
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(43, 107, 176, 0.1);
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.4rem;
+}
+
+/* Button Styles */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.btn.primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn.secondary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn.secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* Active Subscriptions */
+.active-sub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid var(--success);
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.sub-info h4 {
+    margin: 0 0 4px;
+    color: #111827;
+}
+
+.sub-details {
+    color: #6b7280;
+    font-size: 0.9em;
+}
+
+.sub-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-remove {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.btn-remove:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Edit Mode */
+.edit-mode .sub-option {
+    border-color: #fbbf24;
+    background: #fffbeb;
+}
+
+.edit-mode .radiomark {
+    border-color: var(--warning);
+}
+
+/* Success and Error Messages */
+.success-message {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid #a7f3d0;
+}
+
+.error-message {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid #fecaca;
+}
+
+/* Save Section */
+.save-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+}
+
+.save-content h3 {
+    margin-top: 0;
+    color: white;
+}
+
+.save-content p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 20px;
+}
+
+.selected-summary {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    backdrop-filter: blur(10px);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-service {
+    font-weight: 600;
+}
+
+.summary-plan {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9em;
+}
+
+.summary-price {
+    font-weight: 700;
+    color: #fbbf24;
+}
+
+.save-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.save-btn {
+    background: #10b981;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.save-btn:hover {
+    background: #059669;
+}
+
+.save-btn:disabled {
+    background: #6b7280;
+    cursor: not-allowed;
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff40;
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
