@@ -1,5 +1,3 @@
-// Customer Profile Management
-
 // Initialize page when DOM loads
 document.addEventListener('DOMContentLoaded', async function () {
     const customerId = localStorage.getItem('customerId');

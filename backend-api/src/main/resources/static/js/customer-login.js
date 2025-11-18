@@ -1,5 +1,3 @@
-// Customer Login JavaScript - Backend Authentication with Password Verification
-
 // Wait for form to be available and add login functionality
 document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault(); // Prevent default form submission

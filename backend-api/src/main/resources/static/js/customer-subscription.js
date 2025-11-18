@@ -1,5 +1,3 @@
-
-// Subscription Management System
 (function () {
     // Storage for pending and saved subscriptions
     let pending = {};
