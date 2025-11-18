@@ -1,4 +1,3 @@
-// ChillCrib Customer Signup - Clean Backend Integration
 document.addEventListener('DOMContentLoaded', function () {
     // Find the signup form on the page
     const form = document.getElementById('signupForm');
