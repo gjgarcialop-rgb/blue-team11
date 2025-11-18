@@ -1,33 +1,35 @@
-// Customer Profile JavaScript
+// Customer Profile Management
 
+// Initialize page when DOM loads
 document.addEventListener('DOMContentLoaded', async function () {
     const customerId = localStorage.getItem('customerId');
 
+    // Redirect if not logged in
     if (!customerId) {
         window.location.href = 'customer-login.html';
         return;
     }
 
     try {
-        await loadCustomerProfile(customerId);
-        await loadCustomerStatistics(customerId);
+        await loadProfile(customerId);
+        await loadStats(customerId);
     } catch (error) {
-        console.error('Failed to load profile:', error);
+        console.error('Profile load failed:', error);
     }
 });
 
-// Load customer profile from backend
-async function loadCustomerProfile(customerId) {
+// Load customer profile from database
+async function loadProfile(customerId) {
     try {
         const response = await fetch(`/api/customers/${customerId}`);
         if (response.ok) {
             const customer = await response.json();
 
             if (!customer.id || !customer.email) {
-                throw new Error('Incomplete customer data from backend');
+                throw new Error('Incomplete customer data');
             }
 
-            populateForm(customer);
+            fillForm(customer);
             localStorage.setItem('customerName', customer.name);
             localStorage.setItem('customerEmail', customer.email);
 
@@ -39,13 +41,13 @@ async function loadCustomerProfile(customerId) {
             throw new Error(`Server error: ${response.status}`);
         }
     } catch (error) {
-        console.error('Error loading customer profile:', error);
-        showErrorMessage('Error loading profile data. Please try refreshing the page.');
+        console.error('Profile load error:', error);
+        showError('Error loading profile data. Please try refreshing the page.');
     }
 }
 
-// Fill form with customer data
-function populateForm(customer) {
+// Fill form fields with customer data
+function fillForm(customer) {
     document.getElementById('name').value = customer.name || '';
     document.getElementById('email').value = customer.email || '';
     document.getElementById('phoneNumber').value = customer.phoneNumber || '';
@@ -56,43 +58,32 @@ function populateForm(customer) {
     }
 }
 
-// Load customer statistics
-async function loadCustomerStatistics(customerId) {
+// Load customer statistics (bookings, reviews, subscriptions)
+async function loadStats(customerId) {
     try {
         const bookingsResponse = await fetch(`/api/bookings/customer/${customerId}`);
-        let bookings = [];
-        if (bookingsResponse.ok) {
-            bookings = await bookingsResponse.json();
-        }
-
         const reviewsResponse = await fetch(`/api/reviews/customer/${customerId}`);
-        let reviews = [];
-        if (reviewsResponse.ok) {
-            reviews = await reviewsResponse.json();
-        }
-
         const subscriptionsResponse = await fetch(`/api/subscriptions/customer/${customerId}`);
-        let subscriptions = [];
-        if (subscriptionsResponse.ok) {
-            subscriptions = await subscriptionsResponse.json();
-        }
 
-        displayStatistics(bookings, reviews, subscriptions);
+        const bookings = bookingsResponse.ok ? await bookingsResponse.json() : [];
+        const reviews = reviewsResponse.ok ? await reviewsResponse.json() : [];
+        const subscriptions = subscriptionsResponse.ok ? await subscriptionsResponse.json() : [];
+
+        showStats(bookings, reviews, subscriptions);
 
     } catch (error) {
-        console.error('Error loading customer statistics:', error);
+        console.error('Stats load error:', error);
         document.getElementById('customerStats').innerHTML = 'Error loading statistics';
     }
 }
 
-// Display customer statistics
-function displayStatistics(bookings, reviews, subscriptions) {
+// Display statistics in grid format
+function showStats(bookings, reviews, subscriptions) {
     const totalBookings = bookings.length;
     const upcomingBookings = bookings.filter(booking => new Date(booking.checkIn) > new Date()).length;
     const totalReviews = reviews.length;
     const activeSubscriptions = subscriptions.filter(sub => new Date(sub.startDate) <= new Date()).length;
 
-    // Create and display statistics HTML
     document.getElementById('customerStats').innerHTML = `
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
             <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
@@ -120,7 +111,6 @@ document.getElementById('profileForm').addEventListener('submit', async function
     e.preventDefault();
 
     const customerId = localStorage.getItem('customerId');
-
     const formData = {
         name: document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim().toLowerCase(),
@@ -129,18 +119,20 @@ document.getElementById('profileForm').addEventListener('submit', async function
         identifier: document.getElementById('email').value.trim().toLowerCase()
     };
 
+    // Validate form fields
     if (!formData.name || !formData.email || !formData.phoneNumber || !formData.address) {
-        showErrorMessage('Please fill in all fields');
+        showError('Please fill in all fields');
         return;
     }
 
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-        showErrorMessage('Invalid email format');
+        showError('Invalid email format');
         return;
     }
 
-    // Check if email is being changed
+    // Check if email changed and is already in use
     const currentEmail = localStorage.getItem('customerEmail');
     if (formData.email !== currentEmail) {
         try {
@@ -148,22 +140,21 @@ document.getElementById('profileForm').addEventListener('submit', async function
             if (checkResponse.ok) {
                 const existingCustomer = await checkResponse.json();
                 if (existingCustomer && existingCustomer.id != customerId) {
-                    showErrorMessage('This email is already in use by another account');
+                    showError('This email is already in use by another account');
                     return;
                 }
             }
         } catch (error) {
-            console.error('Error checking email:', error);
+            console.error('Email check error:', error);
             return;
         }
     }
 
+    // Update profile in database
     try {
         const response = await fetch(`/api/customers/${customerId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...formData, id: parseInt(customerId) })
         });
 
@@ -173,22 +164,22 @@ document.getElementById('profileForm').addEventListener('submit', async function
             localStorage.setItem('customerName', updatedCustomer.name);
             localStorage.setItem('customerEmail', updatedCustomer.email);
 
-            showSuccessMessage('Profile updated successfully!');
-            await loadCustomerStatistics(customerId);
+            showSuccess('Profile updated successfully!');
+            await loadStats(customerId);
 
         } else {
             const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-            console.error('Error updating profile:', errorData);
-            showErrorMessage('Error updating profile. Please try again.');
+            console.error('Update error:', errorData);
+            showError('Error updating profile. Please try again.');
         }
     } catch (error) {
-        console.error('Error updating profile:', error);
-        showErrorMessage('Network error. Please check your connection.');
+        console.error('Update error:', error);
+        showError('Network error. Please check your connection.');
     }
 });
 
-// Show success message
-function showSuccessMessage(message) {
+// Show success message popup
+function showSuccess(message) {
     const messageDiv = document.createElement('div');
     messageDiv.style.cssText = `
         background: #d4edda; border: 1px solid #c3e6cb; color: #155724; 
@@ -206,8 +197,8 @@ function showSuccessMessage(message) {
     }, 3000);
 }
 
-// Show error message
-function showErrorMessage(message) {
+// Show error message popup
+function showError(message) {
     const messageDiv = document.createElement('div');
     messageDiv.style.cssText = `
         background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; 
@@ -225,7 +216,7 @@ function showErrorMessage(message) {
     }, 5000);
 }
 
-// Delete customer account
+// Delete customer account with confirmation
 async function deleteAccount() {
     if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
         return;
@@ -238,9 +229,7 @@ async function deleteAccount() {
     const customerId = localStorage.getItem('customerId');
 
     try {
-        const response = await fetch(`/api/customers/${customerId}`, {
-            method: 'DELETE'
-        });
+        const response = await fetch(`/api/customers/${customerId}`, { method: 'DELETE' });
 
         if (response.ok) {
             localStorage.clear();
@@ -250,7 +239,7 @@ async function deleteAccount() {
             alert('Error deleting account. Please contact support.');
         }
     } catch (error) {
-        console.error('Error deleting account:', error);
+        console.error('Delete account error:', error);
         alert('Network error. Please try again.');
     }
 }

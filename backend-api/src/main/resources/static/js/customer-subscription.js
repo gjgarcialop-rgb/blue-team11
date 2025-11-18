@@ -1,12 +1,16 @@
 
+// Subscription Management System
 (function () {
+    // Storage for pending and saved subscriptions
     let pending = {};
     let subs = JSON.parse(localStorage.getItem('chillcrib_subscriptions') || '{}');
 
+    // Save subscriptions to localStorage
     function save() {
         localStorage.setItem('chillcrib_subscriptions', JSON.stringify(subs));
     }
 
+    // Initialize subscription system
     function init() {
         setupRadios();
         setupButtons();
@@ -15,6 +19,7 @@
         updateSummary();
     }
 
+    // Load existing subscriptions from database
     async function loadFromDB() {
         const customerId = localStorage.getItem('customerId');
         if (!customerId) return;
@@ -55,6 +60,7 @@
         }
     }
 
+    // Map database plan types to service info
     function getServiceFromPlan(planType) {
         if (planType.includes('Insurance')) return { service: 'insurance', plan: planType.includes('Yearly') ? 'yearly' : 'monthly' };
         if (planType.includes('Cleaning')) return { service: 'cleaning', plan: planType.includes('Unlimited') ? 'monthly' : 'per-booking' };
@@ -62,6 +68,7 @@
         return null;
     }
 
+    // Setup radio button event handlers
     function setupRadios() {
         document.querySelectorAll('.sub-option input[type="radio"]').forEach(radio => {
             radio.addEventListener('change', () => {
@@ -85,6 +92,7 @@
         });
     }
 
+    // Setup action buttons
     function setupButtons() {
         const saveBtn = document.getElementById('saveSubscriptions');
         const cancelBtn = document.getElementById('cancelSave');
@@ -99,6 +107,7 @@
         }
     }
 
+    // Reset radio buttons to saved state
     function resetRadios() {
         document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
         document.querySelectorAll('.sub-card').forEach(card => card.classList.remove('active'));
@@ -116,6 +125,7 @@
         });
     }
 
+    // Update subscription summary display
     function updateSummary() {
         const saveSection = document.getElementById('saveSection');
         const summary = document.getElementById('selectedSummary');
@@ -160,6 +170,7 @@
         summary.innerHTML = html;
     }
 
+    // Save subscriptions to database
     async function saveToDatabase() {
         const customerId = localStorage.getItem('customerId');
         if (!customerId) {
@@ -230,6 +241,7 @@
         }
     }
 
+    // Display active subscriptions
     function showActive() {
         const activeSection = document.getElementById('activeSubscriptions');
         const activeList = document.getElementById('activeSubsList');
@@ -309,6 +321,7 @@
         return names[plan] || plan;
     }
 
+    // Get billing cycle for plan
     function getBilling(plan) {
         const billing = {
             'monthly': 'month',
@@ -320,6 +333,7 @@
         return billing[plan] || 'month';
     }
 
+    // Show success or error message
     function showMessage(message, isError = false) {
         const existing = document.querySelector('.success-message, .error-message');
         if (existing) existing.remove();
