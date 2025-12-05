@@ -1,7 +1,10 @@
-// Customer Dashboard
+// Customer Dashboard Management
+
+// Initialize dashboard when page loads
 document.addEventListener('DOMContentLoaded', async function() {
     const customerId = localStorage.getItem('customerId');
     
+    // Redirect if not logged in
     if (!customerId) {
         window.location.href = 'customer-login.html';
         return;
@@ -12,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadProperties();
 });
 
+// Load customer info and update welcome message
 async function loadCustomerInfo(customerId) {
     try {
         const response = await fetch(`/api/customers/${customerId}`);
@@ -35,6 +39,7 @@ async function loadCustomerInfo(customerId) {
     }
 }
 
+// Load customer bookings and subscriptions
 async function loadCustomerData(customerId) {
     try {
         const bookingsResponse = await fetch(`/api/bookings/customer/${customerId}`);
@@ -54,6 +59,7 @@ async function loadCustomerData(customerId) {
     }
 }
 
+// Load available properties for booking
 async function loadProperties() {
     try {
         const response = await fetch('/api/properties');
@@ -67,6 +73,7 @@ async function loadProperties() {
     }
 }
 
+// Display upcoming bookings
 function showBookings(bookings) {
     const bookingsList = document.getElementById('upcomingBookings');
     
@@ -87,6 +94,7 @@ function showBookings(bookings) {
     `).join('');
 }
 
+// Display customer subscriptions (local and database)
 function showSubscriptions(subscriptions) {
     const subscriptionsDiv = document.getElementById('customerSubscriptions');
     
@@ -150,12 +158,14 @@ function showSubscriptions(subscriptions) {
     `;
 }
 
+// Navigate to subscription edit page
 function editSubscription(serviceId) {
     if (confirm('Go to subscriptions page to edit this service?')) {
         window.location.href = 'customer-subscription.html';
     }
 }
 
+// Helper functions for subscription display
 function getServiceName(serviceId) {
     const names = {
         'insurance': 'Insurance & Protection',
@@ -165,6 +175,7 @@ function getServiceName(serviceId) {
     return names[serviceId] || serviceId;
 }
 
+// Convert plan ID to display name
 function getPlanName(plan) {
     const names = {
         'monthly': 'Monthly',
@@ -176,6 +187,7 @@ function getPlanName(plan) {
     return names[plan] || plan;
 }
 
+// Get billing frequency for plan
 function getBilling(plan) {
     const billing = {
         'monthly': 'month',
@@ -187,14 +199,17 @@ function getBilling(plan) {
     return billing[plan] || 'month';
 }
 
+// Display available properties in cards
 function showProperties(properties) {
     const propertiesDiv = document.getElementById('availableProperties');
     
+    // Show message if no properties available
     if (properties.length === 0) {
         propertiesDiv.innerHTML = '<p>No properties available</p>';
         return;
     }
     
+    // Create property cards with booking buttons
     propertiesDiv.innerHTML = properties.map(property => `
         <div class="property-card" style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px;">
             <h4>${property.title}</h4>
@@ -207,6 +222,7 @@ function showProperties(properties) {
     `).join('');
 }
 
+// Handle property booking with price calculation
 async function bookProperty(propertyId) {
     const customerId = localStorage.getItem('customerId');
     if (!customerId) {
@@ -214,6 +230,7 @@ async function bookProperty(propertyId) {
         return;
     }
     
+    // Get property details for pricing
     let property = null;
     try {
         const propertyResponse = await fetch(`/api/properties/${propertyId}`);
@@ -226,6 +243,7 @@ async function bookProperty(propertyId) {
         return;
     }
     
+    // Get booking details from user
     const checkIn = prompt('Enter check-in date (YYYY-MM-DD):');
     const checkOut = prompt('Enter check-out date (YYYY-MM-DD):');
     const guests = parseInt(prompt('Number of guests:'));
@@ -235,11 +253,13 @@ async function bookProperty(propertyId) {
         return;
     }
     
+    // Calculate total price based on nights
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
     const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
     const totalPrice = property ? (property.pricePerNight * nights) : 0;
     
+    // Prepare booking data for API
     const bookingData = {
         customerId: parseInt(customerId),
         propertyId: propertyId,
@@ -249,6 +269,7 @@ async function bookProperty(propertyId) {
         totalPrice: totalPrice
     };
     
+    // Submit booking to database
     try {
         const response = await fetch('/api/bookings', {
             method: 'POST',
