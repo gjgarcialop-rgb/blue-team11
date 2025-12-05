@@ -37,6 +37,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             console.log('Customer authenticated successfully:', customer);
 
             // Store customer information in browser for session management
+            
             localStorage.setItem('customerId', customer.id);
             localStorage.setItem('customerName', customer.name);
             localStorage.setItem('customerEmail', customer.email);

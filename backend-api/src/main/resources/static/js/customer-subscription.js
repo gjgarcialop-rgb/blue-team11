@@ -67,6 +67,7 @@
     }
 
     // Setup radio button event handlers
+    // this is local storage why did we use it?
     function setupRadios() {
         document.querySelectorAll('.sub-option input[type="radio"]').forEach(radio => {
             radio.addEventListener('change', () => {
@@ -105,7 +106,7 @@
         }
     }
 
-    // Reset radio buttons to saved state
+    // this is local storage why did we use it again?
     function resetRadios() {
         document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
         document.querySelectorAll('.sub-card').forEach(card => card.classList.remove('active'));

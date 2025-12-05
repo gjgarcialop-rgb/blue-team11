@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const customer = await response.json();
                 
                 // Store customer info in browser for session management
+                
                 localStorage.setItem('customerId', customer.id);
                 localStorage.setItem('customerName', customer.name);
                 localStorage.setItem('customerEmail', customer.email);
