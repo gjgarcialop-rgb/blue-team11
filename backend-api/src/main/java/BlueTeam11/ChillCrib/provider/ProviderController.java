@@ -52,4 +52,12 @@ public class ProviderController {
         providerService.deleteProvider(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping ("/signin")
+    public ResponseEntity<Provider> loginProvider(@RequestBody ProviderLoginRequest providerLoginRequest) {
+
+        Provider provider = providerService.authenticateProvider(providerLoginRequest.getEmail(), providerLoginRequest.getPassword());
+        return provider != null ? ResponseEntity.ok(provider) : ResponseEntity.status(401).build();
+
+    }
 }

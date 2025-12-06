@@ -1,4 +1,14 @@
 /* Profile page styles */
+body, html{
+    background-image: url("../images/Earf.gif");
+    background-repeat: no-repeat;
+    background-position:center;
+    background-attachment: fixed;
+    background-size: cover;
+    
+}
+
+
 :root {
     --card: #ffffff32;
     --primary: #2b6bb095;

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>ChillCrib: Create a Listing</title>
+    <link rel="stylesheet" href="css/prototype-createListing.css" />
+        <script src="js/provider-listings.js" defer></script>
+
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <a href="provider-dashboard.html">
+            <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+            </a>
+            
+        </div>
+        <nav class="topnav">
+            <a href="provider-dashboard.html">Dashboard</a>
+            <a href="provider-listings.html">My Cribs</a>
+            <a href="create-listing.html" class="active">Create a Crib</a>
+            <a href="provider-profile.html">Profile</a>
+            <a href="/Homepage.html">Log Out</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="welcome-section">
+            <h1>Upload a Crib</h1>
+            <p>Here, you can create a Listing.</p>
+        </section>
+
+        <section class="create-listing-card">
+
+            <form id="create-form">
+                <label for="title">Enter the Name for your Crib: </label>
+                <input id="title" name="identifier" type="text" autocomplete="ex: Beach House" required>
+
+
+                <label for="location">Enter the location for your Crib: </label>
+                <input id="location" name="identifier" type = "text" autocomplete="ex: Beach, Mountains, City" required>
+
+                <label for="amenities">Enter your amenities: </label>
+                <input id="amenities" name="identifier" type = "text" autocomplete="ex: Beach, Mountains, City" required>
+
+                <div class="description-box">
+                    <label for="description">Enter a Description for your Crib: </label>
+                    <input id="description" name="description" type="text" autocomplete="ex: Beach House" required>
+                </div>
+
+
+                <label for="pricePerNight">Enter the Price per Night: </label>
+                <input id="pricePerNight" name="pricePerNight" type="text" autocomplete="ex: Beach House" required>
+
+                <label for="maxGuests">Enter the Maximum Number of Guests: </label>
+                <input id="maxGuests" name="maxGuests" type="number" min="1" required>
+
+                <label for="identifier">Upload your Photos Here:</label>
+
+                <p></p>
+                <p></p>
+                <p></p>
+                <button type="submit" class="button-submit">Submit</button>
+            </form>
+
+        </section>
+
+    </main>
+</body>
+
+</html>

@@ -1,8 +1,7 @@
 
-
 body {
     font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial;
-    background-image: linear-gradient(rgba(10, 18, 26, 0.403), rgba(10, 18, 26, 0.173)), url('../High-Fidelity-Prototype/Images/Earf.gif');
+    background-image: linear-gradient(rgba(10, 18, 26, 0.403), rgba(10, 18, 26, 0.173)), url('../images/Earf.gif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -10,6 +9,14 @@ body {
     color: rgb(255, 255, 255);
     margin: 0;
 
+}
+body, html{
+    background-image: url("../images/Earf.gif");
+    background-repeat: no-repeat;
+    background-position:center;
+    background-attachment: fixed;
+    background-size: cover;
+    
 }
 
 :root {
