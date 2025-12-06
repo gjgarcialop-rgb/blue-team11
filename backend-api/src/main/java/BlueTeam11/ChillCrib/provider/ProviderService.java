@@ -62,4 +62,12 @@ public class ProviderService {
         }
         providerRepository.deleteById(id);
     }
+
+    public Provider authenticateProvider(String email, String password) {
+        Provider provider = providerRepository.findByEmail(email).orElse(null);
+        if (provider != null && provider.getPassword().equals(password)) {
+            return provider;
+        }
+        return null;
+    }
 }

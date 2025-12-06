@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - ChillCrib</title>
-    <link rel="stylesheet" href="../../Styles/Provider-SignIn.css">
-    <script src="../../Scripts/provider-signin.js" defer></script>
+    <link rel="stylesheet" href="css/Provider-SignIn.css">
+    <script src="js/provider-signin.js" defer></script>
 
 </head>
 
@@ -15,7 +15,7 @@
     <header>
         <nav>
             <a href="provider-signin.html">
-                <img src="/high-fidelity-prototype/Images/ChillCrib-topBar.png"
+                <img src="images/ChillCrib-topBar.png"
                     alt="ChillCrib Logo" class="ChillCrib-logo" />
             </a>
             
@@ -27,10 +27,9 @@
             <h2>Welcome to ChillCrib!</h2>
             <p class="sub">Login or Signup to add places for people to Chill!</p>
 
-            <form id="signinForm" aria-label="Login form">
-                <label for="identifier">Email or Username</label>
-                <input id="identifier" name="identifier" type="text" autocomplete="username" required>
-
+            <form id="signinForm">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="text" autocomplete="username" required>
 
                 <label for="password">Password</label>
                 <input id="password" name="password" type="password" autocomplete="current-password" required>

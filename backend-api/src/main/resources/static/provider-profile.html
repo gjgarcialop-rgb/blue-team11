@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../../Styles/provider-profile.css">
+    <link rel="stylesheet" href="css/provider-profile.css">
+    <script src="js/provider-profile.js" defer></script>
+
 
 
 </head>
@@ -15,7 +17,7 @@
     <header class="topbar">
         <div class="brand">
             <a href="provider-dashboard.html">
-            <img src="../Images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
+                <img src="images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
             </a>
         </div>
         <nav class="topnav">
@@ -34,17 +36,32 @@
 
             <h2 class="your-profile"> Your Profile</h2>
             <div class="profile-picture">
-                <img src="/High-Fidelity-Prototype/Images/Profile-Icon.jpg" class="profile-logo">
+                <img src="images/Profile-Icon.jpg" class="profile-logo">
             </div>
 
-            <h2 class="your-profile-info">Name: Bob Marley</h2>
+            <form id="profile-update-form" aria-label="Profile Update Form">
+                <label>Full Name: <input type = "text" id = "name" name="Full Name" required></label><br>
+
+                <label>Address: <input type="text" id="address" name="Address"></label><br>
+
+                <label>Email: <input type="email" id="email" name="Email" required></label><br>
+                <label>Phone Number: <input type="text" id="phoneNumber" name="Phone Number" required></label><br>
+
+                <label>Bio: <input type = "text" id = "description" name = "Description"></label><br>
+
+                <button type="submit">Save</button>
+                <a href="provider-dashboard.html">Cancel</a>
+            </form>
+
+
+            <!-- <h2 class="your-profile-info">Name: Bob Marley</h2>
             <h3 class="your-profile-info">Date Joined: September 2024</h3>
             <h3 class="your-profile-info">Description:</h3>
             <h4 class="your-profile-info">I am a reputable Provider on ChillCrib, with 200+ positive Reviews
                 on all my available listings.</h4>
             <h3 class="your-profile-info">Contact Information</h3>
             <h4 class="your-profile-info">Email: bob_marley123@gmail.com</h4>
-            <h4 class="your-profile-info">Phone Number: (919)-123-456</h4>
+            <h4 class="your-profile-info">Phone Number: (919)-123-456</h4> -->
         </section>
 
     </main>
