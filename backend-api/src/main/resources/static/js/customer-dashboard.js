@@ -2,8 +2,37 @@
 
 // Initialize dashboard when page loads
 document.addEventListener('DOMContentLoaded', async function() {
-    const customerId = localStorage.getItem('customerId');
+    const params = new URLSearchParams(window.location.search);
+    const isGuest = params.get('guest') === '1';
     
+    // Clear localStorage when in guest mode to prevent showing old login
+    if (isGuest) {
+        localStorage.clear();
+    }
+    
+    const storedCustomerId = localStorage.getItem('customerId');
+    const customerId = isGuest ? null : storedCustomerId;
+
+    // Adjust nav links to keep guest context where appropriate
+    if (isGuest) {
+        appendGuestParam(['navDashboard', 'navProperties', 'navProfile']);
+        hideElement('navSubscriptions');
+        hideElement('navBookings');
+        hideElement('navLogout');
+        hideElement('subscriptionCard');
+        // Show friendly guest message
+        const welcome = document.getElementById('welcomeMessage');
+        if (welcome) {
+            welcome.textContent = 'Welcome! Browse cribs as a guest';
+        }
+        const bookingsList = document.getElementById('upcomingBookings');
+        if (bookingsList) {
+            bookingsList.innerHTML = '<li>Log in to see your upcoming trips.</li>';
+        }
+        // Skip personalized data
+        return;
+    }
+
     // Redirect if not logged in
     if (!customerId) {
         window.location.href = 'customer-login.html';
@@ -12,7 +41,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     await loadCustomerInfo(customerId);
     await loadCustomerData(customerId);
-    await loadProperties();
 });
 
 // Load customer info and update welcome message
@@ -69,7 +97,6 @@ async function loadProperties() {
         }
     } catch (error) {
         console.error('Load properties error:', error);
-        document.getElementById('availableProperties').innerHTML = '<p>Error loading properties</p>';
     }
 }
 
@@ -112,7 +139,6 @@ function showSubscriptions(subscriptions) {
         subscriptionsDiv.innerHTML = `
             <div class="no-subs">
                 <p>No active subscriptions</p>
-                <a href="customer-subscription.html" class="btn-link">Browse Services</a>
             </div>
         `;
         return;
@@ -160,9 +186,7 @@ function showSubscriptions(subscriptions) {
 
 // Navigate to subscription edit page
 function editSubscription(serviceId) {
-    if (confirm('Go to subscriptions page to edit this service?')) {
-        window.location.href = 'customer-subscription.html';
-    }
+    window.location.href = 'customer-subscription.html';
 }
 
 // Helper functions for subscription display
@@ -202,7 +226,9 @@ function getBilling(plan) {
 // Display available properties in cards
 function showProperties(properties) {
     const propertiesDiv = document.getElementById('availableProperties');
-    
+    if (!propertiesDiv) {
+        return;
+    }
     // Show message if no properties available
     if (properties.length === 0) {
         propertiesDiv.innerHTML = '<p>No properties available</p>';
@@ -287,5 +313,25 @@ async function bookProperty(propertyId) {
     } catch (error) {
         console.error('Booking error:', error);
         alert('Network error. Please try again.');
+    }
+}
+
+// Append ?guest=1 to allowed nav links when in guest mode
+function appendGuestParam(ids) {
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const url = new URL(el.getAttribute('href'), window.location.origin);
+            url.searchParams.set('guest', '1');
+            el.setAttribute('href', url.pathname + url.search);
+        }
+    });
+}
+
+// Utility hide
+function hideElement(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.style.display = 'none';
     }
 }

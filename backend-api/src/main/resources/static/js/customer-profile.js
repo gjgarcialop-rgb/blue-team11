@@ -1,6 +1,24 @@
 // Initialize page when DOM loads
 document.addEventListener('DOMContentLoaded', async function () {
-    const customerId = localStorage.getItem('customerId');
+    const params = new URLSearchParams(window.location.search);
+    const isGuest = params.get('guest') === '1';
+    
+    // Clear localStorage when in guest mode to prevent showing old login
+    if (isGuest) {
+        localStorage.clear();
+    }
+    
+    const storedCustomerId = localStorage.getItem('customerId');
+    const customerId = isGuest ? null : storedCustomerId;
+
+    if (isGuest) {
+        appendGuestParam(['navDashboard', 'navProperties', 'navProfile']);
+        hideElement('navSubscriptions');
+        hideElement('navBookings');
+        hideElement('navLogout');
+        showGuestCTA();
+        return;
+    }
 
     // Redirect if not logged in
     if (!customerId) {
@@ -10,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     try {
         await loadProfile(customerId);
-        await loadStats(customerId);
+        await loadRecentReviews(customerId);
     } catch (error) {
         console.error('Profile load failed:', error);
     }
@@ -30,6 +48,7 @@ async function loadProfile(customerId) {
             fillForm(customer);
             localStorage.setItem('customerName', customer.name);
             localStorage.setItem('customerEmail', customer.email);
+            updateProfileHeader(customer);
 
         } else if (response.status === 404) {
             alert('Customer account not found. Please contact support.');
@@ -44,6 +63,57 @@ async function loadProfile(customerId) {
     }
 }
 
+function updateProfileHeader(customer) {
+    const avatar = document.getElementById('profileAvatar');
+    const nameEl = document.getElementById('profileNameDisplay');
+    const emailEl = document.getElementById('profileEmailDisplay');
+    if (nameEl) {
+        nameEl.textContent = customer.name || 'Your Name';
+    }
+    if (emailEl) {
+        emailEl.textContent = customer.email || '';
+    }
+    if (avatar) {
+        const initials = (customer.name || customer.email || 'CC')
+            .split(/\s+/)
+            .filter(Boolean)
+            .map(part => part[0].toUpperCase())
+            .slice(0, 2)
+            .join('');
+        avatar.textContent = initials || 'CC';
+    }
+}
+
+async function loadRecentReviews(customerId) {
+    const target = document.getElementById('recentReviews');
+    if (!target) return;
+
+    try {
+        const resp = await fetch(`/api/reviews/customer/${customerId}`);
+        if (!resp.ok) throw new Error('Failed to fetch reviews');
+        const reviews = await resp.json();
+        renderRecentReviews(target, reviews);
+    } catch (e) {
+        target.innerHTML = '<div style="color:#666;">No recent reviews available.</div>';
+    }
+}
+
+function renderRecentReviews(container, reviews) {
+    if (!reviews || reviews.length === 0) {
+        container.innerHTML = '<div style="color:#666;">No recent reviews yet.</div>';
+        return;
+    }
+
+    const top = reviews.slice(0, 3);
+    container.innerHTML = top.map(r => `
+        <div style="padding:12px; border:1px solid #e5e7eb; border-radius:8px; background:#f9fafb;">
+            <div style="font-weight:700; color:#111;">${r.property && r.property.title ? r.property.title : 'Property #' + (r.propertyId || '')}</div>
+            <div style="color:#f59e0b; font-size:0.95rem;">${'⭐'.repeat(Math.max(1, Math.min(5, r.rating || 1)))} (${r.rating || 0}/5)</div>
+            ${r.comment ? `<div style=\"color:#333; margin-top:6px;\">${r.comment}</div>` : ''}
+            <div style="color:#6b7280; font-size:0.85rem; margin-top:6px;">${r.createdAt ? new Date(r.createdAt).toLocaleDateString() : ''}</div>
+        </div>
+    `).join('');
+}
 // Fill form fields with customer data
 function fillForm(customer) {
     document.getElementById('name').value = customer.name || '';
@@ -56,53 +126,6 @@ function fillForm(customer) {
     }
 }
 
-// Load customer statistics (bookings, reviews, subscriptions)
-async function loadStats(customerId) {
-    try {
-        const bookingsResponse = await fetch(`/api/bookings/customer/${customerId}`);
-        const reviewsResponse = await fetch(`/api/reviews/customer/${customerId}`);
-        const subscriptionsResponse = await fetch(`/api/subscriptions/customer/${customerId}`);
-
-        const bookings = bookingsResponse.ok ? await bookingsResponse.json() : [];
-        const reviews = reviewsResponse.ok ? await reviewsResponse.json() : [];
-        const subscriptions = subscriptionsResponse.ok ? await subscriptionsResponse.json() : [];
-
-        showStats(bookings, reviews, subscriptions);
-
-    } catch (error) {
-        console.error('Stats load error:', error);
-        document.getElementById('customerStats').innerHTML = 'Error loading statistics';
-    }
-}
-
-// Display statistics in grid format
-function showStats(bookings, reviews, subscriptions) {
-    const totalBookings = bookings.length;
-    const upcomingBookings = bookings.filter(booking => new Date(booking.checkIn) > new Date()).length;
-    const totalReviews = reviews.length;
-    const activeSubscriptions = subscriptions.filter(sub => new Date(sub.startDate) <= new Date()).length;
-
-    document.getElementById('customerStats').innerHTML = `
-        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-            <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
-                <h4>Total Bookings</h4>
-                <p style="font-size: 24px; color: #007bff; margin: 0;">${totalBookings}</p>
-            </div>
-            <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
-                <h4>Upcoming Trips</h4>
-                <p style="font-size: 24px; color: #ffc107; margin: 0;">${upcomingBookings}</p>
-            </div>
-            <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
-                <h4>Reviews Written</h4>
-                <p style="font-size: 24px; color: #17a2b8; margin: 0;">${totalReviews}</p>
-            </div>
-            <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;">
-                <h4>Active Subscriptions</h4>
-                <p style="font-size: 24px; color: #e83e8c; margin: 0;">${activeSubscriptions}</p>
-            </div>
-        </div>
-    `;
-}
 
 // Handle profile form submission
 document.getElementById('profileForm').addEventListener('submit', async function (e) {
@@ -162,8 +185,9 @@ document.getElementById('profileForm').addEventListener('submit', async function
             localStorage.setItem('customerName', updatedCustomer.name);
             localStorage.setItem('customerEmail', updatedCustomer.email);
 
+            updateProfileHeader(updatedCustomer);
+
             showSuccess('Profile updated successfully!');
-            await loadStats(customerId);
 
         } else {
             const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
@@ -175,6 +199,7 @@ document.getElementById('profileForm').addEventListener('submit', async function
         showError('Network error. Please check your connection.');
     }
 });
+
 
 // Show success message popup
 function showSuccess(message) {
@@ -239,5 +264,41 @@ async function deleteAccount() {
     } catch (error) {
         console.error('Delete account error:', error);
         alert('Network error. Please try again.');
+    }
+}
+
+// Guest call-to-action replacing profile content
+function showGuestCTA() {
+    const profileSection = document.getElementById('profileContent');
+    if (!profileSection) return;
+
+    profileSection.innerHTML = `
+        <div style="background: rgba(255,255,255,0.95); padding: 32px; border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,0.2); text-align: center; max-width: 700px; margin: 0 auto;">
+            <h3 style="margin-bottom: 10px; color: #111;">Create your profile</h3>
+            <p style="margin-bottom: 24px; color: #444;">Sign up or log in to save favorites, manage bookings, and keep your info handy.</p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a href="customer-signup.html" class="button" style="background:#111; color:#fff; padding: 12px 18px; border-radius: 8px; text-decoration:none;">Sign Up</a>
+                <a href="customer-login.html" class="button" style="background:#fff; color:#111; padding: 12px 18px; border-radius: 8px; border:1px solid #111; text-decoration:none;">Log In</a>
+            </div>
+        </div>
+    `;
+}
+
+// Append ?guest=1 to nav links when in guest mode
+function appendGuestParam(ids) {
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const url = new URL(el.getAttribute('href'), window.location.origin);
+            url.searchParams.set('guest', '1');
+            el.setAttribute('href', url.pathname + url.search);
+        }
+    });
+}
+
+function hideElement(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.style.display = 'none';
     }
 }

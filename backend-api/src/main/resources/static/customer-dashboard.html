@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ChillCrib</title>
-    <link rel="stylesheet" href="css/customer-dashboard.css">
+    <link rel="stylesheet" href="css/customer-dashboard.css?v=3">
 </head>
 
 <body
@@ -15,12 +15,12 @@
             <img src="images/ChillCrib-topBar.png" alt="ChillCrib" class="logo-image">
         </div>
         <nav class="topnav">
-            <a href="customer-dashboard.html" class="active">Dashboard</a>
-            <a href="customer-properties.html">View Cribs</a>
-            <a href="customer-subscription.html">Subscriptions</a>
-            <a href="customer-bookings.html">My Bookings</a>
-            <a href="customer-profile.html">Profile</a>
-            <a href="index.html">Log Out</a>
+            <a id="navDashboard" href="customer-dashboard.html" class="active">Dashboard</a>
+            <a id="navProperties" href="customer-properties.html">View Cribs</a>
+            <a id="navSubscriptions" href="customer-subscription.html">Subscriptions</a>
+            <a id="navBookings" href="customer-bookings.html">My Bookings</a>
+            <a id="navProfile" href="customer-profile.html">Profile</a>
+            <a id="navLogout" href="index.html">Log Out</a>
         </nav>
     </header>
 
@@ -30,35 +30,25 @@
             <p>Here are your upcoming trips!</p>
         </section>
 
-        <section class="Cards">
-            <div class="card upcoming">
-                <h3>Upcoming Trips</h3>
-                <ul id="upcomingBookings">
-                    <li>Loading your bookings...</li>
-                </ul>
-            </div>
-
-            <aside class="card subscriptions-card">
-                <h3>Your Subscriptions</h3>
-                <div id="customerSubscriptions">Loading subscriptions...</div>
-                <div class="subscription-actions">
-                    <a href="customer-subscription.html" class="edit-link" id="manageSubBtn" 
-                       style="display: inline-flex; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.85rem; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);">
-                       Manage Subscriptions →
-                    </a>
-                </div>
-            </aside>
+        <section class="card upcoming">
+            <h3>Upcoming Trips</h3>
+            <ul id="upcomingBookings">
+                <li>Loading your bookings...</li>
+            </ul>
         </section>
 
-        <section class="card">
-            <h3>Available Properties</h3>
-            <div id="availableProperties">
-                Loading properties...
+        <section id="subscriptionCard" class="card subscriptions-card">
+            <h3>Your Subscriptions</h3>
+            <div id="customerSubscriptions">Loading subscriptions...</div>
+            <div class="subscription-actions">
+                <a href="customer-subscription.html" class="edit-link" id="manageSubBtn">
+                   Manage Subscriptions →
+                </a>
             </div>
         </section>
     </main>
 
-    <script src="js/customer-dashboard.js"></script>
+    <script src="js/customer-dashboard.js?v=4"></script>
 </body>
 
 </html>

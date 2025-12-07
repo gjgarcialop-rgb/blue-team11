@@ -3,6 +3,21 @@ let allProperties = [];
 let filteredProperties = [];
 
 document.addEventListener('DOMContentLoaded', async function() {
+    const params = new URLSearchParams(window.location.search);
+    const isGuest = params.get('guest') === '1';
+    
+    // Clear localStorage when in guest mode to prevent showing old login
+    if (isGuest) {
+        localStorage.clear();
+    }
+
+    if (isGuest) {
+        appendGuestParam(['navDashboard', 'navProperties', 'navProfile']);
+        hideElement('navSubscriptions');
+        hideElement('navBookings');
+        hideElement('navLogout');
+    }
+
     await loadAllProperties();
 });
 
@@ -223,5 +238,23 @@ async function bookProperty(propertyId) {
     } catch (error) {
         console.error('Error creating booking:', error);
         alert('Network error. Please try again.');
+    }
+}
+
+function appendGuestParam(ids) {
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const url = new URL(el.getAttribute('href'), window.location.origin);
+            url.searchParams.set('guest', '1');
+            el.setAttribute('href', url.pathname + url.search);
+        }
+    });
+}
+
+function hideElement(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.style.display = 'none';
     }
 }
