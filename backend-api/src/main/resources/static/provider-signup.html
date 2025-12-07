@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - ChillCrib</title>
     <link rel="stylesheet" href="css/Provider-SignUp.css">
+    <script src="js/provider-signup.js" defer></script>
 
 </head>
 
@@ -25,22 +26,30 @@
             <h2>Welcome to ChillCrib!</h2>
             <p class="sub">Signup to add places for people to Chill!</p>
 
-            <form action="provider-dashboard.html"aria-label="Login form">
-                <label for="identifier">First Name: </label>
-                <input id="identifier" name="identifier" type="text" autocomplete="firstname" required>
+            <form id= "signupForm">
+                <label for="firstName">First Name: </label>
+                <input id="firstName" name="firstName" type="text" autocomplete="firstname" required>
 
-                <label for="identifier">Last Name: </label>
-                <input id="identifier" name="identifier" type="text" autocomplete="lastname" required>
+                <label for="lastName">Last Name: </label>
+                <input id="lastName" name="lastName" type="text" autocomplete="lastname" required>
+                
+                <label for="email">Email Address: </label>
+                <input id="email" name="email" type="text" autocomplete="email" required>
 
-                <label for="identifier">Email Address: </label>
-                <input id="identifier" name="identifier" type="text" autocomplete="email" required>
+                <label for="phoneNumber">Phone Number: </label>
+                <input id="phoneNumber" name="phoneNumber" type="tel" required>
+
+                <label for="address">Address: </label>
+                <input id="address" name="address" type="text" required>
 
                 <label for="password">Password</label>
                 <input id="password" name="password" type="password" autocomplete="current-password" required>
 
                 <label for="re-enter-password">Re-enter Password</label>
-                <input id="re-enter-password" name="re-enter-password" type="password" autocomplete="current-password"
-                    required>
+                <input id="re-enter-password" name="re-enter-password" type="password" autocomplete="current-password" 
+                required>
+
+
 
 
                 <button type="submit" class="button login">SignUp</button>
