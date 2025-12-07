@@ -1,3 +1,10 @@
+document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.clear();
+  window.location.href = 'provider-signin.html';
+});
+
+
 document.addEventListener('DOMContentLoaded', async function () {
     const providerId = localStorage.getItem('providerId');
 

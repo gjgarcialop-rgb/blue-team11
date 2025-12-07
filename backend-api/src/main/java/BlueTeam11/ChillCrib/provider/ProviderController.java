@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,6 +37,15 @@ public class ProviderController {
         return ResponseEntity.ok(providerService.getProviderById(id));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Provider> getCurrentProvider(@RequestParam Long id) {
+        Provider provider = providerService.getProviderById(id);
+        if(provider == null) {
+            return ResponseEntity.status(404).build();
+        }
+        return ResponseEntity.ok(provider);
+    }
+
     @GetMapping
     public ResponseEntity<List<Provider>> getAllProviders() {
         return ResponseEntity.ok(providerService.getAllProviders());
@@ -60,4 +70,6 @@ public class ProviderController {
         return provider != null ? ResponseEntity.ok(provider) : ResponseEntity.status(401).build();
 
     }
+
+
 }

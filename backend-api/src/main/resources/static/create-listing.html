@@ -22,7 +22,7 @@
             <a href="provider-listings.html">My Cribs</a>
             <a href="create-listing.html" class="active">Create a Crib</a>
             <a href="provider-profile.html">Profile</a>
-            <a href="/Homepage.html">Log Out</a>
+            <a href="index.html" id="logoutBtn">Log Out</a>
         </nav>
     </header>
 
@@ -37,14 +37,13 @@
 
             <form id="create-form">
                 <label for="title">Enter the Name for your Crib: </label>
-                <input id="title" name="identifier" type="text" autocomplete="ex: Beach House" required>
+                <input id="title" name="title" type="text" autocomplete="ex: Beach House" required>
 
 
                 <label for="location">Enter the location for your Crib: </label>
-                <input id="location" name="identifier" type = "text" autocomplete="ex: Beach, Mountains, City" required>
-
+                <input id="location" name="location" type = "text" autocomplete="ex: Beach, Mountains, City" required>
                 <label for="amenities">Enter your amenities: </label>
-                <input id="amenities" name="identifier" type = "text" autocomplete="ex: Beach, Mountains, City" required>
+                <input id="amenities" name="amenities" type = "text" autocomplete="ex: Beach, Mountains, City" required>
 
                 <div class="description-box">
                     <label for="description">Enter a Description for your Crib: </label>
@@ -53,7 +52,7 @@
 
 
                 <label for="pricePerNight">Enter the Price per Night: </label>
-                <input id="pricePerNight" name="pricePerNight" type="text" autocomplete="ex: Beach House" required>
+                <input id="pricePerNight" name="pricePerNight" type="number" autocomplete="ex: Beach House" required>
 
                 <label for="maxGuests">Enter the Maximum Number of Guests: </label>
                 <input id="maxGuests" name="maxGuests" type="number" min="1" required>

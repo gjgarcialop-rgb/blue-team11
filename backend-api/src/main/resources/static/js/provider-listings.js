@@ -1,4 +1,19 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.clear();
+  window.location.href = 'provider-signin.html';
+});
+
+
+document.addEventListener('DOMContentLoaded', async function() {
+  const providerId = localStorage.getItem('providerId');
+  if (!providerId) {
+        window.location.href = 'provider-signin.html';
+        return;
+    } 
+
+    console.log('logged in as provider with ID:', providerId);
+  
     const propertyCard = document.querySelector('.listing-card');
    const createForm = document.querySelector('#create-form');
 
@@ -20,6 +35,10 @@ async function fetchAllProperties() {
     }
 
 }
+
+
+
+
 
 
 
@@ -61,25 +80,55 @@ function setupForm(form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const payload = {
-      title: titleEl ? titleEl.value.trim() : '',
-      location: locationEl ? locationEl.value.trim() : '',
-      description: descEl ? descEl.value.trim() : '',
-      pricePerNight: priceEl ? priceEl.value.trim() : '',
-      amenities: amenitiesEl ? amenitiesEl.value.trim() : '',
-      maxGuests: maxGuestsEl ? maxGuestsEl.value.trim() : ''
-    };
+    const providerId = localStorage.getItem('providerId');
+    if(!providerId) {
+      alert('You must be signed in as a provider to add a property.');
+      window.location.href = 'provider-signin.html';
+      return;
+    }
 
-    try {
-      const res = await fetch('api/properties', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        throw new Error(`${res.status} ${res.statusText} ${text}`);
-      }
+
+    const payload = {
+  title: titleEl ? titleEl.value.trim() : '',
+  location: locationEl ? locationEl.value.trim() : '',
+  description: descEl ? descEl.value.trim() : '',
+  pricePerNight: priceEl ? parseFloat(priceEl.value.trim()) : 0,
+  amenities: amenitiesEl ? amenitiesEl.value.trim() : '',
+  maxGuests: maxGuestsEl ? parseInt(maxGuestsEl.value.trim(), 10) : 1,
+  providerId: parseInt(providerId, 10), // ← use localStorage providerId
+  isActive: true
+};
+
+const res = await fetch('/api/properties', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload)
+});
+
+//     const payload = {
+//       title: titleEl ? titleEl.value.trim() : '',
+//       location: locationEl ? locationEl.value.trim() : '',
+//       description: descEl ? descEl.value.trim() : '',
+//       pricePerNight: priceEl ? parseFloat(priceEl.value.trim()) : 0,
+//       amenities: amenitiesEl ? amenitiesEl.value.trim() : '',
+//       maxGuests: maxGuestsEl ? parseInt(maxGuestsEl.value.trim(), 10) : 1,
+//       provider: { id: parseInt(providerId, 10) },
+//       isActive: true
+//     };
+
+
+
+//     try {
+//       const res = await fetch('/api/properties', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(payload)
+//       });
+//       if (!res.ok) {
+//   const text = await res.text();
+//   console.error('Backend error:', text);  // ← see what went wrong
+//   throw new Error(`${res.status} ${text}`);
+// }
       const created = await res.json().catch(() => null);
       form.reset();
       if (created && created.propertyId != null) {
@@ -87,10 +136,12 @@ function setupForm(form) {
       } else {
         window.location.href = 'index.html';
       }
-    } catch (err) {
-      console.error('Error adding property:', err);
-      alert('Failed to add property. See console for details.');
-    }
+    // } catch (err) {
+    //   console.error('Error adding property:', err);
+    //   alert('Failed to add property. See console for details.');
+    // }
   });
 }
+
+
 
