@@ -371,8 +371,11 @@ function renderBookingModal(property, customerId) {
 
             if (response.ok) {
                 const booking = await response.json();
-                totalEl.textContent = `Booked! Total: $${totalPrice.toFixed(2)} for ${nights} night(s).`;
-                setTimeout(closeModal, 1200);
+                totalEl.textContent = `Booked! Redirecting to My Bookings...`;
+                setTimeout(() => {
+                    closeModal();
+                    window.location.href = 'customer-bookings.html';
+                }, 800);
             } else {
                 const errorText = await response.text();
                 errorEl.textContent = 'Error creating booking: ' + errorText;

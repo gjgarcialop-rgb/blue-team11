@@ -12,25 +12,62 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 async function loadCustomerBookings(customerId) {
     try {
+        console.log('Fetching bookings for customer:', customerId);
         const response = await fetch(`/api/bookings/customer/${customerId}`);
+        console.log('Response status:', response.status);
+        
         if (response.ok) {
             const bookings = await response.json();
+            console.log('Bookings received:', bookings);
+            console.log('Number of bookings:', bookings.length);
+            
+            if (bookings.length > 0) {
+                console.log('First booking:', bookings[0]);
+                console.log('First booking property:', bookings[0].property);
+            }
+            
             displayBookings(bookings);
         } else {
-            document.getElementById('upcomingBookings').innerHTML = 'Error loading bookings';
-            document.getElementById('pastBookings').innerHTML = 'Error loading bookings';
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            document.getElementById('upcomingBookings').innerHTML = 'Error loading bookings: ' + errorText;
+            document.getElementById('pastBookings').innerHTML = '';
         }
     } catch (error) {
         console.error('Error loading bookings:', error);
-        document.getElementById('upcomingBookings').innerHTML = 'Network error';
-        document.getElementById('pastBookings').innerHTML = 'Network error';
+        document.getElementById('upcomingBookings').innerHTML = 'Network error: ' + error.message;
+        document.getElementById('pastBookings').innerHTML = '';
     }
 }
 
 function displayBookings(bookings) {
+    console.log('Displaying bookings:', bookings);
+    
+    if (!bookings || bookings.length === 0) {
+        document.getElementById('upcomingBookings').innerHTML = '<p style="color:#6b7280; text-align:center; padding:30px;">No bookings found. Book a property to see it here!</p>';
+        document.getElementById('pastBookings').innerHTML = '<p style="color:#6b7280; text-align:center; padding:30px;">No past bookings</p>';
+        return;
+    }
+    
     const now = new Date();
-    const upcoming = bookings.filter(booking => new Date(booking.checkIn) >= now);
-    const past = bookings.filter(booking => new Date(booking.checkOut) < now);
+    now.setHours(0, 0, 0, 0); // Reset to start of day for accurate comparison
+    
+    const upcoming = bookings.filter(booking => {
+        const checkInDate = new Date(booking.checkIn);
+        checkInDate.setHours(0, 0, 0, 0);
+        console.log('Checking booking:', booking.id, 'CheckIn:', checkInDate, 'Now:', now, 'Is upcoming?', checkInDate >= now);
+        return checkInDate >= now;
+    });
+    
+    const past = bookings.filter(booking => {
+        const checkOutDate = new Date(booking.checkOut);
+        checkOutDate.setHours(0, 0, 0, 0);
+        console.log('Checking booking:', booking.id, 'CheckOut:', checkOutDate, 'Now:', now, 'Is past?', checkOutDate < now);
+        return checkOutDate < now;
+    });
+    
+    console.log('Upcoming bookings:', upcoming.length);
+    console.log('Past bookings:', past.length);
     
     displayBookingGroup(upcoming, 'upcomingBookings', true);
     displayBookingGroup(past, 'pastBookings', false);
