@@ -22,7 +22,7 @@ document.querySelector('#signupForm').addEventListener('submit', async function 
     }
 
     if (password.length < 6) {
-        alert('Password must be at least 6 characters');
+        // alert removed
         return;
     }
 
@@ -53,7 +53,7 @@ document.querySelector('#signupForm').addEventListener('submit', async function 
             localStorage.setItem('providerName', provider.name);
             localStorage.setItem('providerEmail', provider.email);
 
-            alert('Signup successful! Redirecting to dashboard...');
+            // alert removed
 
             setTimeout(() => {
                 window.location.href = 'provider-dashboard.html';
@@ -64,6 +64,7 @@ document.querySelector('#signupForm').addEventListener('submit', async function 
         }
     } catch (error) {
         console.error('Error during sign up:', error);
-        alert('An error has occurred during sign up. Please try again later.');
+        // alert removed
     }
 });
+

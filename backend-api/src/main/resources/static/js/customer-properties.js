@@ -166,7 +166,7 @@ async function viewPropertyDetails(propertyId) {
         }
     } catch (error) {
         console.error('Error loading property details:', error);
-        alert('Error loading property details');
+        // alert removed
     }
 }
 
@@ -226,7 +226,7 @@ function showPropertyModal(property, reviews) {
 async function bookProperty(propertyId) {
     const customerId = localStorage.getItem('customerId');
     if (!customerId) {
-        alert('Please log in to book a property');
+        // alert removed
         window.location.href = 'customer-login.html';
         return;
     }
@@ -240,7 +240,7 @@ async function bookProperty(propertyId) {
         }
     } catch (error) {
         console.error('Error fetching property:', error);
-        alert('Error loading property details');
+        // alert removed
         return;
     }
 
@@ -401,3 +401,4 @@ function hideElement(id) {
         el.style.display = 'none';
     }
 }
+

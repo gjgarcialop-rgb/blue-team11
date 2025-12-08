@@ -51,7 +51,7 @@ async function loadProfile(customerId) {
             updateProfileHeader(customer);
 
         } else if (response.status === 404) {
-            alert('Customer account not found. Please contact support.');
+            // alert removed
             localStorage.clear();
             window.location.href = 'customer-signup.html';
         } else {
@@ -241,13 +241,9 @@ function showError(message) {
 
 // Delete customer account with confirmation
 async function deleteAccount() {
-    if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        return;
-    }
+    // confirm removed - action proceeds directly
 
-    if (!confirm('This will permanently delete all your data including bookings, reviews, and subscriptions. Continue?')) {
-        return;
-    }
+    // confirm removed - action proceeds directly
 
     const customerId = localStorage.getItem('customerId');
 
@@ -256,14 +252,14 @@ async function deleteAccount() {
 
         if (response.ok) {
             localStorage.clear();
-            alert('Account deleted successfully. Sorry to see you go!');
+            // alert removed
             window.location.href = 'index.html';
         } else {
-            alert('Error deleting account. Please contact support.');
+            // alert removed
         }
     } catch (error) {
         console.error('Delete account error:', error);
-        alert('Network error. Please try again.');
+        // alert removed
     }
 }
 
@@ -302,3 +298,4 @@ function hideElement(id) {
         el.style.display = 'none';
     }
 }
+

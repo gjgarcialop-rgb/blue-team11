@@ -33,7 +33,7 @@ async function loadProviderProfile(providerId) {
             document.getElementById('address').value = provider.address || '';
 
         } else if (response.status === 404) {
-            alert('Provider account not found. Please contact support.');
+            // alert removed
             localStorage.clear();
             window.location.href = 'provider-signup.html';
         } else {
@@ -103,4 +103,6 @@ document.getElementById('profile-update-form').addEventListener('submit', async 
         console.error('Error updating profile:', error);
     }
 });
+
+
 

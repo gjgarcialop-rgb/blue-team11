@@ -287,7 +287,7 @@ function showProperties(properties) {
 async function bookProperty(propertyId) {
     const customerId = localStorage.getItem('customerId');
     if (!customerId) {
-        alert('Please log in to book a property');
+        // alert removed
         return;
     }
     
@@ -300,7 +300,7 @@ async function bookProperty(propertyId) {
         }
     } catch (error) {
         console.error('Property fetch error:', error);
-        alert('Error loading property details');
+        // alert removed
         return;
     }
     
@@ -310,7 +310,7 @@ async function bookProperty(propertyId) {
     const guests = parseInt(prompt('Number of guests:'));
     
     if (!checkIn || !checkOut || !guests) {
-        alert('Please provide all booking details');
+        // alert removed
         return;
     }
     
@@ -339,15 +339,15 @@ async function bookProperty(propertyId) {
         });
         
         if (response.ok) {
-            alert(`Booking created successfully! Total: $${totalPrice} for ${nights} nights`);
+            // alert removed
             location.reload();
         } else {
             const errorText = await response.text();
-            alert('Error creating booking: ' + errorText);
+            // alert removed
         }
     } catch (error) {
         console.error('Booking error:', error);
-        alert('Network error. Please try again.');
+        // alert removed
     }
 }
 
@@ -370,3 +370,4 @@ function hideElement(id) {
         el.style.display = 'none';
     }
 }
+

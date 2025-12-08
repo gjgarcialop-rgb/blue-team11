@@ -140,7 +140,7 @@ async function editBooking(bookingId) {
     try {
         const response = await fetch(`/api/bookings/${bookingId}`);
         if (!response.ok) {
-            alert('Error loading booking details');
+            // alert removed
             return;
         }
         
@@ -273,14 +273,12 @@ async function editBooking(bookingId) {
         
     } catch (error) {
         console.error('Error loading booking:', error);
-        alert('Error loading booking details.');
+        // alert removed
     }
 }
 
 async function cancelBooking(bookingId) {
-    if (!confirm('Are you sure you want to cancel this booking?')) {
-        return;
-    }
+    // confirm removed - action proceeds directly
     
     try {
         const response = await fetch(`/api/bookings/${bookingId}`, {
@@ -288,14 +286,14 @@ async function cancelBooking(bookingId) {
         });
         
         if (response.ok) {
-            alert('Booking cancelled successfully!');
+            // alert removed
             location.reload();
         } else {
-            alert('Error cancelling booking');
+            // alert removed
         }
     } catch (error) {
         console.error('Error cancelling booking:', error);
-        alert('Network error. Please try again.');
+        // alert removed
     }
 }
 
@@ -327,13 +325,13 @@ async function reviewProperty(propertyId, bookingId) {
         });
         
         if (response.ok) {
-            alert('Review submitted successfully!');
+            // alert removed
         } else {
-            alert('Error submitting review');
+            // alert removed
         }
     } catch (error) {
         console.error('Error submitting review:', error);
-        alert('Network error. Please try again.');
+        // alert removed
     }
 }
 
@@ -354,6 +352,7 @@ Status: ${getBookingStatus(booking.checkIn, booking.checkOut)}`);
         }
     } catch (error) {
         console.error('Error loading booking details:', error);
-        alert('Error loading booking details');
+        // alert removed
     }
 }
+

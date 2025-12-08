@@ -185,7 +185,7 @@
     async function saveToDatabase() {
         const customerId = localStorage.getItem('customerId');
         if (!customerId) {
-            alert('Please log in to save subscriptions');
+            // alert removed
             return;
         }
 
@@ -379,3 +379,4 @@
     }
 
 })();
+

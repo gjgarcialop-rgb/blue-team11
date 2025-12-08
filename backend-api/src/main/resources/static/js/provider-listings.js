@@ -144,7 +144,7 @@ async function editProperty(propertyId) {
     try {
         const response = await fetch(`/api/properties/${propertyId}`);
         if (!response.ok) {
-            alert('Error loading property details');
+            // alert removed
             return;
         }
         
@@ -243,14 +243,12 @@ async function editProperty(propertyId) {
         
     } catch (error) {
         console.error('Error loading property:', error);
-        alert('Error loading property details.');
+        // alert removed
     }
 }
 
 async function deleteProperty(propertyId) {
-    if (!confirm('Are you sure you want to delete this property? This cannot be undone.')) {
-        return;
-    }
+    // confirm removed - action proceeds directly
     
     try {
         const response = await fetch(`/api/properties/${propertyId}`, {
@@ -258,14 +256,14 @@ async function deleteProperty(propertyId) {
         });
         
         if (response.ok) {
-            alert('Property deleted successfully!');
+            // alert removed
             fetchAllProperties(); // Reload the list
         } else {
-            alert('Error deleting property');
+            // alert removed
         }
     } catch (error) {
         console.error('Error deleting property:', error);
-        alert('Network error. Please try again.');
+        // alert removed
     }
 }
 
@@ -283,7 +281,7 @@ function setupForm(form) {
 
     const providerId = localStorage.getItem('providerId');
     if(!providerId) {
-      alert('You must be signed in as a provider to add a property.');
+      // alert removed
       window.location.href = 'provider-signin.html';
       return;
     }
@@ -339,10 +337,12 @@ const res = await fetch('/api/properties', {
       }
     // } catch (err) {
     //   console.error('Error adding property:', err);
-    //   alert('Failed to add property. See console for details.');
+    //   // alert removed
     // }
   });
 }
+
+
 
 
 

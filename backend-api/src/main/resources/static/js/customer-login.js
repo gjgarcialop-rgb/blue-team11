@@ -67,3 +67,4 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         // Error is logged to console instead of showing popup
     }
 });
+
