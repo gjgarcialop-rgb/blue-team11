@@ -107,18 +107,53 @@ function showBookings(bookings) {
     const upcomingBookings = bookings.filter(booking => new Date(booking.checkIn) > new Date());
     
     if (upcomingBookings.length === 0) {
-        bookingsList.innerHTML = '<li>No upcoming trips — start searching for your next stay!</li>';
+        bookingsList.innerHTML = '<div style="color:#6b7280; text-align:center; padding:20px;">No upcoming trips — start searching for your next stay!</div>';
         return;
     }
     
-    bookingsList.innerHTML = upcomingBookings.map(booking => `
-        <li>
-            <strong>Property:</strong> ${booking.property ? booking.property.title : 'Property #' + booking.propertyId}<br>
-            <strong>Check-in:</strong> ${new Date(booking.checkIn).toLocaleDateString()}<br>
-            <strong>Check-out:</strong> ${new Date(booking.checkOut).toLocaleDateString()}<br>
-            <strong>Total Price:</strong> $${booking.totalPrice}
-        </li>
-    `).join('');
+    bookingsList.innerHTML = upcomingBookings.map(booking => {
+        const checkIn = new Date(booking.checkIn);
+        const checkOut = new Date(booking.checkOut);
+        const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+        
+        return `
+        <div style="
+            border: 2px solid #007bff; 
+            padding: 16px; 
+            margin: 12px 0; 
+            border-radius: 10px; 
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        ">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
+                <div style="flex:1;">
+                    <h4 style="margin:0 0 6px 0; color:#0b1220; font-size:1.1rem;">${booking.property ? booking.property.title : 'Property #' + booking.propertyId}</h4>
+                    <div style="display:inline-block; background:#e3f2fd; padding:4px 10px; border-radius:5px; border:1px solid #90caf9;">
+                        <span style="color:#1565c0; font-weight:600; font-size:0.85rem;">📍 ${booking.property && booking.property.location ? booking.property.location : 'Location TBD'}</span>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:1.2rem; font-weight:700; color:#28a745;">$${Number(booking.totalPrice).toFixed(2)}</div>
+                </div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:12px;">
+                <div style="background:#f9fafb; padding:10px; border-radius:6px;">
+                    <div style="color:#6b7280; font-size:0.8rem; margin-bottom:3px;">Check-in</div>
+                    <div style="color:#0b1220; font-weight:600; font-size:0.9rem;">📅 ${checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                </div>
+                <div style="background:#f9fafb; padding:10px; border-radius:6px;">
+                    <div style="color:#6b7280; font-size:0.8rem; margin-bottom:3px;">Check-out</div>
+                    <div style="color:#0b1220; font-weight:600; font-size:0.9rem;">📅 ${checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                </div>
+                <div style="background:#f9fafb; padding:10px; border-radius:6px;">
+                    <div style="color:#6b7280; font-size:0.8rem; margin-bottom:3px;">Duration</div>
+                    <div style="color:#0b1220; font-weight:600; font-size:0.9rem;">🌙 ${nights} night${nights !== 1 ? 's' : ''}</div>
+                </div>
+            </div>
+        </div>
+    `;
+    }).join('');
 }
 
 // Display customer subscriptions (local and database)

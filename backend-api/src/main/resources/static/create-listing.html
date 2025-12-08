@@ -34,37 +34,67 @@
         </section>
 
         <section class="create-listing-card">
+            <div style="max-width:700px; margin:0 auto; background:white; padding:40px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+                <form id="create-form" style="display:flex; flex-direction:column; gap:20px;">
+                    
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="title" style="font-weight:600; color:#0b1220; font-size:0.95rem;">Property Name *</label>
+                        <input id="title" name="title" type="text" placeholder="e.g., Cozy Beach House" required 
+                            style="padding:12px; border:2px solid #d1d5db; border-radius:8px; font-size:1rem; transition:border 0.2s;"
+                            onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#d1d5db'">
+                    </div>
 
-            <form id="create-form">
-                <label for="title">Enter the Name for your Crib: </label>
-                <input id="title" name="title" type="text" autocomplete="ex: Beach House" required>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <label for="location" style="font-weight:600; color:#0b1220; font-size:0.95rem;">Location *</label>
+                            <input id="location" name="location" type="text" placeholder="e.g., Miami Beach, FL" required 
+                                style="padding:12px; border:2px solid #d1d5db; border-radius:8px; font-size:1rem; transition:border 0.2s;"
+                                onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#d1d5db'">
+                        </div>
+                        
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <label for="pricePerNight" style="font-weight:600; color:#0b1220; font-size:0.95rem;">Price per Night ($) *</label>
+                            <input id="pricePerNight" name="pricePerNight" type="number" min="0" step="0.01" placeholder="0.00" required 
+                                style="padding:12px; border:2px solid #d1d5db; border-radius:8px; font-size:1rem; transition:border 0.2s;"
+                                onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#d1d5db'">
+                        </div>
+                    </div>
 
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <label for="maxGuests" style="font-weight:600; color:#0b1220; font-size:0.95rem;">Max Guests *</label>
+                            <input id="maxGuests" name="maxGuests" type="number" min="1" placeholder="1" required 
+                                style="padding:12px; border:2px solid #d1d5db; border-radius:8px; font-size:1rem; transition:border 0.2s;"
+                                onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#d1d5db'">
+                        </div>
+                        
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <label for="amenities" style="font-weight:600; color:#0b1220; font-size:0.95rem;">Amenities *</label>
+                            <input id="amenities" name="amenities" type="text" placeholder="e.g., WiFi, Pool, Kitchen" required 
+                                style="padding:12px; border:2px solid #d1d5db; border-radius:8px; font-size:1rem; transition:border 0.2s;"
+                                onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#d1d5db'">
+                        </div>
+                    </div>
 
-                <label for="location">Enter the location for your Crib: </label>
-                <input id="location" name="location" type = "text" autocomplete="ex: Beach, Mountains, City" required>
-                <label for="amenities">Enter your amenities: </label>
-                <input id="amenities" name="amenities" type = "text" autocomplete="ex: Beach, Mountains, City" required>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="description" style="font-weight:600; color:#0b1220; font-size:0.95rem;">Description *</label>
+                        <textarea id="description" name="description" placeholder="Describe your property..." required rows="5"
+                            style="padding:12px; border:2px solid #d1d5db; border-radius:8px; font-size:1rem; resize:vertical; font-family:inherit; transition:border 0.2s;"
+                            onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#d1d5db'"></textarea>
+                    </div>
 
-                <div class="description-box">
-                    <label for="description">Enter a Description for your Crib: </label>
-                    <input id="description" name="description" type="text" autocomplete="ex: Beach House" required>
-                </div>
+                    <div style="background:#f3f4f6; padding:20px; border-radius:8px; border:2px dashed #d1d5db;">
+                        <label style="font-weight:600; color:#0b1220; font-size:0.95rem; display:block; margin-bottom:10px;">📸 Photos (Coming Soon)</label>
+                        <p style="color:#6b7280; font-size:0.9rem; margin:0;">Photo upload functionality will be available soon. For now, properties will use default images.</p>
+                    </div>
 
-
-                <label for="pricePerNight">Enter the Price per Night: </label>
-                <input id="pricePerNight" name="pricePerNight" type="number" autocomplete="ex: Beach House" required>
-
-                <label for="maxGuests">Enter the Maximum Number of Guests: </label>
-                <input id="maxGuests" name="maxGuests" type="number" min="1" required>
-
-                <label for="identifier">Upload your Photos Here:</label>
-
-                <p></p>
-                <p></p>
-                <p></p>
-                <button type="submit" class="button-submit">Submit</button>
-            </form>
-
+                    <button type="submit" class="button-submit" 
+                        style="padding:14px 28px; background:#28a745; color:white; border:none; border-radius:8px; font-size:1.1rem; font-weight:600; cursor:pointer; margin-top:10px; transition:background 0.2s;"
+                        onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'">
+                        Create Listing
+                    </button>
+                </form>
+            </div>
         </section>
 
     </main>

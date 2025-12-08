@@ -1,10 +1,3 @@
-document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  localStorage.clear();
-  window.location.href = 'provider-signin.html';
-});
-
-
 document.addEventListener('DOMContentLoaded', async function () {
     const providerId = localStorage.getItem('providerId');
 
@@ -32,6 +25,12 @@ async function loadProviderProfile(providerId) {
 
             localStorage.setItem('providerName', provider.name);
             localStorage.setItem('providerEmail', provider.email);
+
+            // Populate form fields
+            document.getElementById('name').value = provider.name || '';
+            document.getElementById('email').value = provider.email || '';
+            document.getElementById('phoneNumber').value = provider.phoneNumber || '';
+            document.getElementById('address').value = provider.address || '';
 
         } else if (response.status === 404) {
             alert('Provider account not found. Please contact support.');

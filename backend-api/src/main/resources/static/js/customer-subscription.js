@@ -1,15 +1,27 @@
 (function () {
     // Storage for pending and saved subscriptions
     let pending = {};
-    let subs = JSON.parse(localStorage.getItem('chillcrib_subscriptions') || '{}');
+    let subs = {};
 
-    // Save subscriptions to localStorage
+    // Get customer-specific storage key
+    function getStorageKey() {
+        const customerId = localStorage.getItem('customerId');
+        return customerId ? `chillcrib_subscriptions_${customerId}` : 'chillcrib_subscriptions';
+    }
+
+    // Load subscriptions from localStorage (customer-specific)
+    function loadLocalSubs() {
+        subs = JSON.parse(localStorage.getItem(getStorageKey()) || '{}');
+    }
+
+    // Save subscriptions to localStorage (customer-specific)
     function save() {
-        localStorage.setItem('chillcrib_subscriptions', JSON.stringify(subs));
+        localStorage.setItem(getStorageKey(), JSON.stringify(subs));
     }
 
     // Initialize subscription system
     function init() {
+        loadLocalSubs(); // Load customer-specific subscriptions first
         setupRadios();
         setupButtons();
         loadFromDB();
