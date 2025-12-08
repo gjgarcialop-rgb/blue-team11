@@ -45,6 +45,7 @@ public class PropertyController {
     p.setMaxGuests(req.maxGuests);
     p.setIsActive(req.isActive != null ? req.isActive : true);
     p.setBookingsThisMonth(0);
+    p.setImages(req.images);
     p.setProvider(provider);
 
     Property saved = propertyService.createProperty(p);

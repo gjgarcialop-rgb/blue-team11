@@ -200,9 +200,104 @@ window.changeImg = function(propId, dir) {
     if (counter) counter.textContent = `${data.index + 1} / ${data.images.length}`;
 }
 
+// Global array to store images for create form
+let createFormImages = [];
+
+// Toggle between file upload and URL input mode
+window.toggleImageMode = function(mode) {
+    const fileSection = document.getElementById('fileUploadSection');
+    const urlSection = document.getElementById('urlInputSection');
+    const fileBtn = document.getElementById('modeFileBtn');
+    const urlBtn = document.getElementById('modeUrlBtn');
+    
+    if (mode === 'file') {
+        fileSection.style.display = 'block';
+        urlSection.style.display = 'none';
+        fileBtn.style.background = '#007bff';
+        fileBtn.style.color = 'white';
+        urlBtn.style.background = '#e5e7eb';
+        urlBtn.style.color = '#374151';
+    } else {
+        fileSection.style.display = 'none';
+        urlSection.style.display = 'block';
+        fileBtn.style.background = '#e5e7eb';
+        fileBtn.style.color = '#374151';
+        urlBtn.style.background = '#007bff';
+        urlBtn.style.color = 'white';
+    }
+};
+
+// Add image URL to create form
+window.addImageUrl = function() {
+    const urlInput = document.getElementById('imageUrlInput');
+    const url = urlInput.value.trim();
+    
+    if (!url) {
+        alert('Please enter a valid URL');
+        return;
+    }
+    
+    createFormImages.push(url);
+    urlInput.value = '';
+    updateCreateImagePreview();
+};
+
+// Remove image from create form
+window.removeCreateImage = function(index) {
+    createFormImages.splice(index, 1);
+    updateCreateImagePreview();
+};
+
+// Update image preview for create form
+function updateCreateImagePreview() {
+    const previewArea = document.getElementById('imagePreviewArea');
+    if (!previewArea) return;
+    
+    previewArea.innerHTML = '';
+    
+    createFormImages.forEach((img, index) => {
+        const container = document.createElement('div');
+        container.style.cssText = 'position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:2px solid #e5e7eb;';
+        
+        const imgEl = document.createElement('img');
+        imgEl.src = img;
+        imgEl.style.cssText = 'width:100%; height:100%; object-fit:cover;';
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '×';
+        removeBtn.type = 'button';
+        removeBtn.onclick = () => removeCreateImage(index);
+        removeBtn.style.cssText = 'position:absolute; top:4px; right:4px; width:24px; height:24px; background:rgba(220,38,38,0.9); color:white; border:none; border-radius:50%; cursor:pointer; font-size:18px; line-height:1; padding:0; display:flex; align-items:center; justify-content:center;';
+        
+        container.appendChild(imgEl);
+        container.appendChild(removeBtn);
+        previewArea.appendChild(container);
+    });
+}
+
 function setupCreateForm() {
     const form = document.getElementById('create-form');
     if (!form) return;
+    
+    // Setup file input handler
+    const fileInput = document.getElementById('imageFiles');
+    if (fileInput) {
+        fileInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            
+            for (const file of files) {
+                const reader = new FileReader();
+                const base64 = await new Promise((resolve) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+                createFormImages.push(base64);
+            }
+            
+            updateCreateImagePreview();
+            fileInput.value = ''; // Reset input so same file can be added again
+        });
+    }
     
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -215,25 +310,10 @@ function setupCreateForm() {
             pricePerNight: parseFloat(formData.get('pricePerNight')),
             maxGuests: parseInt(formData.get('maxGuests')),
             amenities: formData.get('amenities'),
-            isActive: formData.get('isActive') === 'on',
-            images: '[]',
-            provider: { id: parseInt(localStorage.getItem('providerId')) }
+            isActive: true,
+            images: JSON.stringify(createFormImages),
+            providerId: parseInt(localStorage.getItem('providerId'))
         };
-        
-        // Handle images
-        const files = formData.getAll('images');
-        if (files.length > 0) {
-            const imageUrls = [];
-            for (const file of files) {
-                const reader = new FileReader();
-                const base64 = await new Promise((resolve) => {
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(file);
-                });
-                imageUrls.push(base64);
-            }
-            property.images = JSON.stringify(imageUrls);
-        }
         
         try {
             const res = await fetch('/api/properties', {
@@ -243,9 +323,11 @@ function setupCreateForm() {
             });
             
             if (res.ok) {
-                alert('Property created!');
                 form.reset();
-                loadProperties();
+                createFormImages = []; // Clear images array
+                updateCreateImagePreview(); // Clear preview
+                // Redirect to My Cribs page
+                window.location.href = 'provider-listings.html';
             } else {
                 alert('Failed to create property');
             }
@@ -565,8 +647,6 @@ window.editProp = async function(id) {
 }
 
 window.deleteProp = async function(id) {
-    if (!confirm('Delete this property?')) return;
-    
     try {
         await fetch(`/api/properties/${id}`, { method: 'DELETE' });
         loadProperties();

@@ -2,6 +2,7 @@
 
 let allProperties = [];
 let filteredProperties = [];
+window.propertyImages = {}; // Store images for each property globally
 
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search);
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         appendGuestParam(['navDashboard', 'navProperties', 'navProfile']);
         hideElement('navSubscriptions');
         hideElement('navBookings');
+        hideElement('navReviews');
         hideElement('navLogout');
     }
 
@@ -60,6 +62,22 @@ function displayProperties(properties) {
             ? property.maxGuests
             : null;
 
+        // Parse images
+        let images = [];
+        if (property.images) {
+            try {
+                if (property.images.startsWith('[')) {
+                    images = JSON.parse(property.images);
+                } else if (property.images.startsWith('data:') || property.images.startsWith('http')) {
+                    images = [property.images];
+                }
+            } catch (e) {
+                console.error('Image parse error:', e);
+            }
+        }
+        
+        window.propertyImages[property.id] = { images, index: 0 };
+
         return `
         <div class="property-card" style="
             border: 2px solid #28a745; 
@@ -70,6 +88,17 @@ function displayProperties(properties) {
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: transform 0.2s, box-shadow 0.2s;
         " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+            
+            ${images.length > 0 ? `
+                <div style="position:relative; margin-bottom:20px;">
+                    <img id="img-${property.id}" style="width:100%; height:300px; object-fit:cover; border-radius:8px; background:#f0f0f0;">
+                    ${images.length > 1 ? `
+                        <button onclick="window.changeCustomerImg(${property.id}, -1)" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.7); color:white; border:none; padding:10px 15px; border-radius:50%; cursor:pointer; font-size:20px;">❮</button>
+                        <button onclick="window.changeCustomerImg(${property.id}, 1)" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.7); color:white; border:none; padding:10px 15px; border-radius:50%; cursor:pointer; font-size:20px;">❯</button>
+                        <div id="counter-${property.id}" style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.7); color:white; padding:5px 10px; border-radius:5px;">1 / ${images.length}</div>
+                    ` : ''}
+                </div>
+            ` : '<div style="padding:40px; background:#f5f5f5; text-align:center; color:#999; margin-bottom:20px; border-radius:8px;">No images available</div>'}
             
             <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:16px; border-bottom:2px solid #f3f4f6; padding-bottom:12px;">
                 <div style="flex:1;">
@@ -111,6 +140,60 @@ function displayProperties(properties) {
         </div>
     `;
     }).join('');
+    
+    // Load images after DOM is updated
+    setTimeout(() => {
+        properties.forEach(property => {
+            const data = window.propertyImages[property.id];
+            if (data && data.images.length > 0) {
+                loadPropertyImage(property.id, 0);
+            }
+        });
+    }, 10);
+}
+
+function loadPropertyImage(propId, index) {
+    const data = window.propertyImages[propId];
+    if (!data || !data.images.length) return;
+    
+    const img = document.getElementById(`img-${propId}`);
+    if (!img) return;
+    
+    const imageData = data.images[index];
+    
+    if (imageData.startsWith('data:image')) {
+        try {
+            const parts = imageData.split(',');
+            const mimeType = parts[0].match(/:(.*?);/)[1];
+            const base64 = parts[1];
+            
+            const byteChars = atob(base64);
+            const byteArray = new Uint8Array(byteChars.length);
+            for (let i = 0; i < byteChars.length; i++) {
+                byteArray[i] = byteChars.charCodeAt(i);
+            }
+            const blob = new Blob([byteArray], { type: mimeType });
+            const blobUrl = URL.createObjectURL(blob);
+            
+            img.src = blobUrl;
+        } catch (err) {
+            console.error(`Error loading image for property ${propId}:`, err);
+        }
+    } else {
+        img.src = imageData;
+    }
+}
+
+window.changeCustomerImg = function(propId, dir) {
+    const data = window.propertyImages[propId];
+    if (!data || !data.images.length) return;
+    
+    data.index = (data.index + dir + data.images.length) % data.images.length;
+    
+    loadPropertyImage(propId, data.index);
+    
+    const counter = document.getElementById(`counter-${propId}`);
+    if (counter) counter.textContent = `${data.index + 1} / ${data.images.length}`;
 }
 
 function filterProperties() {
@@ -201,7 +284,8 @@ function showPropertyModal(property, reviews) {
                     <div style="border: 1px solid #eee; padding: 10px; margin: 5px 0; border-radius: 5px;">
                         <p><strong>Rating:</strong> ${'⭐'.repeat(review.rating)} (${review.rating}/5)</p>
                         ${review.comment ? `<p><strong>Comment:</strong> ${review.comment}</p>` : ''}
-                        <p><small>By: ${review.customer ? review.customer.firstName + ' ' + review.customer.lastName : 'Anonymous'}</small></p>
+                        <p><small>By: ${review.customer ? (review.customer.name || review.customer.firstName + ' ' + review.customer.lastName || review.customer.email) : review.guestName || 'Anonymous'}</small></p>
+                        ${review.providerReply ? `<div style="background:#f0f9ff; padding:10px; margin-top:8px; border-radius:5px; border-left:3px solid #007bff;"><p style="margin:0; font-weight:600; color:#0b1220; font-size:0.85rem;">Provider Response:</p><p style="margin:5px 0 0 0; color:#374151; font-size:0.9rem;">${review.providerReply}</p></div>` : ''}
                     </div>
                 `).join('') : '<p>No reviews yet.</p>'}
             </div>
@@ -353,6 +437,63 @@ function renderBookingModal(property, customerId) {
 
         const totalPrice = price !== null ? price * nights : 0;
 
+        // Show payment modal
+        showPaymentModal(property, customerId, checkIn, checkOut, guests, totalPrice, closeModal);
+    });
+}
+
+function showPaymentModal(property, customerId, checkIn, checkOut, guests, totalPrice, closeBookingModal) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:2000;';
+    
+    const content = document.createElement('div');
+    content.style.cssText = 'background:white; padding:30px; border-radius:12px; width:90%; max-width:400px; box-shadow:0 10px 40px rgba(0,0,0,0.3);';
+    
+    content.innerHTML = `
+        <h2 style="margin-top:0; color:#0b1220;">Payment Information</h2>
+        <form id="paymentForm" style="display:grid; gap:15px;">
+            <div>
+                <label style="font-weight:600; color:#0b1220; display:block; margin-bottom:5px;">Card Number</label>
+                <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" style="padding:10px; border:1px solid #d1d5db; border-radius:8px; width:100%; box-sizing:border-box;">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                <div>
+                    <label style="font-weight:600; color:#0b1220; display:block; margin-bottom:5px;">Expiry</label>
+                    <input type="text" placeholder="MM/YY" maxlength="5" style="padding:10px; border:1px solid #d1d5db; border-radius:8px; width:100%; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="font-weight:600; color:#0b1220; display:block; margin-bottom:5px;">CVV</label>
+                    <input type="text" placeholder="123" maxlength="3" style="padding:10px; border:1px solid #d1d5db; border-radius:8px; width:100%; box-sizing:border-box;">
+                </div>
+            </div>
+            <div>
+                <label style="font-weight:600; color:#0b1220; display:block; margin-bottom:5px;">Name on Card</label>
+                <input type="text" placeholder="John Doe" style="padding:10px; border:1px solid #d1d5db; border-radius:8px; width:100%; box-sizing:border-box;">
+            </div>
+            <div style="font-size:1.1rem; font-weight:700; color:#0b1220; padding:10px 0;">
+                Total: $${totalPrice.toFixed(2)}
+            </div>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="button" id="paymentCancel" style="flex:1; padding:12px; background:#e5e7eb; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Cancel</button>
+                <button type="submit" style="flex:1; padding:12px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Pay Now</button>
+            </div>
+        </form>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    const closePaymentModal = () => document.body.removeChild(modal);
+    
+    modal.addEventListener('click', (e) => { 
+        if (e.target === modal) closePaymentModal(); 
+    });
+    
+    content.querySelector('#paymentCancel').addEventListener('click', closePaymentModal);
+    
+    content.querySelector('#paymentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
         const bookingData = {
             customerId: parseInt(customerId),
             propertyId: property.id,
@@ -370,19 +511,14 @@ function renderBookingModal(property, customerId) {
             });
 
             if (response.ok) {
-                const booking = await response.json();
-                totalEl.textContent = `Booked! Redirecting to My Bookings...`;
-                setTimeout(() => {
-                    closeModal();
-                    window.location.href = 'customer-bookings.html';
-                }, 800);
+                closePaymentModal();
+                closeBookingModal();
+                window.location.href = 'customer-bookings.html';
             } else {
-                const errorText = await response.text();
-                errorEl.textContent = 'Error creating booking: ' + errorText;
+                alert('Booking failed. Please try again.');
             }
         } catch (err) {
-            console.error('Error creating booking:', err);
-            errorEl.textContent = 'Network error. Please try again.';
+            alert('Error: ' + err.message);
         }
     });
 }

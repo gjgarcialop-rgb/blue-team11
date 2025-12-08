@@ -21,6 +21,7 @@
             <a href="provider-dashboard.html">Dashboard</a>
             <a href="provider-listings.html">My Cribs</a>
             <a href="create-listing.html" class="active">Create a Crib</a>
+            <a href="provider-reviews.html">Reviews</a>
             <a href="provider-profile.html">Profile</a>
             <a href="index.html" id="logoutBtn">Log Out</a>
         </nav>
@@ -84,8 +85,44 @@
                     </div>
 
                     <div style="background:#f3f4f6; padding:20px; border-radius:8px; border:2px dashed #d1d5db;">
-                        <label style="font-weight:600; color:#0b1220; font-size:0.95rem; display:block; margin-bottom:10px;">📸 Photos (Coming Soon)</label>
-                        <p style="color:#6b7280; font-size:0.9rem; margin:0;">Photo upload functionality will be available soon. For now, properties will use default images.</p>
+                        <label style="font-weight:600; color:#0b1220; font-size:0.95rem; display:block; margin-bottom:10px;">📸 Property Photos</label>
+                        
+                        <!-- Mode toggle -->
+                        <div style="display:flex; gap:10px; margin-bottom:15px;">
+                            <button type="button" id="modeFileBtn" onclick="toggleImageMode('file')" 
+                                style="padding:8px 16px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">
+                                Upload Files
+                            </button>
+                            <button type="button" id="modeUrlBtn" onclick="toggleImageMode('url')" 
+                                style="padding:8px 16px; background:#e5e7eb; color:#374151; border:none; border-radius:6px; cursor:pointer; font-weight:500;">
+                                Add URL
+                            </button>
+                        </div>
+                        
+                        <!-- File upload section -->
+                        <div id="fileUploadSection" style="display:block;">
+                            <input type="file" id="imageFiles" multiple accept="image/*" 
+                                style="padding:10px; border:2px solid #d1d5db; border-radius:6px; width:100%; font-size:0.9rem; margin-bottom:10px;">
+                            <p style="color:#6b7280; font-size:0.85rem; margin:5px 0 0 0;">Select one or more image files</p>
+                        </div>
+                        
+                        <!-- URL input section -->
+                        <div id="urlInputSection" style="display:none;">
+                            <div style="display:flex; gap:10px; align-items:flex-end;">
+                                <div style="flex:1;">
+                                    <input type="text" id="imageUrlInput" placeholder="https://example.com/image.jpg" 
+                                        style="padding:10px; border:2px solid #d1d5db; border-radius:6px; width:100%; font-size:0.9rem;">
+                                </div>
+                                <button type="button" onclick="addImageUrl()" 
+                                    style="padding:10px 20px; background:#28a745; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500; white-space:nowrap;">
+                                    Add URL
+                                </button>
+                            </div>
+                            <p style="color:#6b7280; font-size:0.85rem; margin:5px 0 0 0;">Enter image URL and click "Add URL"</p>
+                        </div>
+                        
+                        <!-- Preview area -->
+                        <div id="imagePreviewArea" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:10px; margin-top:15px;"></div>
                     </div>
 
                     <button type="submit" class="button-submit" 

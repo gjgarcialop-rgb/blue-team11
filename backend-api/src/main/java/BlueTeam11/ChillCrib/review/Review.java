@@ -36,6 +36,9 @@ public class Review {
     @Column(columnDefinition = "text")
     private String comment;
 
+    @Column(columnDefinition = "text")
+    private String providerReply;
+
     private String guestName;
 
     public Review() {
@@ -88,5 +91,13 @@ public class Review {
 
     public void setGuestName(String guestName) {
         this.guestName = guestName;
+    }
+
+    public String getProviderReply() {
+        return providerReply;
+    }
+
+    public void setProviderReply(String providerReply) {
+        this.providerReply = providerReply;
     }
 }

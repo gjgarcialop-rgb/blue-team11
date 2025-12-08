@@ -136,16 +136,12 @@ function displayBookingGroup(bookings, containerId, isUpcoming) {
                 </div>
             </div>
             
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:10px;">
                 <div style="font-size:1.4rem; font-weight:700; color:#28a745;">💰 $${Number(booking.totalPrice).toFixed(2)}</div>
-                <div style="display:flex; gap:10px;">
-                    ${isUpcoming ? `
-                        <button onclick="editBooking(${booking.id})" class="button" style="padding:10px 20px; background:#007bff; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Edit</button>
-                        <button onclick="cancelBooking(${booking.id})" class="button" style="padding:10px 20px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Cancel</button>
-                    ` : `
-                        <button onclick="reviewProperty(${booking.property ? booking.property.id : booking.propertyId}, ${booking.id})" class="button" style="padding:10px 20px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Write Review</button>
-                        <button onclick="viewBookingDetails(${booking.id})" class="button" style="padding:10px 20px; background:#6c757d; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Details</button>
-                    `}
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button onclick="editBooking(${booking.id})" class="button" style="padding:10px 20px; background:#007bff; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Edit</button>
+                    <button onclick="cancelBooking(${booking.id})" class="button" style="padding:10px 20px; background:#dc3545; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Cancel</button>
+                    <button onclick="reviewProperty(${booking.property ? booking.property.id : booking.propertyId}, ${booking.id})" class="button" style="padding:10px 20px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Review</button>
                 </div>
             </div>
         </div>
@@ -337,39 +333,102 @@ async function cancelBooking(bookingId) {
 async function reviewProperty(propertyId, bookingId) {
     const customerId = localStorage.getItem('customerId');
     
-    const rating = parseInt(prompt('Rate this property (1-5 stars):'));
-    const comment = prompt('Write a review (optional):');
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:1000;';
     
-    if (!rating || rating < 1 || rating > 5) {
-        alert('Please provide a valid rating (1-5)');
-        return;
-    }
+    const content = document.createElement('div');
+    content.style.cssText = 'background:white; padding:30px; border-radius:12px; width:90%; max-width:500px; box-shadow:0 10px 40px rgba(0,0,0,0.3);';
     
-    const reviewData = {
-        customerId: parseInt(customerId),
-        propertyId: propertyId,
-        rating: rating,
-        comment: comment || ''
-    };
+    content.innerHTML = `
+        <h2 style="margin-top:0; color:#0b1220;">Write a Review</h2>
+        <form id="reviewForm" style="display:grid; gap:15px;">
+            <div>
+                <label style="font-weight:600; color:#0b1220; display:block; margin-bottom:10px;">Rating</label>
+                <div id="starRating" style="display:flex; gap:8px; font-size:2rem;">
+                    <span data-rating="1" style="color:#d1d5db; cursor:pointer; user-select:none;">★</span>
+                    <span data-rating="2" style="color:#d1d5db; cursor:pointer; user-select:none;">★</span>
+                    <span data-rating="3" style="color:#d1d5db; cursor:pointer; user-select:none;">★</span>
+                    <span data-rating="4" style="color:#d1d5db; cursor:pointer; user-select:none;">★</span>
+                    <span data-rating="5" style="color:#d1d5db; cursor:pointer; user-select:none;">★</span>
+                </div>
+                <input type="hidden" id="rating" required>
+            </div>
+            <div>
+                <label style="font-weight:600; color:#0b1220; display:block; margin-bottom:5px;">Comment</label>
+                <textarea id="comment" rows="4" placeholder="Share your experience..." style="padding:10px; border:1px solid #d1d5db; border-radius:8px; width:100%; box-sizing:border-box; font-family:inherit;"></textarea>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="button" id="cancelReview" style="flex:1; padding:12px; background:#e5e7eb; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Cancel</button>
+                <button type="submit" style="flex:1; padding:12px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Submit Review</button>
+            </div>
+        </form>
+    `;
     
-    try {
-        const response = await fetch('/api/reviews', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(reviewData)
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    const close = () => document.body.removeChild(modal);
+    
+    // Star rating functionality
+    const stars = modal.querySelectorAll('#starRating span');
+    const ratingInput = modal.querySelector('#rating');
+    let selectedRating = 0;
+    
+    stars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            stars.forEach((s, i) => {
+                s.style.color = i < rating ? '#fbbf24' : '#d1d5db';
+            });
         });
         
-        if (response.ok) {
-            // alert removed
-        } else {
-            // alert removed
+        star.addEventListener('click', function(e) {
+            e.stopPropagation();
+            selectedRating = parseInt(this.getAttribute('data-rating'));
+            ratingInput.value = selectedRating;
+            stars.forEach((s, i) => {
+                s.style.color = i < selectedRating ? '#f59e0b' : '#d1d5db';
+            });
+        });
+    });
+    
+    modal.querySelector('#starRating').addEventListener('mouseleave', function() {
+        stars.forEach((s, i) => {
+            s.style.color = i < selectedRating ? '#f59e0b' : '#d1d5db';
+        });
+    });
+    
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    modal.querySelector('#cancelReview').addEventListener('click', close);
+    
+    content.querySelector('#reviewForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const rating = parseInt(document.getElementById('rating').value);
+        const comment = document.getElementById('comment').value;
+        
+        const reviewData = {
+            customer: { id: parseInt(customerId) },
+            property: { id: propertyId },
+            rating: rating,
+            comment: comment || ''
+        };
+        
+        try {
+            const response = await fetch('/api/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reviewData)
+            });
+            
+            if (response.ok) {
+                close();
+                loadCustomerBookings(customerId);
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
         }
-    } catch (error) {
-        console.error('Error submitting review:', error);
-        // alert removed
-    }
+    });
 }
 
 async function viewBookingDetails(bookingId) {

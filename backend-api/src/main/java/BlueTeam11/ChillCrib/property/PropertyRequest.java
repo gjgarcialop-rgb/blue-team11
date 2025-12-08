@@ -12,6 +12,7 @@ public class PropertyRequest {
     public Integer maxGuests;
     public Boolean isActive;
     public Long providerId;
+    public String images;
 
     
 }
