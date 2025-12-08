@@ -36,6 +36,9 @@ public class PropertyService {
         existingProperty.setMaxGuests(propertyDetails.getMaxGuests());
         existingProperty.setAmenities(propertyDetails.getAmenities());
         existingProperty.setIsActive(propertyDetails.getIsActive());
+        if (propertyDetails.getImages() != null) {
+            existingProperty.setImages(propertyDetails.getImages());
+        }
 
         return propertyRepository.save(existingProperty);
     }

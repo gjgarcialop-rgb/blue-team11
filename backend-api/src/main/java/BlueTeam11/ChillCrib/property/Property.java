@@ -48,6 +48,9 @@ public class Property {
     @Column(columnDefinition = "TEXT")
     private String amenities;
 
+    @Column(columnDefinition = "TEXT")
+    private String images; // Comma-separated list of image URLs
+
     private Boolean isActive = true;
     private Integer bookingsThisMonth;
     private Integer currentImageIndex;
@@ -130,6 +133,14 @@ public class Property {
 
     public void setAmenities(String amenities) {
         this.amenities = amenities;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
     }
 
     public Boolean getIsActive() {

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Images</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #f5f5f5; }
+        .property { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .property h3 { margin: 0 0 10px 0; color: #0b1220; }
+        .image-info { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 4px; font-family: monospace; font-size: 0.85rem; }
+        .image-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+        .image-preview img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; border: 2px solid #ddd; }
+        .error { color: #dc3545; font-weight: bold; }
+        .success { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Image Debug Tool</h1>
+    <p>This page shows exactly what's stored in the database for each property's images field.</p>
+    <div id="output"></div>
+
+    <script>
+        async function debugImages() {
+            try {
+                const response = await fetch('/api/properties');
+                if (!response.ok) throw new Error('Failed to fetch properties');
+                
+                const properties = await response.json();
+                const output = document.getElementById('output');
+                
+                properties.forEach(property => {
+                    const div = document.createElement('div');
+                    div.className = 'property';
+                    
+                    let images = [];
+                    try {
+                        images = property.images ? JSON.parse(property.images) : [];
+                        if (!Array.isArray(images)) images = [];
+                    } catch (e) {
+                        images = property.images ? property.images.split('|||').map(img => img.trim()) : [];
+                    }
+                    
+                    let html = `
+                        <h3>${property.title || 'Untitled'} (ID: ${property.id})</h3>
+                        <div class="image-info">
+                            <strong>Images Field Value:</strong><br>
+                            ${property.images ? property.images.substring(0, 100) + '...' : '<span class="error">NULL or EMPTY</span>'}
+                        </div>
+                        <div class="image-info">
+                            <strong>Parsed Images:</strong> ${images.length > 0 ? `<span class="success">${images.length} image(s) found</span>` : '<span class="error">No images</span>'}
+                        </div>
+                    `;
+                    
+                    if (images.length > 0) {
+                        html += '<div class="image-preview">';
+                        images.forEach((img, index) => {
+                            const isBase64 = img.startsWith('data:');
+                            const isUrl = img.startsWith('http://') || img.startsWith('https://') || img.startsWith('/');
+                            
+                            html += `
+                                <div>
+                                    <div style="font-size:0.75rem; margin-bottom:4px;">
+                                        ${index + 1}. ${isBase64 ? '📁 Base64' : isUrl ? '🔗 URL' : '❓ Unknown'} 
+                                        (${img.length} chars)
+                                    </div>
+                                    <img src="${img}" 
+                                         onerror="this.style.border='2px solid red'; this.alt='❌ Failed to load';"
+                                         onload="this.style.border='2px solid green';">
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    div.innerHTML = html;
+                    output.appendChild(div);
+                });
+                
+                console.log('📊 Full properties data:', properties);
+                
+            } catch (error) {
+                document.getElementById('output').innerHTML = `
+                    <div class="property">
+                        <h3 class="error">❌ Error loading properties</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                console.error('Error:', error);
+            }
+        }
+
+        debugImages();
+    </script>
+</body>
+</html>
