@@ -1,6 +1,16 @@
 // Provider Dashboard - Load and display provider's property listings
 
 document.addEventListener('DOMContentLoaded', async function () {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('provider-signin.html');
+        });
+    }
+
     const providerId = localStorage.getItem('providerId');
 
     // Redirect to login if not authenticated
@@ -34,6 +44,10 @@ function renderProperties(properties) {
     const buttonDiv = container.querySelector('div[style*="text-align: center"]');
     
     container.innerHTML = '';
+    // Clear existing content except comments
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
     // Create "Your Listings" heading
     const gridTitle = document.createElement('h3');
@@ -66,17 +80,40 @@ function renderProperties(properties) {
         };
         card.onclick = () => window.location.href = `provider-listings.html`;
 
-        card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
-                <h4 style="margin:0; color:#0b1220; font-size:1.2rem;">${property.title || 'Untitled'}</h4>
-                <span style="padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:600; background:${property.isActive ? '#d4edda' : '#f8d7da'}; color:${property.isActive ? '#155724' : '#721c24'};">
-                    ${property.isActive ? 'Active' : 'Inactive'}
-                </span>
-            </div>
-            <div style="color:#6b7280; font-size:0.9rem; margin-bottom:8px;">📍 ${property.location || 'No location'}</div>
-            <div style="font-size:1.3rem; font-weight:700; color:#28a745; margin-bottom:10px;">$${property.pricePerNight || 0}/night</div>
-            <div style="color:#374151; font-size:0.85rem;">👥 Up to ${property.maxGuests || 'N/A'} guests</div>
-        `;
+        // Header container
+        const headerDiv = document.createElement('div');
+        headerDiv.style.cssText = 'display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;';
+        
+        const title = document.createElement('h4');
+        title.style.cssText = 'margin:0; color:#0b1220; font-size:1.2rem;';
+        title.textContent = property.title || 'Untitled';
+        
+        const statusBadge = document.createElement('span');
+        statusBadge.style.cssText = `padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:600; background:${property.isActive ? '#d4edda' : '#f8d7da'}; color:${property.isActive ? '#155724' : '#721c24'};`;
+        statusBadge.textContent = property.isActive ? 'Active' : 'Inactive';
+        
+        headerDiv.appendChild(title);
+        headerDiv.appendChild(statusBadge);
+        
+        // Location
+        const locationDiv = document.createElement('div');
+        locationDiv.style.cssText = 'color:#6b7280; font-size:0.9rem; margin-bottom:8px;';
+        locationDiv.textContent = `📍 ${property.location || 'No location'}`;
+        
+        // Price
+        const priceDiv = document.createElement('div');
+        priceDiv.style.cssText = 'font-size:1.3rem; font-weight:700; color:#28a745; margin-bottom:10px;';
+        priceDiv.textContent = `$${property.pricePerNight || 0}/night`;
+        
+        // Guests
+        const guestsDiv = document.createElement('div');
+        guestsDiv.style.cssText = 'color:#374151; font-size:0.85rem;';
+        guestsDiv.textContent = `👥 Up to ${property.maxGuests || 'N/A'} guests`;
+        
+        card.appendChild(headerDiv);
+        card.appendChild(locationDiv);
+        card.appendChild(priceDiv);
+        card.appendChild(guestsDiv);
 
         grid.appendChild(card);
     });
