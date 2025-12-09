@@ -10,6 +10,23 @@ Giovanni Garcia Lopez
 
 > Allen Orozco Lopez
 
+### Instructions on how to run the project
+1. Download the ZIP file to your File Explorer/Finder
+2. Extract the ZIP file and place the folder to a safe place, like Documents.
+3. Open Visual Studio Code and 
+    - For Mac: File / Open Folder / Documents / blue-team11
+    -For Windows: File / Open Folder / Documents / location of the file
+4. Once the project has loaded, Navigate to the backend-api folder on VisualStudioCode 
+    - click on src / main / java
+    -Click on ChillCribApplication.java
+    - click on run main
+5. after about 5-7 seconds, on your web browser, type in this link
+    - http://localhost:8080/
+    or
+    - http:/localhost:8080/index.html
+6. After that, you are all set to use the App!
+
+
 ## Description 
 Out product is a an AirBNB (aka ChillCrib) oriented service, where customers will be able to rent out houses, apartments, or any vacation homes, while being treated to a simple well organized interface. The providers have an easy to understand interface for adding new listings, viewing statistics, and replying to reviews. The SysAdmin also has easy access with an appropriate account to moderate any listings or reviews. 
 
