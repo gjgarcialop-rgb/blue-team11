@@ -122,17 +122,19 @@ function renderProperties(properties) {
             card.appendChild(noImage);
         }
         
-        
+        // Header section with title, location, and price
         const header = document.createElement('div');
         header.className = 'property-card-header';
         
         const headerLeft = document.createElement('div');
         headerLeft.style.flex = '1';
         
+        //title
         const title = document.createElement('h3');
         title.className = 'property-card-title';
         title.textContent = prop.title || 'Untitled';
         
+        //location
         const locationDiv = document.createElement('div');
         locationDiv.className = 'property-card-location';
         const locationSpan = document.createElement('span');
@@ -142,6 +144,7 @@ function renderProperties(properties) {
         headerLeft.appendChild(title);
         headerLeft.appendChild(locationDiv);
         
+        //price
         const priceDiv = document.createElement('div');
         priceDiv.className = 'property-card-price';
 
@@ -241,7 +244,7 @@ function renderProperties(properties) {
                 if (img) {
                     const imageData = images[0];
                     
-                    // For base64 images, convert to blob to avoid URL length issues
+                    // For base64 images, convert to a "blob" URL
                     if (imageData.startsWith('data:image')) {
                         try {
                             // Extract the base64 part and mime type
@@ -318,44 +321,7 @@ window.changeImg = function(propId, dir) {
 // Global array to store images for create form
 let createFormImages = [];
 
-// Toggle between file upload and URL input mode
-window.toggleImageMode = function(mode) {
-    const fileSection = document.getElementById('fileUploadSection');
-    const urlSection = document.getElementById('urlInputSection');
-    const fileBtn = document.getElementById('modeFileBtn');
-    const urlBtn = document.getElementById('modeUrlBtn');
-    
-    if (mode === 'file') {
-        fileSection.style.display = 'block';
-        urlSection.style.display = 'none';
-        fileBtn.style.background = '#007bff';
-        fileBtn.style.color = 'white';
-        urlBtn.style.background = '#e5e7eb';
-        urlBtn.style.color = '#374151';
-    } else {
-        fileSection.style.display = 'none';
-        urlSection.style.display = 'block';
-        fileBtn.style.background = '#e5e7eb';
-        fileBtn.style.color = '#374151';
-        urlBtn.style.background = '#007bff';
-        urlBtn.style.color = 'white';
-    }
-};
 
-// this function adds image URLs to create form
-window.addImageUrl = function() {
-    const urlInput = document.getElementById('imageUrlInput');
-    const url = urlInput.value.trim();
-    
-    if (!url) {
-        alert('Please enter a valid URL');
-        return;
-    }
-    
-    createFormImages.push(url);
-    urlInput.value = '';
-    updateCreateImagePreview();
-};
 
 // this function removes images from create form
 window.removeCreateImage = function(index) {
@@ -462,19 +428,19 @@ function setupCreateForm() {
 window.editProp = async function(id) {
     const property = await fetch(`/api/properties/${id}`).then(r => r.json());
     
-    // Create modal overlay
+    // creates the modal structure
     const modal = document.createElement('div');
     modal.className = 'edit-modal';
     
     const modalContent = document.createElement('div');
     modalContent.className = 'edit-modal-content';
     
-    // Image mode toggle
+
     let currentMode = 'file';
     let selectedImages = [];
     let existingImages = [];
     
-    // Parse existing images
+    // Parses the existing images
     try {
         if (property.images) {
             if (property.images.startsWith('[')) {
@@ -506,7 +472,8 @@ window.editProp = async function(id) {
     const form = document.createElement('form');
     form.id = 'edit-form';
     
-    // Basic Information Section
+    // Basic Information section that makes up the modal overlay popup
+    //Bunch of createElement statements to build the form
     const basicSection = document.createElement('div');
     basicSection.style.marginBottom = '28px';
 
@@ -522,6 +489,7 @@ window.editProp = async function(id) {
     titleLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
     titleLabel.textContent = 'Property Title *';
 
+    //Title
     const titleInput = document.createElement('input');
     titleInput.type = 'text';
     titleInput.name = 'title';
@@ -540,6 +508,7 @@ window.editProp = async function(id) {
     locationLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
     locationLabel.textContent = 'Location *';
 
+    //location
     const locationInput = document.createElement('input');
     locationInput.type = 'text';
     locationInput.name = 'location';
@@ -555,6 +524,7 @@ window.editProp = async function(id) {
     const descGroup = document.createElement('div');
     descGroup.style.marginBottom = '18px';
 
+    //Description
     const descLabel = document.createElement('label');
     descLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
     descLabel.textContent = 'Description';
@@ -604,6 +574,7 @@ window.editProp = async function(id) {
     priceGroup.appendChild(priceLabel);
     priceGroup.appendChild(priceInput);
     
+    // Max Guests group
     const guestsGroup = document.createElement('div');
 
     const guestsLabel = document.createElement('label');
@@ -631,6 +602,7 @@ window.editProp = async function(id) {
     const amenitiesSection = document.createElement('div');
     amenitiesSection.style.marginBottom = '28px';
 
+    //amenities 
     const amenitiesTitle = document.createElement('h3');
     amenitiesTitle.style.cssText = 'margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;';
     amenitiesTitle.textContent = '✨ Amenities & Status';
@@ -643,6 +615,7 @@ window.editProp = async function(id) {
     amenitiesLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
     amenitiesLabel.textContent = 'Amenities';
 
+
     const amenitiesInput = document.createElement('input');
     amenitiesInput.type = 'text';
     amenitiesInput.name = 'amenities';
@@ -654,6 +627,7 @@ window.editProp = async function(id) {
     amenitiesGroup.appendChild(amenitiesInput);
     amenitiesSection.appendChild(amenitiesGroup);
     
+    // Active Status Checkbox
     const activeLabel = document.createElement('label');
     activeLabel.style.cssText = 'display:flex; align-items:center; gap:10px; padding:12px; background:#f9fafb; border-radius:8px; cursor:pointer; transition:background 0.2s;';
     activeLabel.onmouseover = () => activeLabel.style.background = '#f3f4f6';
@@ -681,27 +655,13 @@ window.editProp = async function(id) {
     imagesTitle.textContent = '📷 Images';
     imagesSection.appendChild(imagesTitle);
     
-    const btnContainer = document.createElement('div');
-
-    btnContainer.style.cssText = 'display:flex; gap:12px; margin-bottom:14px;';
     const btnFile = document.createElement('button');
     btnFile.type = 'button';
-    btnFile.id = 'btn-file';
-    btnFile.style.cssText = 'padding:10px 20px; background:#007bff; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; transition:background 0.2s;';
+    btnFile.style.cssText = 'padding:10px 20px; background:#007bff; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; margin-bottom:14px;';
     btnFile.onmouseover = () => btnFile.style.background = '#0056b3';
     btnFile.onmouseout = () => btnFile.style.background = '#007bff';
     btnFile.textContent = '📁 Upload Files';
-
-    const btnUrl = document.createElement('button');
-    btnUrl.type = 'button';
-    btnUrl.id = 'btn-url';
-    btnUrl.style.cssText = 'padding:10px 20px; background:#6c757d; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; transition:background 0.2s;';
-    btnUrl.onmouseover = () => btnUrl.style.background = '#5a6268';
-    btnUrl.onmouseout = () => btnUrl.style.background = '#6c757d';
-    btnUrl.textContent = '🔗 Paste URLs';
-    btnContainer.appendChild(btnFile);
-    btnContainer.appendChild(btnUrl);
-    imagesSection.appendChild(btnContainer);
+    imagesSection.appendChild(btnFile);
     
     const fileContainer = document.createElement('div');
     fileContainer.id = 'file-input-container';
@@ -720,17 +680,6 @@ window.editProp = async function(id) {
     fileContainer.appendChild(imageInput);
     fileContainer.appendChild(imagePreview);
     imagesSection.appendChild(fileContainer);
-    
-    const urlContainer = document.createElement('div');
-    urlContainer.id = 'url-input-container';
-    urlContainer.style.display = 'none';
-    const urlInput = document.createElement('textarea');
-    urlInput.id = 'url-input';
-    urlInput.placeholder = 'Paste image URLs (one per line)';
-    urlInput.rows = 4;
-    urlInput.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; resize:vertical;';
-    urlContainer.appendChild(urlInput);
-    imagesSection.appendChild(urlContainer);
     form.appendChild(imagesSection);
     
     // Error div
@@ -774,22 +723,7 @@ window.editProp = async function(id) {
     form.querySelector('[name="amenities"]').value = property.amenities || '';
     form.querySelector('[name="isActive"]').checked = property.isActive || false;
     
-    // Toggle mode (btnFile, btnUrl, fileContainer, urlContainer already declared above)
-    btnFile.addEventListener('click', () => {
-        currentMode = 'file';
-        btnFile.style.background = '#007bff';
-        btnUrl.style.background = '#6c757d';
-        fileContainer.style.display = 'block';
-        urlContainer.style.display = 'none';
-    });
-    
-    btnUrl.addEventListener('click', () => {
-        currentMode = 'url';
-        btnFile.style.background = '#6c757d';
-        btnUrl.style.background = '#007bff';
-        fileContainer.style.display = 'none';
-        urlContainer.style.display = 'block';
-    });
+    // currentMode is always 'file' since URL input is removed
     
     // Display existing images first
     existingImages.forEach((imgSrc, index) => {
@@ -801,6 +735,8 @@ window.editProp = async function(id) {
         const imgElement = document.createElement('img');
         imgElement.style.cssText = 'width:100%; height:100px; object-fit:cover; border-radius:5px;';
         
+        // we convert the binary data of an image to text based with 
+        //base64 encoding
         if (imgSrc.startsWith('data:image')) {
             try {
                 const parts = imgSrc.split(',');
@@ -822,6 +758,7 @@ window.editProp = async function(id) {
         
         div.appendChild(imgElement);
         
+        // Remove button for existing images
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.textContent = '×';
@@ -840,6 +777,7 @@ window.editProp = async function(id) {
         const newFiles = Array.from(e.target.files);
         selectedImages = [...selectedImages, ...newFiles];
         
+        // Display previews of new images
         newFiles.forEach((file) => {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -892,8 +830,8 @@ window.editProp = async function(id) {
         // Handle images - combine existing and new
         let allImages = [...existingImages];
         
-        if (currentMode === 'file' && selectedImages.length > 0) {
-            // Add new uploaded images
+        // Add new uploaded images
+        if (selectedImages.length > 0) {
             for (const file of selectedImages) {
                 const reader = new FileReader();
                 const base64 = await new Promise((resolve) => {
@@ -902,10 +840,6 @@ window.editProp = async function(id) {
                 });
                 allImages.push(base64);
             }
-        } else if (currentMode === 'url' && urlInput.value.trim()) {
-            // Add new URL images
-            const newUrls = urlInput.value.split('\n').map(url => url.trim()).filter(url => url);
-            allImages = [...allImages, ...newUrls];
         }
         
         // Update images only if there are changes
