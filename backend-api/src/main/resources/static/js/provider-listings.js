@@ -18,7 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadProperties() {
     try {
-        const res = await fetch('/api/properties');
+
+        const providerId = localStorage.getItem('providerId');
+        if (!providerId) {
+            console.error('No providerId found in localStorage');
+            return;
+        }
+        const res = await fetch(`/api/properties/provider/${providerId}`);
         const properties = await res.json();
         renderProperties(properties);
     } catch (err) {
