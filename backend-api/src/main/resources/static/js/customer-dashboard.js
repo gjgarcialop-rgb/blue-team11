@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         appendGuestParam(['navDashboard', 'navProperties', 'navProfile']);
         hideElement('navSubscriptions');
         hideElement('navBookings');
+        hideElement('navReviews');
         hideElement('navLogout');
         hideElement('subscriptionCard');
         // Show friendly guest message
