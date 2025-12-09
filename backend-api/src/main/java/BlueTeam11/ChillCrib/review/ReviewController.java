@@ -5,6 +5,10 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for property reviews
+ * Handles creating, updating, and retrieving reviews with provider replies
+ */
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {

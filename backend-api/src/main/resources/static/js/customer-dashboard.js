@@ -67,19 +67,15 @@ async function loadCustomerInfo(customerId) {
     }
 }
 
-// Load customer bookings and subscriptions
+// Load customer bookings and subscriptions from API
 async function loadCustomerData(customerId) {
     try {
-        console.log('Loading bookings for customer:', customerId);
         const bookingsResponse = await fetch(`/api/bookings/customer/${customerId}`);
-        console.log('Bookings response status:', bookingsResponse.status);
         
         if (bookingsResponse.ok) {
             const bookings = await bookingsResponse.json();
-            console.log('Bookings received from API:', bookings);
             showBookings(bookings);
         } else {
-            console.error('Failed to load bookings, status:', bookingsResponse.status);
             document.getElementById('upcomingBookings').innerHTML = '<div style="color:#dc3545; text-align:center; padding:20px;">Failed to load bookings</div>';
         }
         
@@ -108,11 +104,9 @@ async function loadProperties() {
     }
 }
 
-// Display upcoming bookings
+// Display upcoming bookings (trips that haven't ended yet)
 function showBookings(bookings) {
     const upcomingList = document.getElementById('upcomingBookings');
-    
-    console.log('All bookings received:', bookings);
     
     if (!bookings || bookings.length === 0) {
         upcomingList.innerHTML = '<div style="color:#6b7280; text-align:center; padding:20px;">No upcoming trips — start searching for your next stay!</div>';
@@ -122,15 +116,12 @@ function showBookings(bookings) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    // Show all bookings where checkout hasn't passed yet
+    // Filter to show only bookings where checkout date hasn't passed
     const upcomingBookings = bookings.filter(booking => {
         const checkOutDate = new Date(booking.checkOut);
         checkOutDate.setHours(0, 0, 0, 0);
-        console.log('Booking:', booking.id, 'CheckOut:', checkOutDate, 'Today:', today, 'Show?', checkOutDate >= today);
         return checkOutDate >= today;
     });
-    
-    console.log('Upcoming bookings after filter:', upcomingBookings);
     
     if (upcomingBookings.length === 0) {
         upcomingList.innerHTML = '<div style="color:#6b7280; text-align:center; padding:20px;">No upcoming trips — start searching for your next stay!</div>';

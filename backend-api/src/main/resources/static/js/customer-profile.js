@@ -1,5 +1,8 @@
 // Initialize page when DOM loads
-document.addEventListener('DOMContentLoaded', async function () {
+// Customer Profile Page - View and edit customer account information
+// Features: Update name, email, phone, address, and password
+
+document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search);
     const isGuest = params.get('guest') === '1';
     

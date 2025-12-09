@@ -13,6 +13,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST controller for booking management
+ * Handles creating, updating, and viewing property bookings
+ */
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -46,9 +50,11 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.getBookingsByProperty(propertyId));
     }
 
+    // Create a new booking with validation for customer and property
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody Map<String, Object> bookingRequest) {
         try {
+            // Extract booking details from request
             Long customerId = Long.valueOf(bookingRequest.get("customerId").toString());
             Long propertyId = Long.valueOf(bookingRequest.get("propertyId").toString());
             String checkIn = bookingRequest.get("checkIn").toString();
