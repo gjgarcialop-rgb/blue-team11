@@ -1,5 +1,9 @@
+// Customer Reviews Page - View and manage reviews written by customer
+// Features: Edit reviews, update ratings and comments, view provider replies
+
 const customerId = localStorage.getItem('customerId');
 
+// Load all reviews written by this customer
 async function loadReviews() {
     if (!customerId) {
         window.location.href = 'customer-login.html';

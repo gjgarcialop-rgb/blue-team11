@@ -1,4 +1,5 @@
-// Customer Properties JavaScript - Pure Backend Data
+// Customer Properties Page - Browse and book available properties
+// Features: Property filtering, image carousel, booking with payment modal, reviews
 
 let allProperties = [];
 let filteredProperties = [];
@@ -196,6 +197,7 @@ window.changeCustomerImg = function(propId, dir) {
     if (counter) counter.textContent = `${data.index + 1} / ${data.images.length}`;
 }
 
+// Filter properties by location, price, and number of guests
 function filterProperties() {
     const locationFilter = document.getElementById('locationFilter').value.toLowerCase();
     const maxPrice = parseFloat(document.getElementById('maxPriceFilter').value) || Infinity;

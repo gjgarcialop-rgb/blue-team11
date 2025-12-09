@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller for provider (property owner) management
+ * Handles provider registration, login, and profile management
+ */
 @RestController
 @RequestMapping("/api/providers")
 public class ProviderController {
@@ -63,12 +67,11 @@ public class ProviderController {
         return ResponseEntity.noContent().build();
     }
 
+    // Authenticate provider login with email and password
     @PostMapping ("/signin")
     public ResponseEntity<Provider> loginProvider(@RequestBody ProviderLoginRequest providerLoginRequest) {
-
         Provider provider = providerService.authenticateProvider(providerLoginRequest.getEmail(), providerLoginRequest.getPassword());
         return provider != null ? ResponseEntity.ok(provider) : ResponseEntity.status(401).build();
-
     }
 
 

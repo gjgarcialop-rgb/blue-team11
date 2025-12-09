@@ -1,3 +1,6 @@
+// Provider Reviews Page - View and respond to property reviews
+// Features: View all reviews for provider's properties, reply to reviews, delete reviews
+
 const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
@@ -11,6 +14,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 
 const providerId = localStorage.getItem('providerId');
 
+// Load all reviews for this provider's properties
 async function loadReviews() {
     if (!providerId) {
         window.location.href = 'provider-signin.html';

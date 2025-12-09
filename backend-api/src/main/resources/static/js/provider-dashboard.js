@@ -1,3 +1,5 @@
+// Provider Dashboard - Load and display provider's property listings
+
 document.addEventListener('DOMContentLoaded', async function () {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
@@ -11,43 +13,37 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const providerId = localStorage.getItem('providerId');
 
+    // Redirect to login if not authenticated
     if (!providerId) {
         window.location.href = 'provider-signin.html';
         return;
     }
 
-    console.log('logged in as provider with ID:', providerId);
     await loadProviderProperties(providerId);
 });
 
+// Fetch all properties belonging to this provider
 async function loadProviderProperties(providerId) {
     try{
         const res = await fetch(`/api/properties/provider/${providerId}`);
-
-        if(!res.ok){
-            console.error('Failed to fetch properties for provider:', res.status);
-            return;
-
-        }
+        if(!res.ok) return;
 
         const properties = await res.json();
         renderProperties(properties);
-
-
     }catch (err){
         console.error('Error fetching provider properties:', err);
     }
 }
 
+// Render property cards in a responsive grid layout
 function renderProperties(properties) {
     const container = document.querySelector('.listing-card');
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
-    // Save the button div before clearing
+    // Save the button div before clearing content
     const buttonDiv = container.querySelector('div[style*="text-align: center"]');
     
+    container.innerHTML = '';
     // Clear existing content except comments
     while (container.firstChild) {
         container.removeChild(container.firstChild);

@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import BlueTeam11.ChillCrib.provider.Provider;
 import BlueTeam11.ChillCrib.provider.ProviderService;
 
+/**
+ * REST controller for managing property listings
+ * Handles CRUD operations for properties (cribs)
+ */
 @RestController
 @RequestMapping("/api/properties")
 public class PropertyController {
@@ -27,15 +31,19 @@ public class PropertyController {
         this.providerService = providerService;
     }
 
+    // Create a new property listing
     @PostMapping
     public ResponseEntity<?> createProperty(@RequestBody PropertyRequest req) {
+    // Validate required fields
     if (req.providerId == null) return ResponseEntity.badRequest().body("Provider is required");
     if (req.title == null || req.title.isBlank()) return ResponseEntity.badRequest().body("Title is required");
     if (req.location == null || req.location.isBlank()) return ResponseEntity.badRequest().body("Location is required");
 
+    // Verify provider exists
     Provider provider = providerService.getProviderById(req.providerId);
     if (provider == null) return ResponseEntity.badRequest().body("Provider not found: " + req.providerId);
 
+    // Build property object with defaults for optional fields
     Property p = new Property();
     p.setTitle(req.title);
     p.setLocation(req.location);
@@ -52,41 +60,7 @@ public class PropertyController {
     return ResponseEntity.ok(saved);
     }
 
-
-
-
-
-
-
-
-
-    // public ResponseEntity<?> createProperty(@RequestBody Property property) {
-    //     //This PostMapping if statement makes sure that there is a valid provider with the property;
-    //     //or else, it will return a bad request response.
-    //     if(property.getProvider() == null || property.getProvider().getId() == null ) {
-    //     return ResponseEntity.badRequest().body("Provider is required");
-    //     }
-
-    //     try{
-    //         Long providerId = property.getProvider().getId();
-    //         System.out.println("looking for provider: " + providerId);
-
-    //     Provider provider = providerService.getProviderById(providerId);
-    //         System.out.println("Provider found: " + provider);
-
-    //     property.setProvider(provider);
-    //     Property saved = propertyService.createProperty(property);
-
-    //     System.out.println("Property saved with id: " + saved.getId());
-    //     return ResponseEntity.ok(saved);
-    //     } catch (Exception e) {
-    //         System.err.println("Error: " + e.getMessage());
-    //         e.printStackTrace();
-    //         return ResponseEntity.badRequest().body("Error:" + e.getMessage());
-    //     }
-
-    // }
-
+    // Update existing property details
     @PutMapping("/{id}")
     public ResponseEntity<Property> updateProperty(@PathVariable Long id, @RequestBody Property propertyDetails) {
         return ResponseEntity.ok(propertyService.updateProperty(id, propertyDetails));

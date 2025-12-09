@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for customer management
+ * Handles customer registration, login, profile updates, and search
+ */
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
@@ -57,6 +61,7 @@ public class CustomerController {
         return customer != null ? ResponseEntity.ok(customer) : ResponseEntity.notFound().build();
     }
 
+    // Authenticate customer login with email and password
     @PostMapping("/login")
     public ResponseEntity<Customer> loginCustomer(@RequestBody LoginRequest loginRequest) {
         Customer customer = customerService.authenticateCustomer(loginRequest.getEmail(), loginRequest.getPassword());

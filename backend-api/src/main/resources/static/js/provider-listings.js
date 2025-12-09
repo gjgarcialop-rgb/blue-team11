@@ -1,4 +1,5 @@
-// Simple provider listings with working image support
+// Provider Listings Management - View, edit, and delete property listings
+// Supports multiple images per property with carousel navigation
 
 window.propertyImages = {}; // Store images for each property globally
 
@@ -18,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //checks if a provider is logged in
     const providerId = localStorage.getItem('providerId');
+    
+    // Redirect to login if not authenticated
     if (!providerId) {
         window.location.href = 'provider-signin.html';
         return;
@@ -64,26 +67,18 @@ function renderProperties(properties) {
 
     //the function to render each property card
     properties.forEach(prop => {
-        // Parse images
+        // Parse images from JSON or single image string
         let images = [];
         if (prop.images) {
-            console.log(`Property ${prop.id} - Raw images length: ${prop.images.length} chars`);
             try {
                 if (prop.images.startsWith('[')) {
                     images = JSON.parse(prop.images);
-                    console.log(`✅ Parsed ${images.length} images from JSON array`);
-                    if (images.length > 0) {
-                        console.log(`   First image length: ${images[0].length} chars`);
-                    }
                 } else if (prop.images.startsWith('data:') || prop.images.startsWith('http')) {
                     images = [prop.images];
-                    console.log(`Single image detected`);
                 }
             } catch (e) {
                 console.error('Image parse error:', e);
             }
-        } else {
-            console.log(`Property ${prop.id} has no images`);
         }
         
         window.propertyImages[prop.id] = { images, index: 0 };
@@ -264,15 +259,13 @@ function renderProperties(properties) {
                             const blobUrl = URL.createObjectURL(blob);
                             
                             img.src = blobUrl;
-                            img.onload = () => console.log(`✅ Image loaded for property ${prop.id}`);
-                            img.onerror = () => console.error(`❌ Failed to load image for property ${prop.id}`);
+                            img.onerror = () => console.error(`Failed to load image for property ${prop.id}`);
                         } catch (err) {
                             console.error(`Error converting image for property ${prop.id}:`, err);
                         }
                     } else {
                         // For regular URLs, set directly
                         img.src = imageData;
-                        img.onload = () => console.log(`✅ Image loaded for property ${prop.id}`);
                     }
                 }
             }, 10);
@@ -280,15 +273,10 @@ function renderProperties(properties) {
     });
 }
 
-//this function changes images in the carousel
+// Navigate through property images (carousel functionality)
 window.changeImg = function(propId, dir) {
-    console.log('changeImg called:', propId, dir);
     const data = window.propertyImages[propId];
-    console.log('Property data:', data);
-    if (!data || !data.images.length) {
-        console.error('No data or no images!');
-        return;
-    }
+    if (!data || !data.images.length) return;
     
     data.index = (data.index + dir + data.images.length) % data.images.length;
     
@@ -470,12 +458,11 @@ function setupCreateForm() {
     });
 }
 
-
+// Open modal to edit property details
 window.editProp = async function(id) {
     const property = await fetch(`/api/properties/${id}`).then(r => r.json());
-    console.log('Editing property:', property);
     
-    // Create modal
+    // Create modal overlay
     const modal = document.createElement('div');
     modal.className = 'edit-modal';
     
