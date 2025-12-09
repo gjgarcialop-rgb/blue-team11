@@ -2,7 +2,21 @@
 
 window.propertyImages = {}; // Store images for each property globally
 
+//The main event listener to load when the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Logout button functionality
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('provider-signin.html');
+        });
+    }
+
+    //checks if a provider is logged in
     const providerId = localStorage.getItem('providerId');
     if (!providerId) {
         window.location.href = 'provider-signin.html';
@@ -13,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProperties();
 });
 
+//the main function to load properties
 async function loadProperties() {
     try {
 
@@ -29,17 +44,25 @@ async function loadProperties() {
     }
 }
 
+//the main function to render properties
 function renderProperties(properties) {
     const container = document.querySelector('.listing-card');
     if (!container) return;
     
-    container.innerHTML = '';
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
     
     if (!properties.length) {
-        container.innerHTML = '<p style="padding:20px; color:#666;">No properties found.</p>';
+        const noPropsMsg = document.createElement('p');
+        noPropsMsg.style.cssText = 'padding:20px; color:#666;';
+        noPropsMsg.textContent = 'No properties found.';
+        container.appendChild(noPropsMsg);
         return;
     }
     
+
+    //the function to render each property card
     properties.forEach(prop => {
         // Parse images
         let images = [];
@@ -66,60 +89,157 @@ function renderProperties(properties) {
         window.propertyImages[prop.id] = { images, index: 0 };
         
         const card = document.createElement('div');
-        card.style.cssText = 'border:2px solid #007bff; padding:24px; margin:20px 0; border-radius:12px; background:white;';
+        card.className = 'property-card';
         
-        card.innerHTML = `
-            ${images.length > 0 ? `
-                <div style="position:relative; margin-bottom:20px;">
-                    <img id="img-${prop.id}" style="width:100%; height:300px; object-fit:cover; border-radius:8px; background:#f0f0f0;">
-                    <button onclick="window.changeImg(${prop.id}, -1)" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.7); color:white; border:none; padding:10px 15px; border-radius:50%; cursor:pointer; font-size:20px;">❮</button>
-                    <button onclick="window.changeImg(${prop.id}, 1)" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.7); color:white; border:none; padding:10px 15px; border-radius:50%; cursor:pointer; font-size:20px;">❯</button>
-                    <div id="counter-${prop.id}" style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.7); color:white; padding:5px 10px; border-radius:5px;">1 / ${images.length}</div>
-                </div>
-            ` : '<div style="padding:40px; background:#f5f5f5; text-align:center; color:#999; margin-bottom:20px; border-radius:8px;">No images</div>'}
+        // Image container or no-image placeholder
+        if (images.length > 0) {
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'property-card-image-container';
             
-            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:15px; border-bottom:2px solid #e9ecef; padding-bottom:12px;">
-                <div style="flex:1;">
-                    <h3 style="margin:0 0 8px 0; color:#0b1220; font-size:1.4rem;">${prop.title || 'Untitled'}</h3>
-                    <div style="display:inline-block; background:#e3f2fd; padding:6px 12px; border-radius:6px; border:1px solid #90caf9;">
-                        <span style="color:#1565c0; font-weight:600; font-size:0.95rem;">📍 ${prop.location || 'No location'}</span>
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    <div style="font-size:1.6rem; font-weight:700; color:#28a745;">$${prop.pricePerNight || 0}</div>
-                    <div style="font-size:0.85rem; color:#6b7280;">per night</div>
-                </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:16px;">
-                <div style="background:#f9fafb; padding:12px; border-radius:8px;">
-                    <div style="color:#6b7280; font-size:0.85rem; margin-bottom:4px;">Max Guests</div>
-                    <div style="color:#0b1220; font-weight:600; font-size:1rem;">👥 ${prop.maxGuests || 'N/A'}</div>
-                </div>
-                <div style="background:#f9fafb; padding:12px; border-radius:8px;">
-                    <div style="color:#6b7280; font-size:0.85rem; margin-bottom:4px;">Status</div>
-                    <div style="color:#0b1220; font-weight:600; font-size:1rem;">${prop.isActive ? '✅ Active' : '❌ Inactive'}</div>
-                </div>
-            </div>
-
-            <div style="background:#f9fafb; padding:12px; border-radius:8px; margin-bottom:16px;">
-                <div style="color:#6b7280; font-size:0.85rem; margin-bottom:6px;">Amenities</div>
-                <div style="color:#0b1220; font-weight:500; font-size:0.95rem;">🎯 ${prop.amenities || 'None listed'}</div>
-            </div>
-
-            <div style="color:#374151; line-height:1.6; margin-bottom:20px; font-size:0.95rem;">
-                ${prop.description || 'No description provided.'}
-            </div>
+            const img = document.createElement('img');
+            img.id = `img-${prop.id}`;
+            img.className = 'property-card-image';
             
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="window.editProp(${prop.id})" style="padding:10px 20px; background:#ffc107; border:none; border-radius:5px; cursor:pointer; font-weight:600;">Edit</button>
-                <button onclick="window.deleteProp(${prop.id})" style="padding:10px 20px; background:#dc3545; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:600;">Delete</button>
-            </div>
-        `;
+            const leftBtn = document.createElement('button');
+            leftBtn.className = 'property-card-carousel-btn left';
+            leftBtn.textContent = '❮';
+            leftBtn.onclick = () => window.changeImg(prop.id, -1);
+            
+            const rightBtn = document.createElement('button');
+            rightBtn.className = 'property-card-carousel-btn right';
+            rightBtn.textContent = '❯';
+            rightBtn.onclick = () => window.changeImg(prop.id, 1);
+            
+            const counter = document.createElement('div');
+            counter.id = `counter-${prop.id}`;
+            counter.className = 'property-card-counter';
+            counter.textContent = `1 / ${images.length}`;
+            
+            imageContainer.appendChild(img);
+            imageContainer.appendChild(leftBtn);
+            imageContainer.appendChild(rightBtn);
+            imageContainer.appendChild(counter);
+            card.appendChild(imageContainer);
+        } else {
+            const noImage = document.createElement('div');
+            noImage.className = 'property-card-no-image';
+            noImage.textContent = 'No images';
+            card.appendChild(noImage);
+        }
+        
+        
+        const header = document.createElement('div');
+        header.className = 'property-card-header';
+        
+        const headerLeft = document.createElement('div');
+        headerLeft.style.flex = '1';
+        
+        const title = document.createElement('h3');
+        title.className = 'property-card-title';
+        title.textContent = prop.title || 'Untitled';
+        
+        const locationDiv = document.createElement('div');
+        locationDiv.className = 'property-card-location';
+        const locationSpan = document.createElement('span');
+        locationSpan.textContent = `📍 ${prop.location || 'No location'}`;
+        locationDiv.appendChild(locationSpan);
+        
+        headerLeft.appendChild(title);
+        headerLeft.appendChild(locationDiv);
+        
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'property-card-price';
+
+        const priceAmount = document.createElement('div');
+        priceAmount.className = 'property-card-price-amount';
+        priceAmount.textContent = `$${prop.pricePerNight || 0}`;
+
+        const priceLabel = document.createElement('div');
+        priceLabel.className = 'property-card-price-label';
+        priceLabel.textContent = 'per night';
+        priceDiv.appendChild(priceAmount);
+        priceDiv.appendChild(priceLabel);
+        
+        header.appendChild(headerLeft);
+        header.appendChild(priceDiv);
+        card.appendChild(header);
+        
+        // Stats section for properties
+        const stats = document.createElement('div');
+        stats.className = 'property-card-stats';
+        
+        const guestsStat = document.createElement('div');
+        guestsStat.className = 'property-card-stat';
+
+        const guestsLabel = document.createElement('div');
+        guestsLabel.className = 'property-card-stat-label';
+        guestsLabel.textContent = 'Max Guests';
+
+        const guestsValue = document.createElement('div');
+        guestsValue.className = 'property-card-stat-value';
+        guestsValue.textContent = `👥 ${prop.maxGuests || 'N/A'}`;
+        guestsStat.appendChild(guestsLabel);
+        guestsStat.appendChild(guestsValue);
+        
+        const statusStat = document.createElement('div');
+        statusStat.className = 'property-card-stat';
+
+        const statusLabel = document.createElement('div');
+        statusLabel.className = 'property-card-stat-label';
+        statusLabel.textContent = 'Status';
+
+        const statusValue = document.createElement('div');
+        statusValue.className = 'property-card-stat-value';
+        statusValue.textContent = prop.isActive ? '✅ Active' : '❌ Inactive';
+        statusStat.appendChild(statusLabel);
+        statusStat.appendChild(statusValue);
+        
+        stats.appendChild(guestsStat);
+        stats.appendChild(statusStat);
+        card.appendChild(stats);
+        
+        // Amenities section
+        const amenities = document.createElement('div');
+        amenities.className = 'property-card-amenities';
+
+        const amenitiesLabel = document.createElement('div');
+        amenitiesLabel.className = 'property-card-amenities-label';
+        amenitiesLabel.textContent = 'Amenities';
+
+        const amenitiesValue = document.createElement('div');
+        amenitiesValue.className = 'property-card-amenities-value';
+        amenitiesValue.textContent = `🎯 ${prop.amenities || 'None listed'}`;
+        amenities.appendChild(amenitiesLabel);
+        amenities.appendChild(amenitiesValue);
+        card.appendChild(amenities);
+        
+        // Description
+        const description = document.createElement('div');
+        description.className = 'property-card-description';
+        description.textContent = prop.description || 'No description provided.';
+        card.appendChild(description);
+        
+        // Actions
+        const actions = document.createElement('div');
+        actions.className = 'property-card-actions';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'property-card-btn-edit';
+        editBtn.textContent = 'Edit';
+        editBtn.onclick = () => window.editProp(prop.id);
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'property-card-btn-delete';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => window.deleteProp(prop.id);
+        
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+        card.appendChild(actions);
         
         container.appendChild(card);
         
-        // Load first image
+        //this loads the images.
         if (images.length > 0) {
             setTimeout(() => {
                 const img = document.getElementById(`img-${prop.id}`);
@@ -160,6 +280,7 @@ function renderProperties(properties) {
     });
 }
 
+//this function changes images in the carousel
 window.changeImg = function(propId, dir) {
     console.log('changeImg called:', propId, dir);
     const data = window.propertyImages[propId];
@@ -233,7 +354,7 @@ window.toggleImageMode = function(mode) {
     }
 };
 
-// Add image URL to create form
+// this function adds image URLs to create form
 window.addImageUrl = function() {
     const urlInput = document.getElementById('imageUrlInput');
     const url = urlInput.value.trim();
@@ -248,18 +369,20 @@ window.addImageUrl = function() {
     updateCreateImagePreview();
 };
 
-// Remove image from create form
+// this function removes images from create form
 window.removeCreateImage = function(index) {
     createFormImages.splice(index, 1);
     updateCreateImagePreview();
 };
 
-// Update image preview for create form
+// this function updates image preview for create form
 function updateCreateImagePreview() {
     const previewArea = document.getElementById('imagePreviewArea');
     if (!previewArea) return;
     
-    previewArea.innerHTML = '';
+    while (previewArea.firstChild) {
+        previewArea.removeChild(previewArea.firstChild);
+    }
     
     createFormImages.forEach((img, index) => {
         const container = document.createElement('div');
@@ -281,6 +404,8 @@ function updateCreateImagePreview() {
     });
 }
 
+
+//this function sets up the create form
 function setupCreateForm() {
     const form = document.getElementById('create-form');
     if (!form) return;
@@ -305,6 +430,8 @@ function setupCreateForm() {
         });
     }
     
+
+    //this event listener handles form submission
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
@@ -343,16 +470,17 @@ function setupCreateForm() {
     });
 }
 
+
 window.editProp = async function(id) {
     const property = await fetch(`/api/properties/${id}`).then(r => r.json());
     console.log('Editing property:', property);
     
     // Create modal
     const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000;';
+    modal.className = 'edit-modal';
     
     const modalContent = document.createElement('div');
-    modalContent.style.cssText = 'background:white; padding:40px; border-radius:16px; width:90%; max-width:650px; max-height:90vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.3);';
+    modalContent.className = 'edit-modal-content';
     
     // Image mode toggle
     let currentMode = 'file';
@@ -372,105 +500,285 @@ window.editProp = async function(id) {
         console.error('Error parsing existing images:', e);
     }
     
-    // Escape values for HTML
-    const escapeHtml = (text) => {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    };
+    // Create modal header
+    const modalHeader = document.createElement('div');
+    modalHeader.style.cssText = 'text-align:center; margin-bottom:30px; padding-bottom:20px; border-bottom:2px solid #e9ecef;';
+
+    const modalTitle = document.createElement('h2');
+    modalTitle.style.cssText = 'margin:0 0 8px 0; color:#0b1220; font-size:1.75rem; font-weight:700;';
+    modalTitle.textContent = 'Edit Property';
     
-    modalContent.innerHTML = `
-        <div style="text-align:center; margin-bottom:30px; padding-bottom:20px; border-bottom:2px solid #e9ecef;">
-            <h2 style="margin:0 0 8px 0; color:#0b1220; font-size:1.75rem; font-weight:700;">Edit Property</h2>
-            <p style="margin:0; color:#6b7280; font-size:0.95rem;">Update your listing information</p>
-        </div>
-        
-        <form id="edit-form">
-            <!-- Basic Information Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;">📝 Basic Information</h3>
-                
-                <div style="margin-bottom:18px;">
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;">Property Title *</label>
-                    <input type="text" name="title" required style="width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;" onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#e5e7eb'">
-                </div>
-                
-                <div style="margin-bottom:18px;">
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;">Location *</label>
-                    <input type="text" name="location" required placeholder="e.g., Miami Beach, FL" style="width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;" onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#e5e7eb'">
-                </div>
-                
-                <div style="margin-bottom:18px;">
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;">Description</label>
-                    <textarea name="description" rows="4" placeholder="Describe your property..." style="width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; resize:vertical; transition:border-color 0.2s;" onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
-                </div>
-            </div>
-            
-            <!-- Pricing & Capacity Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;">💰 Pricing & Capacity</h3>
-                
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;">Price per Night *</label>
-                        <input type="number" name="pricePerNight" required min="0" step="0.01" placeholder="0.00" style="width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;" onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#e5e7eb'">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;">Max Guests *</label>
-                        <input type="number" name="maxGuests" required min="1" placeholder="1" style="width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;" onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#e5e7eb'">
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Amenities & Status Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;">✨ Amenities & Status</h3>
-                
-                <div style="margin-bottom:18px;">
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;">Amenities</label>
-                    <input type="text" name="amenities" placeholder="WiFi, Pool, Parking, Kitchen..." style="width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;" onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#e5e7eb'">
-                </div>
-                
-                <label style="display:flex; align-items:center; gap:10px; padding:12px; background:#f9fafb; border-radius:8px; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
-                    <input type="checkbox" name="isActive" style="width:20px; height:20px; cursor:pointer;">
-                    <span style="font-weight:600; color:#374151; font-size:0.95rem;">Active Listing (Visible to customers)</span>
-                </label>
-            </div>
-            
-            <!-- Images Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;">📷 Images</h3>
-                
-                <div style="display:flex; gap:12px; margin-bottom:14px;">
-                    <button type="button" id="btn-file" style="padding:10px 20px; background:#007bff; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; transition:background 0.2s;" onmouseover="this.style.background='#0056b3'" onmouseout="this.style.background='#007bff'">📁 Upload Files</button>
-                    <button type="button" id="btn-url" style="padding:10px 20px; background:#6c757d; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; transition:background 0.2s;" onmouseover="this.style.background='#5a6268'" onmouseout="this.style.background='#6c757d'">🔗 Paste URLs</button>
-                </div>
-                
-                <div id="file-input-container" style="display:block;">
-                    <input type="file" id="image-input" accept="image/*" multiple style="padding:10px; border:2px dashed #d1d5db; border-radius:8px; width:100%; box-sizing:border-box; background:#fafafa; cursor:pointer; font-size:0.9rem;">
-                    <div id="image-preview" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px; margin-top:12px;"></div>
-                </div>
-                
-                <div id="url-input-container" style="display:none;">
-                    <textarea id="url-input" placeholder="Paste image URLs (one per line)" rows="4" style="width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; resize:vertical;"></textarea>
-                </div>
-            </div>
-            
-            <div id="edit-error" style="color:#dc3545; margin-bottom:15px; padding:12px; background:#ffe6e6; border-radius:8px; display:none; font-weight:500;"></div>
-            
-            <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:30px; padding-top:24px; border-top:2px solid #e9ecef;">
-                <button type="button" id="edit-cancel" style="padding:13px 32px; background:#6c757d; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem; font-weight:600; transition:background 0.2s;" onmouseover="this.style.background='#5a6268'" onmouseout="this.style.background='#6c757d'">Cancel</button>
-                <button type="submit" style="padding:13px 32px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem; font-weight:600; transition:background 0.2s; box-shadow:0 2px 4px rgba(40,167,69,0.2);" onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'">💾 Save Changes</button>
-            </div>
-        </form>
-    `;
+    const modalSubtitle = document.createElement('p');
+    modalSubtitle.style.cssText = 'margin:0; color:#6b7280; font-size:0.95rem;';
+    modalSubtitle.textContent = 'Update your listing information';
+    modalHeader.appendChild(modalTitle);
+    modalHeader.appendChild(modalSubtitle);
+    modalContent.appendChild(modalHeader);
+    
+    // Create form
+    const form = document.createElement('form');
+    form.id = 'edit-form';
+    
+    // Basic Information Section
+    const basicSection = document.createElement('div');
+    basicSection.style.marginBottom = '28px';
+
+    const basicTitle = document.createElement('h3');
+    basicTitle.style.cssText = 'margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;';
+    basicTitle.textContent = '📝 Basic Information';
+    basicSection.appendChild(basicTitle);
+    
+    const titleGroup = document.createElement('div');
+    titleGroup.style.marginBottom = '18px';
+
+    const titleLabel = document.createElement('label');
+    titleLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
+    titleLabel.textContent = 'Property Title *';
+
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.name = 'title';
+    titleInput.required = true;
+    titleInput.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;';
+    titleInput.onfocus = () => titleInput.style.borderColor = '#007bff';
+    titleInput.onblur = () => titleInput.style.borderColor = '#e5e7eb';
+    titleGroup.appendChild(titleLabel);
+    titleGroup.appendChild(titleInput);
+    basicSection.appendChild(titleGroup);
+    
+    const locationGroup = document.createElement('div');
+    locationGroup.style.marginBottom = '18px';
+
+    const locationLabel = document.createElement('label');
+    locationLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
+    locationLabel.textContent = 'Location *';
+
+    const locationInput = document.createElement('input');
+    locationInput.type = 'text';
+    locationInput.name = 'location';
+    locationInput.required = true;
+    locationInput.placeholder = 'e.g., Miami Beach, FL';
+    locationInput.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;';
+    locationInput.onfocus = () => locationInput.style.borderColor = '#007bff';
+    locationInput.onblur = () => locationInput.style.borderColor = '#e5e7eb';
+    locationGroup.appendChild(locationLabel);
+    locationGroup.appendChild(locationInput);
+    basicSection.appendChild(locationGroup);
+    
+    const descGroup = document.createElement('div');
+    descGroup.style.marginBottom = '18px';
+
+    const descLabel = document.createElement('label');
+    descLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
+    descLabel.textContent = 'Description';
+
+    const descTextarea = document.createElement('textarea');
+    descTextarea.name = 'description';
+    descTextarea.rows = 4;
+    descTextarea.placeholder = 'Describe your property...';
+    descTextarea.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; resize:vertical; transition:border-color 0.2s;';
+    descTextarea.onfocus = () => descTextarea.style.borderColor = '#007bff';
+    descTextarea.onblur = () => descTextarea.style.borderColor = '#e5e7eb';
+    descGroup.appendChild(descLabel);
+    descGroup.appendChild(descTextarea);
+    basicSection.appendChild(descGroup);
+    
+    form.appendChild(basicSection);
+    
+    // Pricing & Capacity Section
+    const pricingSection = document.createElement('div');
+    pricingSection.style.marginBottom = '28px';
+
+    const pricingTitle = document.createElement('h3');
+    pricingTitle.style.cssText = 'margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;';
+    pricingTitle.textContent = '💰 Pricing & Capacity';
+    pricingSection.appendChild(pricingTitle);
+    
+    const pricingGrid = document.createElement('div');
+    pricingGrid.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:18px;';
+    
+    const priceGroup = document.createElement('div');
+
+    const priceLabel = document.createElement('label');
+    // Label for price per night input
+    priceLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
+    priceLabel.textContent = 'Price per Night *';
+
+    const priceInput = document.createElement('input');
+    priceInput.type = 'number';
+    priceInput.name = 'pricePerNight';
+    priceInput.required = true;
+    priceInput.min = '0';
+    priceInput.step = '0.01';
+    priceInput.placeholder = '0.00';
+    priceInput.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;';
+    priceInput.onfocus = () => priceInput.style.borderColor = '#007bff';
+    priceInput.onblur = () => priceInput.style.borderColor = '#e5e7eb';
+    priceGroup.appendChild(priceLabel);
+    priceGroup.appendChild(priceInput);
+    
+    const guestsGroup = document.createElement('div');
+
+    const guestsLabel = document.createElement('label');
+
+    guestsLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
+    guestsLabel.textContent = 'Max Guests *';
+    const guestsInput = document.createElement('input');
+    guestsInput.type = 'number';
+    guestsInput.name = 'maxGuests';
+    guestsInput.required = true;
+    guestsInput.min = '1';
+    guestsInput.placeholder = '1';
+    guestsInput.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;';
+    guestsInput.onfocus = () => guestsInput.style.borderColor = '#007bff';
+    guestsInput.onblur = () => guestsInput.style.borderColor = '#e5e7eb';
+    guestsGroup.appendChild(guestsLabel);
+    guestsGroup.appendChild(guestsInput);
+    
+    pricingGrid.appendChild(priceGroup);
+    pricingGrid.appendChild(guestsGroup);
+    pricingSection.appendChild(pricingGrid);
+    form.appendChild(pricingSection);
+    
+    // Amenities & Status Section
+    const amenitiesSection = document.createElement('div');
+    amenitiesSection.style.marginBottom = '28px';
+
+    const amenitiesTitle = document.createElement('h3');
+    amenitiesTitle.style.cssText = 'margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;';
+    amenitiesTitle.textContent = '✨ Amenities & Status';
+    amenitiesSection.appendChild(amenitiesTitle);
+    
+    const amenitiesGroup = document.createElement('div');
+    amenitiesGroup.style.marginBottom = '18px';
+
+    const amenitiesLabel = document.createElement('label');
+    amenitiesLabel.style.cssText = 'display:block; margin-bottom:8px; font-weight:600; color:#374151; font-size:0.95rem;';
+    amenitiesLabel.textContent = 'Amenities';
+
+    const amenitiesInput = document.createElement('input');
+    amenitiesInput.type = 'text';
+    amenitiesInput.name = 'amenities';
+    amenitiesInput.placeholder = 'WiFi, Pool, Parking, Kitchen...';
+    amenitiesInput.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; transition:border-color 0.2s;';
+    amenitiesInput.onfocus = () => amenitiesInput.style.borderColor = '#007bff';
+    amenitiesInput.onblur = () => amenitiesInput.style.borderColor = '#e5e7eb';
+    amenitiesGroup.appendChild(amenitiesLabel);
+    amenitiesGroup.appendChild(amenitiesInput);
+    amenitiesSection.appendChild(amenitiesGroup);
+    
+    const activeLabel = document.createElement('label');
+    activeLabel.style.cssText = 'display:flex; align-items:center; gap:10px; padding:12px; background:#f9fafb; border-radius:8px; cursor:pointer; transition:background 0.2s;';
+    activeLabel.onmouseover = () => activeLabel.style.background = '#f3f4f6';
+    activeLabel.onmouseout = () => activeLabel.style.background = '#f9fafb';
+
+    const activeCheckbox = document.createElement('input');
+    activeCheckbox.type = 'checkbox';
+    activeCheckbox.name = 'isActive';
+    activeCheckbox.style.cssText = 'width:20px; height:20px; cursor:pointer;';
+
+    const activeSpan = document.createElement('span');
+    activeSpan.style.cssText = 'font-weight:600; color:#374151; font-size:0.95rem;';
+    activeSpan.textContent = 'Active Listing (Visible to customers)';
+    activeLabel.appendChild(activeCheckbox);
+    activeLabel.appendChild(activeSpan);
+    amenitiesSection.appendChild(activeLabel);
+    form.appendChild(amenitiesSection);
+    
+    // Images Section
+    const imagesSection = document.createElement('div');
+    imagesSection.style.marginBottom = '28px';
+
+    const imagesTitle = document.createElement('h3');
+    imagesTitle.style.cssText = 'margin:0 0 16px 0; color:#0b1220; font-size:1.1rem; font-weight:600; padding-bottom:8px; border-bottom:2px solid #e9ecef;';
+    imagesTitle.textContent = '📷 Images';
+    imagesSection.appendChild(imagesTitle);
+    
+    const btnContainer = document.createElement('div');
+
+    btnContainer.style.cssText = 'display:flex; gap:12px; margin-bottom:14px;';
+    const btnFile = document.createElement('button');
+    btnFile.type = 'button';
+    btnFile.id = 'btn-file';
+    btnFile.style.cssText = 'padding:10px 20px; background:#007bff; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; transition:background 0.2s;';
+    btnFile.onmouseover = () => btnFile.style.background = '#0056b3';
+    btnFile.onmouseout = () => btnFile.style.background = '#007bff';
+    btnFile.textContent = '📁 Upload Files';
+
+    const btnUrl = document.createElement('button');
+    btnUrl.type = 'button';
+    btnUrl.id = 'btn-url';
+    btnUrl.style.cssText = 'padding:10px 20px; background:#6c757d; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; transition:background 0.2s;';
+    btnUrl.onmouseover = () => btnUrl.style.background = '#5a6268';
+    btnUrl.onmouseout = () => btnUrl.style.background = '#6c757d';
+    btnUrl.textContent = '🔗 Paste URLs';
+    btnContainer.appendChild(btnFile);
+    btnContainer.appendChild(btnUrl);
+    imagesSection.appendChild(btnContainer);
+    
+    const fileContainer = document.createElement('div');
+    fileContainer.id = 'file-input-container';
+    fileContainer.style.display = 'block';
+
+    const imageInput = document.createElement('input');
+    imageInput.type = 'file';
+    imageInput.id = 'image-input';
+    imageInput.accept = 'image/*';
+    imageInput.multiple = true;
+    imageInput.style.cssText = 'padding:10px; border:2px dashed #d1d5db; border-radius:8px; width:100%; box-sizing:border-box; background:#fafafa; cursor:pointer; font-size:0.9rem;';
+
+    const imagePreview = document.createElement('div');
+    imagePreview.id = 'image-preview';
+    imagePreview.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px; margin-top:12px;';
+    fileContainer.appendChild(imageInput);
+    fileContainer.appendChild(imagePreview);
+    imagesSection.appendChild(fileContainer);
+    
+    const urlContainer = document.createElement('div');
+    urlContainer.id = 'url-input-container';
+    urlContainer.style.display = 'none';
+    const urlInput = document.createElement('textarea');
+    urlInput.id = 'url-input';
+    urlInput.placeholder = 'Paste image URLs (one per line)';
+    urlInput.rows = 4;
+    urlInput.style.cssText = 'width:100%; padding:12px 14px; border:2px solid #e5e7eb; border-radius:8px; color:#000; background:#fff; font-size:1rem; box-sizing:border-box; resize:vertical;';
+    urlContainer.appendChild(urlInput);
+    imagesSection.appendChild(urlContainer);
+    form.appendChild(imagesSection);
+    
+    // Error div
+    const errorDiv = document.createElement('div');
+    errorDiv.id = 'edit-error';
+    errorDiv.style.cssText = 'color:#dc3545; margin-bottom:15px; padding:12px; background:#ffe6e6; border-radius:8px; display:none; font-weight:500;';
+    form.appendChild(errorDiv);
+    
+    // Actions
+    const actionsDiv = document.createElement('div');
+    
+    actionsDiv.style.cssText = 'display:flex; gap:12px; justify-content:flex-end; margin-top:30px; padding-top:24px; border-top:2px solid #e9ecef;';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.id = 'edit-cancel';
+    cancelBtn.style.cssText = 'padding:13px 32px; background:#6c757d; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem; font-weight:600; transition:background 0.2s;';
+    cancelBtn.onmouseover = () => cancelBtn.style.background = '#5a6268';
+    cancelBtn.onmouseout = () => cancelBtn.style.background = '#6c757d';
+    cancelBtn.textContent = 'Cancel';
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'submit';
+    saveBtn.style.cssText = 'padding:13px 32px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem; font-weight:600; transition:background 0.2s; box-shadow:0 2px 4px rgba(40,167,69,0.2);';
+    saveBtn.onmouseover = () => saveBtn.style.background = '#218838';
+    saveBtn.onmouseout = () => saveBtn.style.background = '#28a745';
+    saveBtn.textContent = '💾 Save Changes';
+    actionsDiv.appendChild(cancelBtn);
+    actionsDiv.appendChild(saveBtn);
+    form.appendChild(actionsDiv);
+    
+    modalContent.appendChild(form);
     
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
     
     // Get elements and set values
-    const form = modalContent.querySelector('#edit-form');
     form.querySelector('[name="title"]').value = property.title || '';
     form.querySelector('[name="description"]').value = property.description || '';
     form.querySelector('[name="location"]').value = property.location || '';
@@ -478,15 +786,8 @@ window.editProp = async function(id) {
     form.querySelector('[name="maxGuests"]').value = property.maxGuests || '';
     form.querySelector('[name="amenities"]').value = property.amenities || '';
     form.querySelector('[name="isActive"]').checked = property.isActive || false;
-    const btnFile = modalContent.querySelector('#btn-file');
-    const btnUrl = modalContent.querySelector('#btn-url');
-    const fileContainer = modalContent.querySelector('#file-input-container');
-    const urlContainer = modalContent.querySelector('#url-input-container');
-    const imageInput = modalContent.querySelector('#image-input');
-    const imagePreview = modalContent.querySelector('#image-preview');
-    const urlInput = modalContent.querySelector('#url-input');
     
-    // Toggle mode
+    // Toggle mode (btnFile, btnUrl, fileContainer, urlContainer already declared above)
     btnFile.addEventListener('click', () => {
         currentMode = 'file';
         btnFile.style.background = '#007bff';
@@ -636,15 +937,17 @@ window.editProp = async function(id) {
                 document.body.removeChild(modal);
                 loadProperties();
             } else {
-                modalContent.querySelector('#edit-error').textContent = 'Failed to update property';
+                form.querySelector('#edit-error').style.display = 'block';
+                form.querySelector('#edit-error').textContent = 'Failed to update property';
             }
         } catch (err) {
-            modalContent.querySelector('#edit-error').textContent = 'Error: ' + err.message;
+            form.querySelector('#edit-error').style.display = 'block';
+            form.querySelector('#edit-error').textContent = 'Error: ' + err.message;
         }
     });
     
     // Close modal
-    modalContent.querySelector('#edit-cancel').addEventListener('click', () => {
+    form.querySelector('#edit-cancel').addEventListener('click', () => {
         document.body.removeChild(modal);
     });
     modal.addEventListener('click', (e) => {

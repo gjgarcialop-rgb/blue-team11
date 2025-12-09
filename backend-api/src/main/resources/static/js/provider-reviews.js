@@ -1,3 +1,14 @@
+const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('provider-signin.html');
+        });
+    }
+
+
 const providerId = localStorage.getItem('providerId');
 
 async function loadReviews() {
